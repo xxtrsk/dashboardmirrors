@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard & KPI — Аналитика Моделей и Чаттеров</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Top Header Bar with Month Switcher -->
+  <header>
+    <div class="header-container">
+      <div class="logo-group">
+        <div class="logo-icon">📊</div>
+        <div class="logo-title">
+          <h1>Main Dashboard & KPI Аналитика</h1>
+          <p>Система контроля финансовых планов, Run Rate и результативности чаттеров</p>
+        </div>
+      </div>
+
+      <!-- Month Selector & Header Badges -->
+      <div style="display: flex; gap: 12px; align-items: center;">
+        <div style="display: flex; align-items: center; gap: 8px; background: rgba(56, 189, 248, 0.1); border: 1px solid var(--primary); padding: 6px 14px; border-radius: var(--radius-md);">
+          <span style="font-size: 13px; font-weight: 600; color: var(--primary);">🗓 Отчетный Месяц:</span>
+          <select id="select-month-picker" class="custom-select" style="padding: 4px 10px; font-weight: 700; background: #0f172a; border-color: var(--primary); color: var(--primary);">
+            <!-- Rendered dynamically -->
+          </select>
+        </div>
+
+        <div class="date-badge">📅 Период: <strong id="header-report-date" style="color: var(--text-main); margin-left: 4px;">--</strong></div>
+        <div class="date-badge">⏳ Дней: <strong id="header-days-passed" style="color: var(--primary); margin-left: 4px;">--</strong></div>
+        <div class="date-badge">🗓 В месяце: <strong id="header-days-in-month" style="color: var(--accent-green); margin-left: 4px;">--</strong></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation Tabs -->
+  <nav class="nav-tabs">
+    <button class="tab-btn active" data-tab="tab-main">📌 Main Dashboard</button>
+    <button class="tab-btn" data-tab="tab-chatter-weekly">👤 Chatter Weekly Dynamics</button>
+    <button class="tab-btn" data-tab="tab-model-weekly">👑 Model Weekly Dynamics</button>
+    <button class="tab-btn" data-tab="tab-crm-imports">📑 CRM Imports & Config (⚙️)</button>
+  </nav>
+
+  <!-- Main Application Container -->
+  <main class="main-content">
+
+    <!-- TAB 1: MAIN DASHBOARD -->
+    <section id="tab-main" class="tab-content active">
+
+      <!-- Executive Overview Cards -->
+      <div class="grid-summary">
+        <div class="glass-card">
+          <div class="card-header">
+            <span class="card-title">Общая Выручка (1–7 Августа)</span>
+            <div class="card-icon">💰</div>
+          </div>
+          <div id="dash-grand-fact" class="card-value" style="color: var(--accent-green);">$0</div>
+          <div class="card-subtext">Фактическая сумма за 7 дней по всем моделям</div>
+        </div>
+
+        <div class="glass-card">
+          <div class="card-header">
+            <span class="card-title">Общий Финансовый План</span>
+            <div class="card-icon">🎯</div>
+          </div>
+          <div id="dash-grand-plan" class="card-value">$0</div>
+          <div class="card-subtext">Выполнение: <strong id="dash-grand-pct" style="color: var(--primary);">0%</strong></div>
+        </div>
+
+        <div class="glass-card">
+          <div class="card-header">
+            <span class="card-title">Суммарный Run Rate / месяц</span>
+            <div class="card-icon">🚀</div>
+          </div>
+          <div id="dash-grand-runrate" class="card-value" style="color: var(--primary);">$0</div>
+          <div class="card-subtext">Прогнозируемый оборот до конца месяца</div>
+        </div>
+      </div>
+
+      <div class="controls-bar" style="margin-bottom: 24px;">
+        <button id="btn-export-csv" class="btn-action">📄 Экспорт в CSV / Excel</button>
+      </div>
+
+      <!-- SECTION 1: MODEL SUMMARY & BONUS POOL CARDS GRID -->
+      <div class="section-title-bar">
+        <h2 class="section-title">👑 Посадка и Бонусные Пулы Моделей (Model Assignment & Bonus Pools)</h2>
+      </div>
+      <div id="model-cards-summary-grid" class="grid-summary" style="margin-bottom: 32px;">
+        <!-- Rendered dynamically via app.js -->
+      </div>
+
+      <!-- SECTION 2: MODEL SUMMARY TABLE -->
+      <div class="section-title-bar">
+        <h2 class="section-title">📊 Сводка Выполнения Планов Моделей (Model Summary Table)</h2>
+      </div>
+      <div class="table-container" style="margin-bottom: 32px;">
+        <table class="custom-table">
+          <thead>
+            <tr>
+              <th>Модель (Model Name)</th>
+              <th>Model Plan ($)</th>
+              <th>Total Revenue ($)</th>
+              <th>Run Rate ($/день)</th>
+              <th>Goal Progress (%)</th>
+              <th>Total Bonus Pool ($)</th>
+              <th>Привязанные Чаттеры (Assigned Chatters)</th>
+            </tr>
+          </thead>
+          <tbody id="model-summary-table-body">
+            <!-- Rendered dynamically -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- SECTION 3: CHATTER KPI SETTINGS & PERFORMANCE -->
+      <div style="display: grid; grid-template-columns: 1fr; gap: 24px;">
+
+        <div>
+          <div class="section-title-bar">
+            <h2 class="section-title">⚙️ Настройки KPI Чаттеров (Target KPI Plans)</h2>
+          </div>
+          <div class="table-container" style="margin-bottom: 32px;">
+            <table class="custom-table">
+              <thead>
+                <tr>
+                  <th>Chatter</th>
+                  <th>Model</th>
+                  <th>Target Open Rate</th>
+                  <th>Target Avg Sold Price</th>
+                  <th>Avg. Response Time</th>
+                  <th>Target Plan ($)</th>
+                </tr>
+              </thead>
+              <tbody id="kpi-settings-table-body">
+                <!-- Rendered dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div>
+          <div class="section-title-bar">
+            <h2 class="section-title">👥 Результативность Чаттеров (Chatter KPI Tracking)</h2>
+          </div>
+          <div class="table-container">
+            <table class="custom-table">
+              <thead>
+                <tr>
+                  <th>Chatter</th>
+                  <th>Model</th>
+                  <th>Target Plan ($)</th>
+                  <th>Fact Sales ($)</th>
+                  <th>% Выполнения</th>
+                  <th>PPV Open Rate (%)</th>
+                  <th>Avg. Price Sold ($)</th>
+                  <th>Response Time (TRT)</th>
+                  <th>Прогноз ($)</th>
+                </tr>
+              </thead>
+              <tbody id="chatter-perf-table-body">
+                <!-- Rendered dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- TAB 2: CHATTER WEEKLY DYNAMICS -->
+    <section id="tab-chatter-weekly" class="tab-content">
+      <div class="section-title-bar">
+        <h2 class="section-title">👤 Chatter Weekly Dynamics</h2>
+      </div>
+
+      <div class="controls-bar" style="align-items: center;">
+        <label style="font-weight: 600; font-size: 14px;">Выберите Чаттера:</label>
+        <select id="select-chatter-weekly" class="custom-select" style="min-width: 220px;">
+          <!-- Rendered dynamically -->
+        </select>
+      </div>
+
+      <div class="table-container">
+        <table class="custom-table">
+          <thead>
+            <tr>
+              <th>Метрика (Metric)</th>
+              <th>Week 1</th>
+              <th>Week 2</th>
+              <th>Week 3</th>
+              <th>Week 4</th>
+              <th>Total / Average</th>
+            </tr>
+          </thead>
+          <tbody id="chatter-weekly-table-body">
+            <!-- Rendered dynamically -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- TAB 3: MODEL WEEKLY DYNAMICS -->
+    <section id="tab-model-weekly" class="tab-content">
+      <div class="section-title-bar">
+        <h2 class="section-title">👑 Model Weekly Dynamics</h2>
+      </div>
+
+      <div class="controls-bar" style="align-items: center;">
+        <label style="font-weight: 600; font-size: 14px;">Выберите Модель (Account ID):</label>
+        <select id="select-model-weekly" class="custom-select" style="min-width: 220px;">
+          <!-- Rendered dynamically -->
+        </select>
+      </div>
+
+      <div class="table-container">
+        <table class="custom-table">
+          <thead>
+            <tr>
+              <th>Метрика (Metric)</th>
+              <th>Week 1</th>
+              <th>Week 2</th>
+              <th>Week 3</th>
+              <th>Week 4</th>
+              <th>Total / Average</th>
+            </tr>
+          </thead>
+          <tbody id="model-weekly-table-body">
+            <!-- Rendered dynamically -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- TAB 4: CRM IMPORTS & CONFIG -->
+    <section id="tab-crm-imports" class="tab-content">
+      <div class="section-title-bar">
+        <h2 class="section-title">⚙️ Справочник Аккаунтов (Config)</h2>
+      </div>
+
+      <div class="glass-card" style="margin-bottom: 24px;">
+        <h3 style="font-family: var(--font-heading); margin-bottom: 14px;">📖 Dictionary (ID ➔ Model Name)</h3>
+        <table class="custom-table">
+          <thead>
+            <tr>
+              <th>ID Аккаунта</th>
+              <th>Model Name</th>
+              <th>Page / Account</th>
+              <th>Assigned Chatters</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td class="num-cell">47892</td><td>Lolly (1lollyhere)</td><td>1lollyhere</td><td>hinata, Kiril</td></tr>
+            <tr><td class="num-cell">39856</td><td>Lolly (Lollysunnery)</td><td>lollysunnery</td><td>paul, karina</td></tr>
+            <tr><td class="num-cell">30201</td><td>Eva Blush</td><td>evablush</td><td>paul, karina</td></tr>
+            <tr><td class="num-cell">4967</td><td>Lila (angelkiss)</td><td>angelkiss</td><td>—</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>

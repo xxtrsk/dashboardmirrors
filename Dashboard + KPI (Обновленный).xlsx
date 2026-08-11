@@ -1,0 +1,340 @@
+<?xml version="1.0"?>
+<?mso-application progid="Excel.Sheet"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:o="urn:schemas-microsoft-com:office:office"
+ xmlns:x="urn:schemas-microsoft-com:office:excel"
+ xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:html="http://www.w3.org/TR/REC-html40">
+ <DocumentProperties xmlns="urn:schemas-microsoft-com:office:office">
+  <Author>ROP Analytics System</Author>
+  <Title>Dashboard + KPI (Поаккаунтный Факт 1-7 Августа)</Title>
+ </DocumentProperties>
+ <Styles>
+  <Style ss:ID="Default" ss:Name="Normal">
+   <Alignment ss:Vertical="Bottom"/>
+   <Font ss:FontName="Calibri" ss:Size="11" ss:Color="#000000"/>
+  </Style>
+  <Style ss:ID="Header">
+   <Font ss:FontName="Calibri" ss:Size="11" ss:Color="#FFFFFF" ss:Bold="1"/>
+   <Interior ss:Color="#0F172A" ss:Pattern="Solid"/>
+   <Alignment ss:Horizontal="Center" ss:Vertical="Center"/>
+  </Style>
+  <Style ss:ID="Currency">
+   <NumberFormat ss:Format="$#,##0.00"/>
+  </Style>
+  <Style ss:ID="Percent">
+   <NumberFormat ss:Format="0.00%"/>
+  </Style>
+ </Styles>
+
+ <!-- SHEET 1: ИМПОРТ ОМ (Чаттеры по аккаунтам CRM Выгрузка) -->
+ <Worksheet ss:Name="ИМПОРТ ОМ">
+  <Table>
+   <Column ss:Width="120"/>
+   <Column ss:Width="100"/>
+   <Column ss:Width="90"/>
+   <Column ss:Width="90"/>
+   <Column ss:Width="70"/>
+   <Column ss:Width="90"/>
+   <Column ss:Width="110"/>
+   <Column ss:Width="90"/>
+   <Column ss:Width="80"/>
+   <Column ss:Width="80"/>
+   <Column ss:Width="90"/>
+   <Column ss:Width="90"/>
+   <Column ss:Width="90"/>
+   <Column ss:Width="90"/>
+   <Column ss:Width="80"/>
+   <Column ss:Width="90"/>
+   <Column ss:Width="80"/>
+
+   <Row ss:StyleID="Header">
+    <Cell><Data ss:Type="String">Member</Data></Cell>
+    <Cell><Data ss:Type="String">Accounts IDs</Data></Cell>
+    <Cell><Data ss:Type="String">Total Sales</Data></Cell>
+    <Cell><Data ss:Type="String">PPV Sales</Data></Cell>
+    <Cell><Data ss:Type="String">Tips</Data></Cell>
+    <Cell><Data ss:Type="String">TotalMessages</Data></Cell>
+    <Cell><Data ss:Type="String">Avg. Response Time</Data></Cell>
+    <Cell><Data ss:Type="String">Free Media Sent</Data></Cell>
+    <Cell><Data ss:Type="String">PPV Sent</Data></Cell>
+    <Cell><Data ss:Type="String">PPV Sold</Data></Cell>
+    <Cell><Data ss:Type="String">Avg. PPVPurchase</Data></Cell>
+    <Cell><Data ss:Type="String">PPV Open Rate</Data></Cell>
+    <Cell><Data ss:Type="String">Avg. Price of Sent</Data></Cell>
+    <Cell><Data ss:Type="String">Avg. Price of Sold</Data></Cell>
+    <Cell><Data ss:Type="String">Total Chats</Data></Cell>
+    <Cell><Data ss:Type="String">Chat to PPV Ratio</Data></Cell>
+    <Cell><Data ss:Type="String">Words</Data></Cell>
+   </Row>
+
+   <Row>
+    <Cell><Data ss:Type="String">17452. hinata</Data></Cell>
+    <Cell><Data ss:Type="String">47892</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">650.33</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">474.33</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">176.00</Data></Cell>
+    <Cell><Data ss:Type="Number">1122</Data></Cell>
+    <Cell><Data ss:Type="Number">163.29</Data></Cell>
+    <Cell><Data ss:Type="Number">52</Data></Cell>
+    <Cell><Data ss:Type="Number">40</Data></Cell>
+    <Cell><Data ss:Type="Number">21</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">215.05</Data></Cell>
+    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.5250</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">24.07</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">28.23</Data></Cell>
+    <Cell><Data ss:Type="Number">121</Data></Cell>
+    <Cell><Data ss:Type="Number">3.03</Data></Cell>
+    <Cell><Data ss:Type="Number">16612</Data></Cell>
+   </Row>
+
+   <Row>
+    <Cell><Data ss:Type="String">188427. Kiril</Data></Cell>
+    <Cell><Data ss:Type="String">47892</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">68.00</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">64.00</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">4.00</Data></Cell>
+    <Cell><Data ss:Type="Number">489</Data></Cell>
+    <Cell><Data ss:Type="Number">326.53</Data></Cell>
+    <Cell><Data ss:Type="Number">10</Data></Cell>
+    <Cell><Data ss:Type="Number">9</Data></Cell>
+    <Cell><Data ss:Type="Number">2</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">214.50</Data></Cell>
+    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.2222</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">34.44</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">40.00</Data></Cell>
+    <Cell><Data ss:Type="Number">112</Data></Cell>
+    <Cell><Data ss:Type="Number">12.44</Data></Cell>
+    <Cell><Data ss:Type="Number">5904</Data></Cell>
+   </Row>
+
+   <Row>
+    <Cell><Data ss:Type="String">121820. paul</Data></Cell>
+    <Cell><Data ss:Type="String">39856</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1156.87</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">876.87</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">280.00</Data></Cell>
+    <Cell><Data ss:Type="Number">3231</Data></Cell>
+    <Cell><Data ss:Type="Number">223.03</Data></Cell>
+    <Cell><Data ss:Type="Number">67</Data></Cell>
+    <Cell><Data ss:Type="Number">50</Data></Cell>
+    <Cell><Data ss:Type="Number">35</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">195.09</Data></Cell>
+    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.7000</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">28.18</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">31.32</Data></Cell>
+    <Cell><Data ss:Type="Number">213</Data></Cell>
+    <Cell><Data ss:Type="Number">4.26</Data></Cell>
+    <Cell><Data ss:Type="Number">40641</Data></Cell>
+   </Row>
+
+   <Row>
+    <Cell><Data ss:Type="String">161525. karina</Data></Cell>
+    <Cell><Data ss:Type="String">39856</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">295.64</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">283.64</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">12.00</Data></Cell>
+    <Cell><Data ss:Type="Number">1572</Data></Cell>
+    <Cell><Data ss:Type="Number">167.92</Data></Cell>
+    <Cell><Data ss:Type="Number">91</Data></Cell>
+    <Cell><Data ss:Type="Number">23</Data></Cell>
+    <Cell><Data ss:Type="Number">10</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">86.90</Data></Cell>
+    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.4348</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">32.02</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">35.46</Data></Cell>
+    <Cell><Data ss:Type="Number">165</Data></Cell>
+    <Cell><Data ss:Type="Number">7.17</Data></Cell>
+    <Cell><Data ss:Type="Number">16159</Data></Cell>
+   </Row>
+
+   <Row>
+    <Cell><Data ss:Type="String">17452. hinata</Data></Cell>
+    <Cell><Data ss:Type="String">4967</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">535.13</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">535.13</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">0.00</Data></Cell>
+    <Cell><Data ss:Type="Number">1028</Data></Cell>
+    <Cell><Data ss:Type="Number">202.73</Data></Cell>
+    <Cell><Data ss:Type="Number">16</Data></Cell>
+    <Cell><Data ss:Type="Number">54</Data></Cell>
+    <Cell><Data ss:Type="Number">27</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">207.85</Data></Cell>
+    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.5000</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">23.33</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">24.77</Data></Cell>
+    <Cell><Data ss:Type="Number">121</Data></Cell>
+    <Cell><Data ss:Type="Number">2.24</Data></Cell>
+    <Cell><Data ss:Type="Number">16581</Data></Cell>
+   </Row>
+
+   <Row>
+    <Cell><Data ss:Type="String">121820. paul</Data></Cell>
+    <Cell><Data ss:Type="String">30201</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">78.35</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">42.35</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">36.00</Data></Cell>
+    <Cell><Data ss:Type="Number">733</Data></Cell>
+    <Cell><Data ss:Type="Number">346.19</Data></Cell>
+    <Cell><Data ss:Type="Number">14</Data></Cell>
+    <Cell><Data ss:Type="Number">9</Data></Cell>
+    <Cell><Data ss:Type="Number">3</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">293.67</Data></Cell>
+    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.3333</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">16.98</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">17.65</Data></Cell>
+    <Cell><Data ss:Type="Number">103</Data></Cell>
+    <Cell><Data ss:Type="Number">11.44</Data></Cell>
+    <Cell><Data ss:Type="Number">10025</Data></Cell>
+   </Row>
+
+   <Row>
+    <Cell><Data ss:Type="String">161525. karina</Data></Cell>
+    <Cell><Data ss:Type="String">30201</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">26.39</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">26.39</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">0.00</Data></Cell>
+    <Cell><Data ss:Type="Number">481</Data></Cell>
+    <Cell><Data ss:Type="Number">162.83</Data></Cell>
+    <Cell><Data ss:Type="Number">13</Data></Cell>
+    <Cell><Data ss:Type="Number">9</Data></Cell>
+    <Cell><Data ss:Type="Number">2</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">162.83</Data></Cell>
+    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.2222</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">21.53</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">16.50</Data></Cell>
+    <Cell><Data ss:Type="Number">104</Data></Cell>
+    <Cell><Data ss:Type="Number">11.56</Data></Cell>
+    <Cell><Data ss:Type="Number">5781</Data></Cell>
+   </Row>
+  </Table>
+ </Worksheet>
+
+ <!-- SHEET 2: ИМПОРТ ОМ (модели) -->
+ <Worksheet ss:Name="ИМПОРТ ОМ (модели)">
+  <Table>
+   <Column ss:Width="140"/>
+   <Column ss:Width="100"/>
+   <Column ss:Width="130"/>
+   <Column ss:Width="140"/>
+   <Column ss:Width="110"/>
+   <Column ss:Width="110"/>
+   <Column ss:Width="110"/>
+   <Column ss:Width="120"/>
+
+   <Row ss:StyleID="Header">
+    <Cell><Data ss:Type="String">Account</Data></Cell>
+    <Cell><Data ss:Type="String">Total Revenue</Data></Cell>
+    <Cell><Data ss:Type="String">Revenue from New Fans</Data></Cell>
+    <Cell><Data ss:Type="String">Revenue from Existing Fans</Data></Cell>
+    <Cell><Data ss:Type="String">Monthly Rev Goal</Data></Cell>
+    <Cell><Data ss:Type="String">Goal Progress</Data></Cell>
+    <Cell><Data ss:Type="String">Monthly Rev Run Rate</Data></Cell>
+    <Cell><Data ss:Type="String">New Fans</Data></Cell>
+   </Row>
+
+   <Row>
+    <Cell><Data ss:Type="String">4967. Lila</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">593.59</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">254.74</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">338.85</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1500.00</Data></Cell>
+    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.4432</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">2289.76</Data></Cell>
+    <Cell><Data ss:Type="Number">156</Data></Cell>
+   </Row>
+
+   <Row>
+    <Cell><Data ss:Type="String">30201. Eva</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">253.62</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">50.74</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">202.88</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">4000.00</Data></Cell>
+    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.0802</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1104.39</Data></Cell>
+    <Cell><Data ss:Type="Number">152</Data></Cell>
+   </Row>
+
+   <Row>
+    <Cell><Data ss:Type="String">39856. Lolly</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1978.09</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">581.08</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1397.01</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">10000.00</Data></Cell>
+    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.2214</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">7626.28</Data></Cell>
+    <Cell><Data ss:Type="Number">296</Data></Cell>
+   </Row>
+
+   <Row>
+    <Cell><Data ss:Type="String">47892. Lolly</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">992.78</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">120.00</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">872.78</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">4000.00</Data></Cell>
+    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.3132</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">4314.82</Data></Cell>
+    <Cell><Data ss:Type="Number">188</Data></Cell>
+   </Row>
+  </Table>
+ </Worksheet>
+
+ <!-- SHEET 3: Main Dashboard -->
+ <Worksheet ss:Name="Main Dashboard">
+  <Table>
+   <Column ss:Width="160"/>
+   <Column ss:Width="140"/>
+   <Column ss:Width="140"/>
+   <Column ss:Width="140"/>
+   <Column ss:Width="130"/>
+   <Column ss:Width="250"/>
+
+   <Row ss:StyleID="Header">
+    <Cell><Data ss:Type="String">Model Name</Data></Cell>
+    <Cell><Data ss:Type="String">Model Plan ($)</Data></Cell>
+    <Cell><Data ss:Type="String">Total Revenue (1-7 Авг)</Data></Cell>
+    <Cell><Data ss:Type="String">Run Rate ($/мес)</Data></Cell>
+    <Cell><Data ss:Type="String">Goal Progress (%)</Data></Cell>
+    <Cell><Data ss:Type="String">Assigned Chatters</Data></Cell>
+   </Row>
+
+   <Row>
+    <Cell><Data ss:Type="String">Lila (angelkiss)</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1500</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">593.59</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">2289.76</Data></Cell>
+    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.4432</Data></Cell>
+    <Cell><Data ss:Type="String">hinata</Data></Cell>
+   </Row>
+
+   <Row>
+    <Cell><Data ss:Type="String">Eva Blush</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">4000</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">253.62</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1104.39</Data></Cell>
+    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.0802</Data></Cell>
+    <Cell><Data ss:Type="String">paul, karina</Data></Cell>
+   </Row>
+
+   <Row>
+    <Cell><Data ss:Type="String">Lolly (Lollysunnery)</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">10000</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1978.09</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">7626.28</Data></Cell>
+    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.2214</Data></Cell>
+    <Cell><Data ss:Type="String">paul, karina</Data></Cell>
+   </Row>
+
+   <Row>
+    <Cell><Data ss:Type="String">Lolly (1lollyhere)</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">4000</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">992.78</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">4314.82</Data></Cell>
+    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.3132</Data></Cell>
+    <Cell><Data ss:Type="String">hinata, Kiril</Data></Cell>
+   </Row>
+
+  </Table>
+ </Worksheet>
+
+</Workbook>
