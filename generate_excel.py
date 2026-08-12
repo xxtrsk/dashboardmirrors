@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """
-Generate Excel Spreadsheet (.xls SpreadsheetML) with direct OnlyMonster API figures by Model and Chatter:
-- Lollysunnery: $3,913.77 (paul $2,348.26, karina $1,565.51)
-- 1lollyhere: $1,521.84 (hinata $913.10, Kirill $608.74)
-- Lila (angelkiss): $849.69 (hinata $849.69)
-- Eva Blush: $574.57 (paul $344.74, karina $229.83)
+Generate Excel Spreadsheet (.xls SpreadsheetML) with exact Week 1 (1-7 Aug) and Week 2 (8-12 Aug) API breakdown:
+- Lollysunnery: Week 1 = $1,978.10, Week 2 = $1,935.66 (Total 1-12 = $3,913.77)
+- 1lollyhere: Week 1 = $992.80, Week 2 = $529.04 (Total 1-12 = $1,521.84)
+- Lila (angelkiss): Week 1 = $593.62, Week 2 = $256.07 (Total 1-12 = $849.69)
+- Eva Blush: Week 1 = $253.59, Week 2 = $320.98 (Total 1-12 = $574.57)
 """
 
-def generate_direct_api_excel():
+def generate_weekly_breakdown_excel():
     xml = """<?xml version="1.0"?>
 <?mso-application progid="Excel.Sheet"?>
 <Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
@@ -17,7 +17,7 @@ def generate_direct_api_excel():
  xmlns:html="http://www.w3.org/TR/REC-html40">
  <DocumentProperties xmlns="urn:schemas-microsoft-com:office:office">
   <Author>OnlyMonster Direct API</Author>
-  <Title>Dashboard + KPI (OnlyMonster Direct API Data)</Title>
+  <Title>Dashboard + KPI (Weekly Breakdown 1-7 and 8-12 Aug)</Title>
  </DocumentProperties>
  <Styles>
   <Style ss:ID="Default" ss:Name="Normal">
@@ -37,132 +37,53 @@ def generate_direct_api_excel():
   </Style>
  </Styles>
 
- <!-- SHEET 1: ИМПОРТ ОМ (Чаттеры по моделям API) -->
- <Worksheet ss:Name="Чаттеры по моделям (API)">
+ <!-- SHEET 1: Недельная Динамика Моделей -->
+ <Worksheet ss:Name="Недельная Динамика">
   <Table>
    <Column ss:Width="160"/>
-   <Column ss:Width="160"/>
-   <Column ss:Width="120"/>
-   <Column ss:Width="110"/>
-   <Column ss:Width="100"/>
-   <Column ss:Width="120"/>
-
-   <Row ss:StyleID="Header">
-    <Cell><Data ss:Type="String">Model</Data></Cell>
-    <Cell><Data ss:Type="String">Chatter Member</Data></Cell>
-    <Cell><Data ss:Type="String">API Net Sales (80%)</Data></Cell>
-    <Cell><Data ss:Type="String">PPV Sales</Data></Cell>
-    <Cell><Data ss:Type="String">Tips</Data></Cell>
-    <Cell><Data ss:Type="String">Messages</Data></Cell>
-   </Row>
-
-   <Row>
-    <Cell><Data ss:Type="String">Lolly (Lollysunnery)</Data></Cell>
-    <Cell><Data ss:Type="String">paul walkeeer</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">2348.26</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1691.14</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">657.12</Data></Cell>
-    <Cell><Data ss:Type="Number">5240</Data></Cell>
-   </Row>
-
-   <Row>
-    <Cell><Data ss:Type="String">Lolly (Lollysunnery)</Data></Cell>
-    <Cell><Data ss:Type="String">karina @sanesskio</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1565.51</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1127.43</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">438.08</Data></Cell>
-    <Cell><Data ss:Type="Number">3145</Data></Cell>
-   </Row>
-
-   <Row>
-    <Cell><Data ss:Type="String">Lolly (1lollyhere)</Data></Cell>
-    <Cell><Data ss:Type="String">hinata hyuga</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">913.10</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">782.78</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">130.32</Data></Cell>
-    <Cell><Data ss:Type="Number">1980</Data></Cell>
-   </Row>
-
-   <Row>
-    <Cell><Data ss:Type="String">Lolly (1lollyhere)</Data></Cell>
-    <Cell><Data ss:Type="String">Kirill Chelusti</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">608.74</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">521.86</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">86.88</Data></Cell>
-    <Cell><Data ss:Type="Number">3095</Data></Cell>
-   </Row>
-
-   <Row>
-    <Cell><Data ss:Type="String">Lila (angelkiss)</Data></Cell>
-    <Cell><Data ss:Type="String">hinata hyuga</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">849.69</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">845.69</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">4.00</Data></Cell>
-    <Cell><Data ss:Type="Number">1783</Data></Cell>
-   </Row>
-
-   <Row>
-    <Cell><Data ss:Type="String">Eva Blush</Data></Cell>
-    <Cell><Data ss:Type="String">paul walkeeer</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">344.74</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">255.94</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">88.80</Data></Cell>
-    <Cell><Data ss:Type="Number">3145</Data></Cell>
-   </Row>
-
-   <Row>
-    <Cell><Data ss:Type="String">Eva Blush</Data></Cell>
-    <Cell><Data ss:Type="String">karina @sanesskio</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">229.83</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">170.63</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">59.20</Data></Cell>
-    <Cell><Data ss:Type="Number">2082</Data></Cell>
-   </Row>
-
-  </Table>
- </Worksheet>
-
- <!-- SHEET 2: Модели (API Net 80%) -->
- <Worksheet ss:Name="Модели (API Net 80%)">
-  <Table>
-   <Column ss:Width="160"/>
-   <Column ss:Width="120"/>
-   <Column ss:Width="120"/>
-   <Column ss:Width="120"/>
+   <Column ss:Width="130"/>
+   <Column ss:Width="130"/>
+   <Column ss:Width="130"/>
+   <Column ss:Width="140"/>
 
    <Row ss:StyleID="Header">
     <Cell><Data ss:Type="String">Model Name</Data></Cell>
-    <Cell><Data ss:Type="String">Model Plan ($)</Data></Cell>
-    <Cell><Data ss:Type="String">API Net Revenue (80%)</Data></Cell>
-    <Cell><Data ss:Type="String">Monthly Run Rate ($)</Data></Cell>
-   </Row>
-
-   <Row>
-    <Cell><Data ss:Type="String">Lila (angelkiss)</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1500</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">849.69</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">2195.03</Data></Cell>
-   </Row>
-
-   <Row>
-    <Cell><Data ss:Type="String">Eva Blush</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">4000</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">574.57</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1484.31</Data></Cell>
+    <Cell><Data ss:Type="String">Week 1 (1-7 Авг)</Data></Cell>
+    <Cell><Data ss:Type="String">Week 2 (8-12 Авг)</Data></Cell>
+    <Cell><Data ss:Type="String">Total Net (1-12 Авг)</Data></Cell>
+    <Cell><Data ss:Type="String">Monthly Goal ($)</Data></Cell>
    </Row>
 
    <Row>
     <Cell><Data ss:Type="String">Lolly (Lollysunnery)</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">10000</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1978.10</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1935.66</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">3913.77</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">10110.57</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">10000.00</Data></Cell>
    </Row>
 
    <Row>
     <Cell><Data ss:Type="String">Lolly (1lollyhere)</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">4000</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">992.80</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">529.04</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">1521.84</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">3928.75</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">4000.00</Data></Cell>
+   </Row>
+
+   <Row>
+    <Cell><Data ss:Type="String">Lila (angelkiss)</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">593.62</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">256.07</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">849.69</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1500.00</Data></Cell>
+   </Row>
+
+   <Row>
+    <Cell><Data ss:Type="String">Eva Blush</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">253.59</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">320.98</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">574.57</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">4000.00</Data></Cell>
    </Row>
 
   </Table>
@@ -178,7 +99,7 @@ def generate_direct_api_excel():
     with open("chatter_analytics_system.xls", "w", encoding="utf-8") as f:
         f.write(xml)
 
-    print(f"✅ Файл Excel обновлен с прямыми данными OnlyMonster API: {output_filepath}")
+    print(f"✅ Файл Excel обновлен с недели 1 (1-7 Авг) и недели 2 (8-12 Авг): {output_filepath}")
 
 if __name__ == "__main__":
-    generate_direct_api_excel()
+    generate_weekly_breakdown_excel()
