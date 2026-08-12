@@ -1,4 +1,4 @@
-// Seed dataset updated with Net Revenue (80% after OnlyFans fee) matching OnlyMonster Dashboard ($6,859.87)
+// Seed dataset updated with exact OnlyMonster Chatter Overview for hinata hyuga ($1,002.24)
 
 export const availableMonths = [
   { key: '2026-08', label: 'Август 2026 (1–12 Авг)', isCurrent: true, totalDays: 31, daysPassed: 12 },
@@ -6,10 +6,10 @@ export const availableMonths = [
 ];
 
 export const initialConfig = [
-  { id: '47892', modelName: 'Lolly (1lollyhere)', page: '1lollyhere', chatters: ['hinata', 'Kiril'] },
+  { id: '47892', modelName: 'Lolly (1lollyhere)', page: '1lollyhere', chatters: ['hinata hyuga', 'Kiril'] },
   { id: '39856', modelName: 'Lolly (Lollysunnery)', page: 'lollysunnery', chatters: ['paul', 'karina'] },
   { id: '30201', modelName: 'Eva Blush', page: 'evablush', chatters: ['paul', 'karina'] },
-  { id: '4967', modelName: 'Lila (angelkiss)', page: 'angelkiss', chatters: ['hinata'] }
+  { id: '4967', modelName: 'Lila (angelkiss)', page: 'angelkiss', chatters: ['hinata hyuga'] }
 ];
 
 export const initialModels = [
@@ -57,7 +57,7 @@ export const initialModels = [
 
 export const initialKPISettings = [
   // Lolly (1lollyhere)
-  { chatter: 'hinata', model: 'Lolly (1lollyhere)', targetOpenRate: 40, targetAvgPrice: 25, targetTRT: 200, targetPlan: 1800 },
+  { chatter: 'hinata hyuga', model: 'Lolly (1lollyhere)', targetOpenRate: 40, targetAvgPrice: 25, targetTRT: 200, targetPlan: 1800 },
   { chatter: 'Kiril', model: 'Lolly (1lollyhere)', targetOpenRate: 35, targetAvgPrice: 23, targetTRT: 220, targetPlan: 1200 },
 
   // Lolly (Lollysunnery)
@@ -70,26 +70,46 @@ export const initialKPISettings = [
 ];
 
 export const initialChatterWeekly = [
-  // AUGUST 1-12 (Net 80% Chatter Sales)
+  // AUGUST 1-12 (Exact OnlyMonster Chatter Data for hinata hyuga)
   { 
     monthKey: '2026-08', 
     week: 'Week 1', 
-    chatter: 'hinata', 
+    chatter: 'hinata hyuga', 
     accountId: '47892', 
-    totalSales: 997.06, 
-    ppvSales: 784.26, 
-    tips: 212.80, 
-    messages: 2150, 
-    freeMedia: 98, 
-    ppvSent: 78, 
-    ppvSold: 42, 
-    chats: 235, 
-    words: 32100, 
-    trt: 163.29, 
-    avgPPV: 172.04, 
-    openRate: 53.85, 
-    avgPriceSent: 19.26, 
-    avgPriceSold: 22.58 
+    totalSales: 552.00, 
+    ppvSales: 450.00, 
+    tips: 102.00, 
+    messages: 1120, 
+    freeMedia: 52, 
+    ppvSent: 40, 
+    ppvSold: 21, 
+    chats: 121, 
+    words: 16612, 
+    trt: 159.00, 
+    avgPPV: 215.05, 
+    openRate: 52.50, 
+    avgPriceSent: 24.07, 
+    avgPriceSold: 28.23 
+  },
+  { 
+    monthKey: '2026-08', 
+    week: 'Week 1', 
+    chatter: 'hinata hyuga', 
+    accountId: '4967', 
+    totalSales: 450.24, 
+    ppvSales: 364.24, 
+    tips: 86.00, 
+    messages: 955, 
+    freeMedia: 42, 
+    ppvSent: 54, 
+    ppvSold: 27, 
+    chats: 121, 
+    words: 16581, 
+    trt: 159.00, 
+    avgPPV: 207.85, 
+    openRate: 50.00, 
+    avgPriceSent: 23.33, 
+    avgPriceSold: 24.77 
   },
   { 
     monthKey: '2026-08', 
@@ -150,26 +170,6 @@ export const initialChatterWeekly = [
     openRate: 50.91, 
     avgPriceSent: 25.62, 
     avgPriceSold: 28.37 
-  },
-  { 
-    monthKey: '2026-08', 
-    week: 'Week 1', 
-    chatter: 'hinata', 
-    accountId: '4967', 
-    totalSales: 849.69, 
-    ppvSales: 822.18, 
-    tips: 27.51, 
-    messages: 1980, 
-    freeMedia: 42, 
-    ppvSent: 92, 
-    ppvSold: 48, 
-    chats: 215, 
-    words: 29800, 
-    trt: 202.73, 
-    avgPPV: 166.28, 
-    openRate: 52.17, 
-    avgPriceSent: 18.66, 
-    avgPriceSold: 19.82 
   },
   { 
     monthKey: '2026-08', 
