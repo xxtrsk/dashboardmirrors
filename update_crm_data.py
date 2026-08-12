@@ -66,8 +66,10 @@ if __name__ == "__main__":
     api_url = os.environ.get("CRM_API_URL", "https://api.onlymonster.com/v1/stats")
     keys = get_crm_keys()
 
+    print(f"🔑 Found {len(keys)} API keys for accounts: {list(keys.keys())}")
+
     if not keys:
-        print("⚠️ No API keys found in CRM_API_KEYS or CRM_API_KEY. Skipping fetch.")
+        print("⚠️ No API keys found in CRM_API_KEYS or CRM_API_KEY_*. Skipping fetch.")
     else:
         results = {}
         for acc_id, key in keys.items():
