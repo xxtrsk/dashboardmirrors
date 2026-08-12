@@ -281,28 +281,55 @@ function renderChatterWeeklyDynamics() {
   const tbody = document.getElementById('tbody-chatter-weekly') || document.getElementById('chatter-weekly-table-body');
   if (!tbody) return;
 
-  if (records.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="12" style="text-align: center; color: var(--text-muted); padding: 24px;">Нет данных по выбранному чаттеру</td></tr>`;
-    return;
-  }
+  const getVal = (wName, key) => {
+    const rec = records.find(r => r.week === wName);
+    return rec ? (rec[key] || 0) : 0;
+  };
 
-  tbody.innerHTML = records.map(r => {
-    const cfg = state.config.find(c => c.id === r.accountId);
-    const modelName = cfg ? cfg.modelName : (r.accountId || '—');
+  const getSum = (key) => records.reduce((a,r) => a + (r[key] || 0), 0);
+  const getAvg = (key) => {
+    const vals = records.map(r => r[key] || 0).filter(v => v > 0);
+    return vals.length > 0 ? vals.reduce((a,b) => a+b, 0) / vals.length : 0;
+  };
+
+  const metricsConfig = [
+    { label: 'Total Sales ($)', key: 'totalSales', isCurrency: true, isSum: true },
+    { label: 'PPV Sales ($)', key: 'ppvSales', isCurrency: true, isSum: true },
+    { label: 'Tips ($)', key: 'tips', isCurrency: true, isSum: true },
+    { label: 'Total Messages Sent', key: 'messages', isNum: true, isSum: true },
+    { label: 'Free Media Sent', key: 'freeMedia', isNum: true, isSum: true },
+    { label: 'PPV Messages Sent', key: 'ppvSent', isNum: true, isSum: true },
+    { label: 'PPV Messages Sold', key: 'ppvSold', isNum: true, isSum: true },
+    { label: 'Total Chats Handled', key: 'chats', isNum: true, isSum: true },
+    { label: 'Words Sent', key: 'words', isNum: true, isSum: true },
+    { label: 'Avg Response Time (sec)', key: 'trt', isNum: true, isSum: false },
+    { label: 'Avg PPV Purchase ($)', key: 'avgPPV', isCurrency: true, isSum: false },
+    { label: 'PPV Open Rate (%)', key: 'openRate', isPct: true, isSum: false },
+    { label: 'Avg Price Sent ($)', key: 'avgPriceSent', isCurrency: true, isSum: false },
+    { label: 'Avg Price Sold ($)', key: 'avgPriceSold', isCurrency: true, isSum: false }
+  ];
+
+  tbody.innerHTML = metricsConfig.map(m => {
+    const w1 = getVal('Week 1', m.key);
+    const w2 = getVal('Week 2', m.key);
+    const w3 = getVal('Week 3', m.key);
+    const w4 = getVal('Week 4', m.key);
+    const totAvg = m.isSum ? getSum(m.key) : getAvg(m.key);
+
+    const fmt = (v) => {
+      if (m.isCurrency) return formatCurrency(v);
+      if (m.isPct) return formatPercent(v);
+      return formatNumber(v);
+    };
+
     return `
       <tr>
-        <td style="font-weight: 600;">1–12 Августа 2026</td>
-        <td><span style="background: rgba(192, 132, 252, 0.15); border: 1px solid rgba(192, 132, 252, 0.3); color: var(--accent-purple); padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 600;">${modelName}</span></td>
-        <td style="font-family: var(--font-mono); font-weight: 700; color: var(--accent-green);">${formatCurrency(r.totalSales)}</td>
-        <td style="font-family: var(--font-mono);">${formatCurrency(r.ppvSales)}</td>
-        <td style="font-family: var(--font-mono);">${formatCurrency(r.tips)}</td>
-        <td>${formatNumber(r.messages)}</td>
-        <td>${formatNumber(r.chats)}</td>
-        <td>${formatNumber(r.words)}</td>
-        <td style="font-family: var(--font-mono);">${Math.round(r.trt)}s</td>
-        <td>${formatPercent(r.openRate)}</td>
-        <td>$${(r.avgPriceSent || 0).toFixed(2)}</td>
-        <td>$${(r.avgPriceSold || 0).toFixed(2)}</td>
+        <td style="font-weight: 600; color: var(--text-main);">${m.label}</td>
+        <td style="font-family: var(--font-mono);">${fmt(w1)}</td>
+        <td style="font-family: var(--font-mono);">${w2 ? fmt(w2) : '—'}</td>
+        <td style="font-family: var(--font-mono);">${w3 ? fmt(w3) : '—'}</td>
+        <td style="font-family: var(--font-mono);">${w4 ? fmt(w4) : '—'}</td>
+        <td style="font-family: var(--font-mono); font-weight: 700; color: var(--primary);">${fmt(totAvg)}</td>
       </tr>
     `;
   }).join('');
@@ -326,31 +353,55 @@ function renderModelWeeklyDynamics() {
   const tbody = document.getElementById('tbody-model-weekly') || document.getElementById('model-weekly-table-body');
   if (!tbody) return;
 
-  if (records.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="12" style="text-align: center; color: var(--text-muted); padding: 24px;">Нет данных по выбранной модели</td></tr>`;
-    return;
-  }
+  const getVal = (wName, key) => {
+    const rec = records.find(r => r.week === wName);
+    return rec ? (rec[key] || 0) : 0;
+  };
 
-  tbody.innerHTML = records.map(r => `
-    <tr>
-      <td style="font-weight: 600;">1–12 Августа 2026</td>
-      <td style="font-family: var(--font-mono); font-weight: 700; color: var(--accent-green);">${formatCurrency(r.totalRevenue)}</td>
-      <td style="font-family: var(--font-mono);">${formatCurrency(r.plan)}</td>
-      <td>
-        <span class="badge-status ${r.goalProgressPct >= 35 ? 'badge-green' : 'badge-amber'}">
-          ${formatPercent(r.goalProgressPct)}
-        </span>
-      </td>
-      <td style="font-family: var(--font-mono); color: var(--primary); font-weight: 600;">${formatCurrency(r.runRate)}</td>
-      <td>${r.newFans}</td>
-      <td style="font-family: var(--font-mono);">${formatCurrency(r.ppvRev)}</td>
-      <td style="font-family: var(--font-mono);">${formatCurrency(r.tipsRev)}</td>
-      <td>${r.transactions}</td>
-      <td>${r.apc.toFixed(2)}</td>
-      <td>$${r.apv.toFixed(2)}</td>
-      <td>$${r.arppu.toFixed(2)}</td>
-    </tr>
-  `).join('');
+  const getSum = (key) => records.reduce((a,r) => a + (r[key] || 0), 0);
+  const getAvg = (key) => {
+    const vals = records.map(r => r[key] || 0).filter(v => v > 0);
+    return vals.length > 0 ? vals.reduce((a,b) => a+b, 0) / vals.length : 0;
+  };
+
+  const metricsConfig = [
+    { label: 'Total Net Revenue ($)', key: 'totalRevenue', isCurrency: true, isSum: true },
+    { label: 'Revenue Goal ($)', key: 'plan', isCurrency: true, isSum: false },
+    { label: 'Goal Progress (%)', key: 'goalProgressPct', isPct: true, isSum: false },
+    { label: 'Monthly Run Rate ($)', key: 'runRate', isCurrency: true, isSum: false },
+    { label: 'New Fans Count', key: 'newFans', isNum: true, isSum: true },
+    { label: 'PPV Net Revenue ($)', key: 'ppvRev', isCurrency: true, isSum: true },
+    { label: 'Tips Net Revenue ($)', key: 'tipsRev', isCurrency: true, isSum: true },
+    { label: 'Transactions Count', key: 'transactions', isNum: true, isSum: true },
+    { label: 'APC (Actions Per Chatter)', key: 'apc', isNum: true, isSum: false },
+    { label: 'APV (Avg Purchase Value)', key: 'apv', isCurrency: true, isSum: false },
+    { label: 'ARPPU ($)', key: 'arppu', isCurrency: true, isSum: false }
+  ];
+
+  tbody.innerHTML = metricsConfig.map(m => {
+    const w1 = getVal('Week 1', m.key);
+    const w2 = getVal('Week 2', m.key);
+    const w3 = getVal('Week 3', m.key);
+    const w4 = getVal('Week 4', m.key);
+    const totAvg = m.isSum ? getSum(m.key) : getAvg(m.key);
+
+    const fmt = (v) => {
+      if (m.isCurrency) return formatCurrency(v);
+      if (m.isPct) return formatPercent(v);
+      return formatNumber(v);
+    };
+
+    return `
+      <tr>
+        <td style="font-weight: 600; color: var(--text-main);">${m.label}</td>
+        <td style="font-family: var(--font-mono);">${fmt(w1)}</td>
+        <td style="font-family: var(--font-mono);">${w2 ? fmt(w2) : '—'}</td>
+        <td style="font-family: var(--font-mono);">${w3 ? fmt(w3) : '—'}</td>
+        <td style="font-family: var(--font-mono);">${w4 ? fmt(w4) : '—'}</td>
+        <td style="font-family: var(--font-mono); font-weight: 700; color: var(--primary);">${fmt(totAvg)}</td>
+      </tr>
+    `;
+  }).join('');
 }
 
 // Download CSV

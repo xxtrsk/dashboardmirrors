@@ -243,6 +243,26 @@ header {
   backdrop-filter: blur(12px);
 }
 
+.scrollable-slider {
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary) rgba(15, 23, 42, 0.6);
+}
+
+.scrollable-slider::-webkit-scrollbar {
+  height: 8px;
+}
+
+.scrollable-slider::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.6);
+  border-radius: 999px;
+}
+
+.scrollable-slider::-webkit-scrollbar-thumb {
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+  border-radius: 999px;
+}
+
 .data-table {
   width: 100%;
   border-collapse: collapse;
