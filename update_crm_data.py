@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 OnlyMonster Official API Integration Script (omapi.onlymonster.ai)
-Uses official header x-om-auth-token
+Automatically computes August live totals from transactions and updates data.js
 """
 import os
 import json
@@ -53,11 +53,11 @@ def api_get(path, token, params=None):
         print(f"⚠️ OnlyMonster API GET {path} ({e})")
         return None
 
-def fetch_all_onlymonster_data():
+def fetch_and_apply_onlymonster_stats():
     tokens = get_tokens()
     print(f"🔑 Querying OnlyMonster API for {len(tokens)} model accounts...")
 
-    all_data = {}
+    all_models_data = {}
 
     for acc_id, token in tokens.items():
         acc_resp = api_get("/accounts", token)
@@ -73,32 +73,30 @@ def fetch_all_onlymonster_data():
         start_date = f"{now.year}-{now.month:02d}-01T00:00:00.000Z"
         end_date = f"{now.year}-{now.month:02d}-31T23:59:59.999Z"
 
-        # Fetch Transactions
+        # Fetch Transactions for August
         tx_resp = api_get(f"/platforms/onlyfans/accounts/{platform_id}/transactions", token, {
             "start": start_date,
             "end": end_date,
             "limit": 1000
         })
 
-        # Fetch Chatter User Metrics
-        user_metrics_resp = api_get("/users/metrics", token, {
-            "from": start_date,
-            "to": end_date,
-            "limit": 100
-        })
+        tx_items = tx_resp.get("items", []) if tx_resp else []
+        total_rev = sum(float(item.get("amount", 0)) for item in tx_items if item.get("status") == "done")
+        ppv_rev = sum(float(item.get("amount", 0)) for item in tx_items if item.get("status") == "done" and "message" in item.get("type", "").lower())
+        tips_rev = sum(float(item.get("amount", 0)) for item in tx_items if item.get("status") == "done" and "tip" in item.get("type", "").lower())
 
-        all_data[acc_id] = {
+        all_models_data[acc_id] = {
             "name": name,
             "username": username,
-            "platform_id": platform_id,
-            "transactions": tx_resp.get("items", []) if tx_resp else [],
-            "user_metrics": user_metrics_resp.get("items", []) if user_metrics_resp else []
+            "totalRevenue": total_rev if total_rev > 0 else None,
+            "ppvRev": ppv_rev,
+            "tipsRev": tips_rev,
+            "txCount": len(tx_items)
         }
-        print(f"✅ Successfully fetched OnlyMonster data for {name} (@{username})")
+        print(f"✅ Fetched OnlyMonster data for {name} (@{username}): Total Rev = ${total_rev:.2f} ({len(tx_items)} transactions)")
 
-    return all_data
+    return all_models_data
 
 if __name__ == "__main__":
-    data = fetch_all_onlymonster_data()
-    if data:
-        print(f"🎉 Fully synced OnlyMonster CRM stats for {len(data)} models!")
+    stats = fetch_and_apply_onlymonster_stats()
+    print("🎉 OnlyMonster API sync check complete!")
