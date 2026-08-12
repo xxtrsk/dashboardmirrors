@@ -6,8 +6,8 @@
  xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
  xmlns:html="http://www.w3.org/TR/REC-html40">
  <DocumentProperties xmlns="urn:schemas-microsoft-com:office:office">
-  <Author>OnlyMonster CRM System</Author>
-  <Title>Dashboard + KPI (OnlyMonster Chatter Overview)</Title>
+  <Author>OnlyMonster Direct API</Author>
+  <Title>Dashboard + KPI (OnlyMonster Direct API Data)</Title>
  </DocumentProperties>
  <Styles>
   <Style ss:ID="Default" ss:Name="Normal">
@@ -27,135 +27,134 @@
   </Style>
  </Styles>
 
- <!-- SHEET 1: ИМПОРТ ОМ (Чаттеры Overview OnlyMonster) -->
- <Worksheet ss:Name="ИМПОРТ ОМ">
+ <!-- SHEET 1: ИМПОРТ ОМ (Чаттеры по моделям API) -->
+ <Worksheet ss:Name="Чаттеры по моделям (API)">
   <Table>
    <Column ss:Width="160"/>
-   <Column ss:Width="110"/>
+   <Column ss:Width="160"/>
+   <Column ss:Width="120"/>
    <Column ss:Width="110"/>
    <Column ss:Width="100"/>
    <Column ss:Width="120"/>
-   <Column ss:Width="110"/>
 
    <Row ss:StyleID="Header">
-    <Cell><Data ss:Type="String">Member</Data></Cell>
-    <Cell><Data ss:Type="String">Total Sales</Data></Cell>
+    <Cell><Data ss:Type="String">Model</Data></Cell>
+    <Cell><Data ss:Type="String">Chatter Member</Data></Cell>
+    <Cell><Data ss:Type="String">API Net Sales (80%)</Data></Cell>
     <Cell><Data ss:Type="String">PPV Sales</Data></Cell>
     <Cell><Data ss:Type="String">Tips</Data></Cell>
-    <Cell><Data ss:Type="String">Total Messages Sent</Data></Cell>
-    <Cell><Data ss:Type="String">Avg. Response Time</Data></Cell>
+    <Cell><Data ss:Type="String">Messages</Data></Cell>
    </Row>
 
    <Row>
-    <Cell><Data ss:Type="String">paul walkeeer (ID 121820)</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">2573.58</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">2087.98</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">485.60</Data></Cell>
-    <Cell><Data ss:Type="Number">8385</Data></Cell>
-    <Cell><Data ss:Type="String">4m 30sec</Data></Cell>
+    <Cell><Data ss:Type="String">Lolly (Lollysunnery)</Data></Cell>
+    <Cell><Data ss:Type="String">paul walkeeer</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">2348.26</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1691.14</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">657.12</Data></Cell>
+    <Cell><Data ss:Type="Number">5240</Data></Cell>
    </Row>
 
    <Row>
-    <Cell><Data ss:Type="String">hinata hyuga (ID 17452)</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1792.12</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1600.12</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">192.00</Data></Cell>
-    <Cell><Data ss:Type="Number">3763</Data></Cell>
-    <Cell><Data ss:Type="String">2m 58sec</Data></Cell>
+    <Cell><Data ss:Type="String">Lolly (Lollysunnery)</Data></Cell>
+    <Cell><Data ss:Type="String">karina @sanesskio</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1565.51</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1127.43</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">438.08</Data></Cell>
+    <Cell><Data ss:Type="Number">3145</Data></Cell>
    </Row>
 
    <Row>
-    <Cell><Data ss:Type="String">karina @sanesskio (ID 161525)</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1147.19</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">651.19</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">496.00</Data></Cell>
-    <Cell><Data ss:Type="Number">5227</Data></Cell>
-    <Cell><Data ss:Type="String">2m 36sec</Data></Cell>
+    <Cell><Data ss:Type="String">Lolly (1lollyhere)</Data></Cell>
+    <Cell><Data ss:Type="String">hinata hyuga</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">913.10</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">782.78</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">130.32</Data></Cell>
+    <Cell><Data ss:Type="Number">1980</Data></Cell>
    </Row>
 
    <Row>
-    <Cell><Data ss:Type="String">Kirill Chelusti (ID 188427)</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">540.00</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">428.00</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">112.00</Data></Cell>
+    <Cell><Data ss:Type="String">Lolly (1lollyhere)</Data></Cell>
+    <Cell><Data ss:Type="String">Kirill Chelusti</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">608.74</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">521.86</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">86.88</Data></Cell>
     <Cell><Data ss:Type="Number">3095</Data></Cell>
-    <Cell><Data ss:Type="String">4m 55sec</Data></Cell>
    </Row>
 
    <Row>
-    <Cell><Data ss:Type="String">Taras K (ID 182004)</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">189.58</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">189.58</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">0.00</Data></Cell>
-    <Cell><Data ss:Type="Number">239</Data></Cell>
-    <Cell><Data ss:Type="String">3m 55sec</Data></Cell>
+    <Cell><Data ss:Type="String">Lila (angelkiss)</Data></Cell>
+    <Cell><Data ss:Type="String">hinata hyuga</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">849.69</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">845.69</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">4.00</Data></Cell>
+    <Cell><Data ss:Type="Number">1783</Data></Cell>
    </Row>
 
    <Row>
-    <Cell><Data ss:Type="String">Alex Sonly (ID 45471)</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">96.00</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">96.00</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">0.00</Data></Cell>
-    <Cell><Data ss:Type="Number">0</Data></Cell>
-    <Cell><Data ss:Type="String">—</Data></Cell>
+    <Cell><Data ss:Type="String">Eva Blush</Data></Cell>
+    <Cell><Data ss:Type="String">paul walkeeer</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">344.74</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">255.94</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">88.80</Data></Cell>
+    <Cell><Data ss:Type="Number">3145</Data></Cell>
    </Row>
+
+   <Row>
+    <Cell><Data ss:Type="String">Eva Blush</Data></Cell>
+    <Cell><Data ss:Type="String">karina @sanesskio</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">229.83</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">170.63</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">59.20</Data></Cell>
+    <Cell><Data ss:Type="Number">2082</Data></Cell>
+   </Row>
+
   </Table>
  </Worksheet>
 
- <!-- SHEET 2: ИМПОРТ ОМ (модели) -->
- <Worksheet ss:Name="ИМПОРТ ОМ (модели)">
+ <!-- SHEET 2: Модели (API Net 80%) -->
+ <Worksheet ss:Name="Модели (API Net 80%)">
   <Table>
-   <Column ss:Width="140"/>
-   <Column ss:Width="100"/>
-   <Column ss:Width="130"/>
-   <Column ss:Width="140"/>
-   <Column ss:Width="110"/>
-   <Column ss:Width="110"/>
+   <Column ss:Width="160"/>
+   <Column ss:Width="120"/>
+   <Column ss:Width="120"/>
+   <Column ss:Width="120"/>
 
    <Row ss:StyleID="Header">
-    <Cell><Data ss:Type="String">Account</Data></Cell>
-    <Cell><Data ss:Type="String">Total Net Revenue (80%)</Data></Cell>
-    <Cell><Data ss:Type="String">Monthly Rev Goal</Data></Cell>
-    <Cell><Data ss:Type="String">Goal Progress</Data></Cell>
-    <Cell><Data ss:Type="String">Monthly Rev Run Rate</Data></Cell>
-    <Cell><Data ss:Type="String">New Fans</Data></Cell>
+    <Cell><Data ss:Type="String">Model Name</Data></Cell>
+    <Cell><Data ss:Type="String">Model Plan ($)</Data></Cell>
+    <Cell><Data ss:Type="String">API Net Revenue (80%)</Data></Cell>
+    <Cell><Data ss:Type="String">Monthly Run Rate ($)</Data></Cell>
    </Row>
 
    <Row>
-    <Cell><Data ss:Type="String">4967. Lila</Data></Cell>
+    <Cell><Data ss:Type="String">Lila (angelkiss)</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1500</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">849.69</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1500.00</Data></Cell>
-    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.5665</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">2195.03</Data></Cell>
-    <Cell><Data ss:Type="Number">285</Data></Cell>
    </Row>
 
    <Row>
-    <Cell><Data ss:Type="String">30201. Eva</Data></Cell>
+    <Cell><Data ss:Type="String">Eva Blush</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">4000</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">574.57</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">4000.00</Data></Cell>
-    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.1436</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">1484.31</Data></Cell>
-    <Cell><Data ss:Type="Number">240</Data></Cell>
    </Row>
 
    <Row>
-    <Cell><Data ss:Type="String">39856. Lolly</Data></Cell>
+    <Cell><Data ss:Type="String">Lolly (Lollysunnery)</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">10000</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">3913.77</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">10000.00</Data></Cell>
-    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.3914</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">10110.57</Data></Cell>
-    <Cell><Data ss:Type="Number">512</Data></Cell>
    </Row>
 
    <Row>
-    <Cell><Data ss:Type="String">47892. Lolly</Data></Cell>
+    <Cell><Data ss:Type="String">Lolly (1lollyhere)</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">4000</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">1521.84</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">4000.00</Data></Cell>
-    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.3805</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">3928.75</Data></Cell>
-    <Cell><Data ss:Type="Number">325</Data></Cell>
    </Row>
+
   </Table>
  </Worksheet>
 
