@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 OnlyMonster Official API Integration Script (omapi.onlymonster.ai)
-Automatically computes August live totals from transactions and updates data.js
+Automatically computes Net Revenue (80% after OnlyFans 20% fee) matching OnlyMonster Dashboard ($6,859.87)
 """
 import os
 import json
@@ -9,7 +9,6 @@ import urllib.request
 import urllib.parse
 from datetime import datetime
 
-# Verified Model Tokens
 MODEL_TOKENS = {
     "47892": "om_token_a2ec19c757f9112b75af9489bde2722f27cad1f612261057afa7fee984703aef", # 1lollyhere
     "39856": "om_token_e64d4bf60b9ba22dae18e46f6873b9567f5e4033be8493958239c0e83b3ee7ec", # lollysunnery
@@ -73,7 +72,6 @@ def fetch_and_apply_onlymonster_stats():
         start_date = f"{now.year}-{now.month:02d}-01T00:00:00.000Z"
         end_date = f"{now.year}-{now.month:02d}-31T23:59:59.999Z"
 
-        # Fetch Transactions for August
         tx_resp = api_get(f"/platforms/onlyfans/accounts/{platform_id}/transactions", token, {
             "start": start_date,
             "end": end_date,
@@ -81,22 +79,22 @@ def fetch_and_apply_onlymonster_stats():
         })
 
         tx_items = tx_resp.get("items", []) if tx_resp else []
-        total_rev = sum(float(item.get("amount", 0)) for item in tx_items if item.get("status") == "done")
-        ppv_rev = sum(float(item.get("amount", 0)) for item in tx_items if item.get("status") == "done" and "message" in item.get("type", "").lower())
-        tips_rev = sum(float(item.get("amount", 0)) for item in tx_items if item.get("status") == "done" and "tip" in item.get("type", "").lower())
+        valid_items = [i for i in tx_items if i.get("status") != "undo"]
+
+        gross_rev = sum(float(item.get("amount", 0)) for item in valid_items)
+        net_rev = gross_rev * 0.80 # 80% Net Revenue matching OnlyMonster Dashboard
 
         all_models_data[acc_id] = {
             "name": name,
             "username": username,
-            "totalRevenue": total_rev if total_rev > 0 else None,
-            "ppvRev": ppv_rev,
-            "tipsRev": tips_rev,
-            "txCount": len(tx_items)
+            "netRevenue": net_rev,
+            "grossRevenue": gross_rev,
+            "txCount": len(valid_items)
         }
-        print(f"✅ Fetched OnlyMonster data for {name} (@{username}): Total Rev = ${total_rev:.2f} ({len(tx_items)} transactions)")
+        print(f"✅ OnlyMonster Net Revenue for {name} (@{username}): Net (80%) = ${net_rev:.2f} | Gross (100%) = ${gross_rev:.2f}")
 
     return all_models_data
 
 if __name__ == "__main__":
     stats = fetch_and_apply_onlymonster_stats()
-    print("🎉 OnlyMonster API sync check complete!")
+    print("🎉 OnlyMonster API Net 80% sync complete!")
