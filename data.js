@@ -1,4 +1,4 @@
-// Seed dataset updated with exact Week 1 (1-7 Aug) and Week 2 (8-12 Aug) API breakdown
+// Seed dataset updated with exact derived API mathematical metrics (Spenders, APC, APV, ARPPU)
 
 export const availableMonths = [
   { key: '2026-08', label: 'Август 2026 (1–12 Авг)', isCurrent: true, totalDays: 31, daysPassed: 12 },
@@ -367,12 +367,13 @@ export const initialModelWeekly = [
     goalProgressPct: 39.57, 
     runRate: 2627.46, 
     newFans: 198, 
+    spenders: 20, 
     ppvRev: 589.62, 
     tipsRev: 4.00, 
     transactions: 36, 
-    apc: 1.95, 
+    apc: 1.80, 
     apv: 16.49, 
-    arppu: 22.36 
+    arppu: 29.68 
   },
   { 
     monthKey: '2026-08', 
@@ -384,12 +385,13 @@ export const initialModelWeekly = [
     goalProgressPct: 6.34, 
     runRate: 1123.04, 
     newFans: 112, 
+    spenders: 10, 
     ppvRev: 188.00, 
     tipsRev: 65.59, 
     transactions: 16, 
-    apc: 1.62, 
+    apc: 1.60, 
     apv: 15.85, 
-    arppu: 22.98 
+    arppu: 25.36 
   },
   { 
     monthKey: '2026-08', 
@@ -401,12 +403,13 @@ export const initialModelWeekly = [
     goalProgressPct: 19.78, 
     runRate: 8760.16, 
     newFans: 265, 
+    spenders: 35, 
     ppvRev: 1424.76, 
     tipsRev: 553.34, 
     transactions: 71, 
-    apc: 2.41, 
+    apc: 2.03, 
     apv: 27.86, 
-    arppu: 50.18 
+    arppu: 56.52 
   },
   { 
     monthKey: '2026-08', 
@@ -418,12 +421,13 @@ export const initialModelWeekly = [
     goalProgressPct: 24.82, 
     runRate: 4396.69, 
     newFans: 195, 
+    spenders: 24, 
     ppvRev: 851.14, 
     tipsRev: 141.66, 
     transactions: 46, 
-    apc: 2.11, 
+    apc: 1.92, 
     apv: 21.58, 
-    arppu: 31.06 
+    arppu: 41.37 
   },
 
   // WEEK 2 (8-12 Авг)
@@ -437,12 +441,13 @@ export const initialModelWeekly = [
     goalProgressPct: 17.07, 
     runRate: 1587.63, 
     newFans: 87, 
+    spenders: 12, 
     ppvRev: 256.07, 
     tipsRev: 0.00, 
     transactions: 18, 
-    apc: 1.95, 
+    apc: 1.50, 
     apv: 14.23, 
-    arppu: 22.36 
+    arppu: 21.34 
   },
   { 
     monthKey: '2026-08', 
@@ -454,12 +459,13 @@ export const initialModelWeekly = [
     goalProgressPct: 8.02, 
     runRate: 1989.88, 
     newFans: 128, 
+    spenders: 11, 
     ppvRev: 238.57, 
     tipsRev: 82.41, 
     transactions: 16, 
-    apc: 1.62, 
+    apc: 1.45, 
     apv: 20.06, 
-    arppu: 22.98 
+    arppu: 29.18 
   },
   { 
     monthKey: '2026-08', 
@@ -471,12 +477,13 @@ export const initialModelWeekly = [
     goalProgressPct: 19.36, 
     runRate: 12001.09, 
     newFans: 247, 
+    spenders: 38, 
     ppvRev: 1393.81, 
     tipsRev: 541.85, 
     transactions: 84, 
-    apc: 2.41, 
+    apc: 2.21, 
     apv: 23.04, 
-    arppu: 50.18 
+    arppu: 50.94 
   },
   { 
     monthKey: '2026-08', 
@@ -488,11 +495,12 @@ export const initialModelWeekly = [
     goalProgressPct: 13.23, 
     runRate: 3280.05, 
     newFans: 130, 
+    spenders: 18, 
     ppvRev: 453.50, 
     tipsRev: 75.54, 
     transactions: 28, 
-    apc: 2.11, 
+    apc: 1.56, 
     apv: 18.89, 
-    arppu: 31.06 
+    arppu: 29.39 
   }
 ];
