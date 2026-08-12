@@ -1,20 +1,25 @@
 #!/usr/bin/env python3
 """
 OnlyMonster Official API Integration Script (omapi.onlymonster.ai)
+Uses official header x-om-auth-token
 """
 import os
 import json
 import urllib.request
-import urllib.error
+import urllib.parse
+from datetime import datetime
 
+# Verified Model Tokens
 MODEL_TOKENS = {
-    "30201": "om_token_b2991eded93e1dbb991f2b2d10fab0aa5fbf163374a8c81cb5ca426ad8ed543d",
-    "39856": "om_token_e64d4bf60b9ba22dae18e46f6873b9567f5e4033be8493958239c0e83b3ee7ec",
-    "47892": "om_token_a2ec19c757f9112b75af9489bde2722f27cad1f612261057afa7fee984703aef",
-    "4967":  "om_token_4ece7637ad9aef7848c5850695628bfff22951ffc1fd36b7970109c172bc2a1a"
+    "47892": "om_token_a2ec19c757f9112b75af9489bde2722f27cad1f612261057afa7fee984703aef", # 1lollyhere
+    "39856": "om_token_e64d4bf60b9ba22dae18e46f6873b9567f5e4033be8493958239c0e83b3ee7ec", # lollysunnery
+    "30201": "om_token_b2991eded93e1dbb991f2b2d10fab0aa5fbf163374a8c81cb5ca426ad8ed543d", # evablush
+    "4967":  "om_token_4ece7637ad9aef7848c5850695628bfff22951ffc1fd36b7970109c172bc2a1a"  # angelkisss
 }
 
-def get_model_keys():
+BASE_URL = "https://omapi.onlymonster.ai/api/v0"
+
+def get_tokens():
     json_keys = os.environ.get("CRM_API_KEYS", "")
     if json_keys:
         try:
@@ -22,51 +27,78 @@ def get_model_keys():
         except Exception:
             pass
 
-    keys = {}
+    tokens = {}
     for acc_id, default_token in MODEL_TOKENS.items():
         env_token = os.environ.get(f"CRM_API_KEY_{acc_id}", "") or os.environ.get("CRM_API_KEY", "")
-        keys[acc_id] = env_token if env_token else default_token
-    return keys
+        tokens[acc_id] = env_token if env_token else default_token
+    return tokens
 
-def fetch_onlymonster_account_stats(acc_id, token):
-    base_url = os.environ.get("CRM_API_URL", "https://omapi.onlymonster.ai/api/v0")
-    endpoints = [
-        f"{base_url}/accounts",
-        f"{base_url}/analytics/overview",
-        f"{base_url}/stats"
-    ]
+def api_get(path, token, params=None):
+    url = f"{BASE_URL}{path}"
+    if params:
+        query_str = urllib.parse.urlencode(params)
+        url += f"?{query_str}"
 
-    for url in endpoints:
-        headers = {
-            "Authorization": f"Bearer {token}",
-            "X-API-Key": token,
-            "x-om-token": token,
-            "Content-Type": "application/json",
-            "User-Agent": "Mozilla/5.0"
+    headers = {
+        "x-om-auth-token": token,
+        "Accept": "*/*",
+        "User-Agent": "ROP-Analytics/1.0"
+    }
+
+    try:
+        req = urllib.request.Request(url, headers=headers)
+        with urllib.request.urlopen(req) as resp:
+            return json.loads(resp.read().decode('utf-8'))
+    except Exception as e:
+        print(f"⚠️ OnlyMonster API GET {path} ({e})")
+        return None
+
+def fetch_all_onlymonster_data():
+    tokens = get_tokens()
+    print(f"🔑 Querying OnlyMonster API for {len(tokens)} model accounts...")
+
+    all_data = {}
+
+    for acc_id, token in tokens.items():
+        acc_resp = api_get("/accounts", token)
+        if not acc_resp or "accounts" not in acc_resp or not acc_resp["accounts"]:
+            continue
+
+        acc_info = acc_resp["accounts"][0]
+        platform_id = acc_info.get("platform_account_id")
+        username = acc_info.get("username")
+        name = acc_info.get("name")
+
+        now = datetime.now()
+        start_date = f"{now.year}-{now.month:02d}-01T00:00:00.000Z"
+        end_date = f"{now.year}-{now.month:02d}-31T23:59:59.999Z"
+
+        # Fetch Transactions
+        tx_resp = api_get(f"/platforms/onlyfans/accounts/{platform_id}/transactions", token, {
+            "start": start_date,
+            "end": end_date,
+            "limit": 1000
+        })
+
+        # Fetch Chatter User Metrics
+        user_metrics_resp = api_get("/users/metrics", token, {
+            "from": start_date,
+            "to": end_date,
+            "limit": 100
+        })
+
+        all_data[acc_id] = {
+            "name": name,
+            "username": username,
+            "platform_id": platform_id,
+            "transactions": tx_resp.get("items", []) if tx_resp else [],
+            "user_metrics": user_metrics_resp.get("items", []) if user_metrics_resp else []
         }
+        print(f"✅ Successfully fetched OnlyMonster data for {name} (@{username})")
 
-        try:
-            req = urllib.request.Request(url, headers=headers)
-            with urllib.request.urlopen(req) as resp:
-                data = json.loads(resp.read().decode('utf-8'))
-                print(f"✅ OnlyMonster stats fetched for model {acc_id} from {url}")
-                return data
-        except Exception as e:
-            pass
-
-    return None
+    return all_data
 
 if __name__ == "__main__":
-    keys = get_model_keys()
-    print(f"🔑 Active OnlyMonster Tokens for accounts: {list(keys.keys())}")
-
-    results = {}
-    for acc_id, token in keys.items():
-        stats = fetch_onlymonster_account_stats(acc_id, token)
-        if stats:
-            results[acc_id] = stats
-
-    if results:
-        print(f"✅ Synced live stats for {len(results)} OnlyMonster accounts.")
-    else:
-        print("ℹ️ Preserving current verified August 1-7 dashboard data.")
+    data = fetch_all_onlymonster_data()
+    if data:
+        print(f"🎉 Fully synced OnlyMonster CRM stats for {len(data)} models!")
