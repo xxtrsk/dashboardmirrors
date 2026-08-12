@@ -209,55 +209,57 @@ function renderMainDashboard() {
   }
 
   // Model Summary Table
-  const modelTableBody = document.getElementById('model-summary-table-body');
-  modelTableBody.innerHTML = models.map(m => `
-    <tr>
-      <td style="font-weight: 700; color: var(--text-main);">${m.name}</td>
-      <td class="num-cell">${formatCurrency(m.plan)}</td>
-      <td class="num-cell highlight-val">${formatCurrency(m.totalRevenue)}</td>
-      <td class="num-cell" style="color: var(--primary);">${formatCurrency(m.runRate)}</td>
-      <td class="num-cell">
-        <span class="badge ${m.goalProgressPct >= 30 ? 'badge-on-schedule' : (m.goalProgressPct >= 20 ? 'badge-amber' : 'badge-behind')}">
-          ${formatPercent(m.goalProgressPct)}
-        </span>
-      </td>
-      <td class="num-cell" style="color: var(--accent-amber);">${formatCurrency(m.totalBonusPool)}</td>
-      <td style="font-size: 13px; color: var(--text-muted);">${m.assignedChatters}</td>
-    </tr>
-  `).join('');
-
-  // Chatter KPI Settings Table
-  const kpiTableBody = document.getElementById('kpi-settings-table-body');
-  kpiTableBody.innerHTML = state.kpiSettings.map(k => `
-    <tr>
-      <td style="font-weight: 700;">${k.chatter}</td>
-      <td><span class="badge badge-purple">${k.model}</span></td>
-      <td class="num-cell">${formatPercent(k.targetOpenRate)}</td>
-      <td class="num-cell">$${k.targetAvgPrice}</td>
-      <td class="num-cell">${k.targetTRT} sec</td>
-      <td class="num-cell highlight-val">${formatCurrency(k.targetPlan)}</td>
-    </tr>
-  `).join('');
+  const modelTableBody = document.getElementById('tbody-models-summary') || document.getElementById('model-summary-table-body');
+  if (modelTableBody) {
+    modelTableBody.innerHTML = models.map(m => `
+      <tr>
+        <td style="font-weight: 700; color: var(--text-main);">${m.name}</td>
+        <td style="font-family: var(--font-mono); font-weight: 600;">${formatCurrency(m.plan)}</td>
+        <td style="font-family: var(--font-mono); font-weight: 700; color: var(--accent-green);">${formatCurrency(m.totalRevenue)}</td>
+        <td style="font-family: var(--font-mono); font-weight: 600; color: var(--primary);">${formatCurrency(m.runRate)}</td>
+        <td>
+          <span class="badge-status ${m.goalProgressPct >= 35 ? 'badge-green' : 'badge-amber'}">
+            ${formatPercent(m.goalProgressPct)}
+          </span>
+        </td>
+        <td style="font-family: var(--font-mono); color: ${m.goalStatusPct >= 0 ? 'var(--accent-green)' : 'var(--accent-rose)'};">
+          ${m.goalStatusPct >= 0 ? '+' : ''}${m.goalStatusPct.toFixed(1)}%
+        </td>
+        <td>${m.newFans}</td>
+        <td>${m.spenders}</td>
+        <td>${formatPercent(m.conversion)}</td>
+        <td>$${m.apv.toFixed(2)}</td>
+        <td style="font-size: 13px; color: var(--text-muted);">${m.assignedChatters}</td>
+      </tr>
+    `).join('');
+  }
 
   // Chatter Performance Table
-  const chatterTableBody = document.getElementById('chatter-perf-table-body');
-  chatterTableBody.innerHTML = chatters.map(c => `
-    <tr>
-      <td style="font-weight: 700; color: var(--text-main);">${c.chatter}</td>
-      <td><span class="badge badge-purple">${c.model}</span></td>
-      <td class="num-cell">${formatCurrency(c.targetPlan)}</td>
-      <td class="num-cell highlight-val">${formatCurrency(c.factSales)}</td>
-      <td>
-        <span class="badge ${c.completionPct >= 30 ? 'badge-on-schedule' : 'badge-behind'}">
-          ${formatPercent(c.completionPct)} (7 дн)
-        </span>
-      </td>
-      <td class="num-cell">${formatPercent(c.openRate)} (Цель ${formatPercent(c.targetOpenRate)})</td>
-      <td class="num-cell">$${c.avgPriceSold.toFixed(2)} (Цель $${c.targetAvgPrice})</td>
-      <td class="num-cell">${Math.round(c.trt)}s (Цель ${c.targetTRT}s)</td>
-      <td class="num-cell" style="color: var(--primary); font-weight: 600;">${formatCurrency(c.forecast)}</td>
-    </tr>
-  `).join('');
+  const chatterTableBody = document.getElementById('tbody-chatter-summary') || document.getElementById('chatter-perf-table-body');
+  if (chatterTableBody) {
+    chatterTableBody.innerHTML = chatters.map(c => `
+      <tr>
+        <td style="font-weight: 700; color: var(--text-main);">${c.chatter}</td>
+        <td><span style="background: rgba(192, 132, 252, 0.15); border: 1px solid rgba(192, 132, 252, 0.3); color: var(--accent-purple); padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 600;">${c.model}</span></td>
+        <td style="font-family: var(--font-mono);">${formatCurrency(c.targetPlan)}</td>
+        <td style="font-family: var(--font-mono); font-weight: 700; color: var(--accent-green);">${formatCurrency(c.factSales)}</td>
+        <td>
+          <span class="badge-status ${c.completionPct >= 35 ? 'badge-green' : 'badge-amber'}">
+            ${formatPercent(c.completionPct)}
+          </span>
+        </td>
+        <td style="font-family: var(--font-mono); color: var(--primary); font-weight: 600;">${formatCurrency(c.forecast)}</td>
+        <td style="font-family: var(--font-mono);">${Math.round(c.trt)}s (Цель ${c.targetTRT}s)</td>
+        <td>${formatPercent(c.openRate)} (Цель ${formatPercent(c.targetOpenRate)})</td>
+        <td>$${c.avgPriceSold.toFixed(2)} (Цель $${c.targetAvgPrice})</td>
+        <td>
+          <span class="badge-status ${c.isGoalAchieved ? 'badge-green' : 'badge-amber'}">
+            ${c.isGoalAchieved ? '🟢 Выполнен' : '🟡 В процессе'}
+          </span>
+        </td>
+      </tr>
+    `).join('');
+  }
 }
 
 // Render Chatter Weekly Dynamics
