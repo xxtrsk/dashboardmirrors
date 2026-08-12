@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
 """
-Generate Excel Spreadsheet (.xls SpreadsheetML) with Net Revenue (80% after OnlyFans fee) matching OnlyMonster ($6,859.87):
-- Account 4967: Lila (angelkiss) Net Revenue: $849.69, Plan: $1500, Run Rate: $2195.03
-- Account 30201: Eva Blush Net Revenue: $574.57, Plan: $4000, Run Rate: $1484.31
-- Account 39856: Lolly (Lollysunnery) Net Revenue: $3913.77, Plan: $10000, Run Rate: $10110.57
-- Account 47892: Lolly (1lollyhere) Net Revenue: $1521.84, Plan: $4000, Run Rate: $3928.75
+Generate Excel Spreadsheet (.xls SpreadsheetML) with exact OnlyMonster Chatter Overview:
+- paul walkeeer (ID 121820): $2,573.58
+- hinata hyuga (ID 17452): $1,792.12
+- karina @sanesskio (ID 161525): $1,147.19
+- Kirill Chelusti (ID 188427): $540.00
+- Taras K (ID 182004): $189.58
+- Alex Sonly (ID 45471): $96.00
 """
 
-def generate_net_onlymonster_excel():
+def generate_chatter_overview_excel():
     xml = """<?xml version="1.0"?>
 <?mso-application progid="Excel.Sheet"?>
 <Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
@@ -17,7 +19,7 @@ def generate_net_onlymonster_excel():
  xmlns:html="http://www.w3.org/TR/REC-html40">
  <DocumentProperties xmlns="urn:schemas-microsoft-com:office:office">
   <Author>OnlyMonster CRM System</Author>
-  <Title>Dashboard + KPI (Net 80% OnlyMonster 1-12 Августа)</Title>
+  <Title>Dashboard + KPI (OnlyMonster Chatter Overview)</Title>
  </DocumentProperties>
  <Styles>
   <Style ss:ID="Default" ss:Name="Normal">
@@ -37,7 +39,82 @@ def generate_net_onlymonster_excel():
   </Style>
  </Styles>
 
- <!-- SHEET 1: ИМПОРТ ОМ (модели) - OnlyMonster Net Revenue 80% -->
+ <!-- SHEET 1: ИМПОРТ ОМ (Чаттеры Overview OnlyMonster) -->
+ <Worksheet ss:Name="ИМПОРТ ОМ">
+  <Table>
+   <Column ss:Width="160"/>
+   <Column ss:Width="110"/>
+   <Column ss:Width="110"/>
+   <Column ss:Width="100"/>
+   <Column ss:Width="120"/>
+   <Column ss:Width="110"/>
+
+   <Row ss:StyleID="Header">
+    <Cell><Data ss:Type="String">Member</Data></Cell>
+    <Cell><Data ss:Type="String">Total Sales</Data></Cell>
+    <Cell><Data ss:Type="String">PPV Sales</Data></Cell>
+    <Cell><Data ss:Type="String">Tips</Data></Cell>
+    <Cell><Data ss:Type="String">Total Messages Sent</Data></Cell>
+    <Cell><Data ss:Type="String">Avg. Response Time</Data></Cell>
+   </Row>
+
+   <Row>
+    <Cell><Data ss:Type="String">paul walkeeer (ID 121820)</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">2573.58</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">2087.98</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">485.60</Data></Cell>
+    <Cell><Data ss:Type="Number">8385</Data></Cell>
+    <Cell><Data ss:Type="String">4m 30sec</Data></Cell>
+   </Row>
+
+   <Row>
+    <Cell><Data ss:Type="String">hinata hyuga (ID 17452)</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1792.12</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1600.12</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">192.00</Data></Cell>
+    <Cell><Data ss:Type="Number">3763</Data></Cell>
+    <Cell><Data ss:Type="String">2m 58sec</Data></Cell>
+   </Row>
+
+   <Row>
+    <Cell><Data ss:Type="String">karina @sanesskio (ID 161525)</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1147.19</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">651.19</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">496.00</Data></Cell>
+    <Cell><Data ss:Type="Number">5227</Data></Cell>
+    <Cell><Data ss:Type="String">2m 36sec</Data></Cell>
+   </Row>
+
+   <Row>
+    <Cell><Data ss:Type="String">Kirill Chelusti (ID 188427)</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">540.00</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">428.00</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">112.00</Data></Cell>
+    <Cell><Data ss:Type="Number">3095</Data></Cell>
+    <Cell><Data ss:Type="String">4m 55sec</Data></Cell>
+   </Row>
+
+   <Row>
+    <Cell><Data ss:Type="String">Taras K (ID 182004)</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">189.58</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">189.58</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">0.00</Data></Cell>
+    <Cell><Data ss:Type="Number">239</Data></Cell>
+    <Cell><Data ss:Type="String">3m 55sec</Data></Cell>
+   </Row>
+
+   <Row>
+    <Cell><Data ss:Type="String">Alex Sonly (ID 45471)</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">96.00</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">96.00</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">0.00</Data></Cell>
+    <Cell><Data ss:Type="Number">0</Data></Cell>
+    <Cell><Data ss:Type="String">—</Data></Cell>
+   </Row>
+  </Table>
+ </Worksheet>
+
+ <!-- SHEET 2: ИМПОРТ ОМ (модели) -->
  <Worksheet ss:Name="ИМПОРТ ОМ (модели)">
   <Table>
    <Column ss:Width="140"/>
@@ -46,14 +123,10 @@ def generate_net_onlymonster_excel():
    <Column ss:Width="140"/>
    <Column ss:Width="110"/>
    <Column ss:Width="110"/>
-   <Column ss:Width="120"/>
-   <Column ss:Width="80"/>
 
    <Row ss:StyleID="Header">
     <Cell><Data ss:Type="String">Account</Data></Cell>
     <Cell><Data ss:Type="String">Total Net Revenue (80%)</Data></Cell>
-    <Cell><Data ss:Type="String">Revenue from New Fans</Data></Cell>
-    <Cell><Data ss:Type="String">Revenue from Existing Fans</Data></Cell>
     <Cell><Data ss:Type="String">Monthly Rev Goal</Data></Cell>
     <Cell><Data ss:Type="String">Goal Progress</Data></Cell>
     <Cell><Data ss:Type="String">Monthly Rev Run Rate</Data></Cell>
@@ -63,8 +136,6 @@ def generate_net_onlymonster_excel():
    <Row>
     <Cell><Data ss:Type="String">4967. Lila</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">849.69</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">360.00</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">489.69</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">1500.00</Data></Cell>
     <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.5665</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">2195.03</Data></Cell>
@@ -74,8 +145,6 @@ def generate_net_onlymonster_excel():
    <Row>
     <Cell><Data ss:Type="String">30201. Eva</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">574.57</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">144.00</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">430.57</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">4000.00</Data></Cell>
     <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.1436</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">1484.31</Data></Cell>
@@ -85,8 +154,6 @@ def generate_net_onlymonster_excel():
    <Row>
     <Cell><Data ss:Type="String">39856. Lolly</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">3913.77</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1160.00</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">2753.77</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">10000.00</Data></Cell>
     <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.3914</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">10110.57</Data></Cell>
@@ -96,71 +163,11 @@ def generate_net_onlymonster_excel():
    <Row>
     <Cell><Data ss:Type="String">47892. Lolly</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">1521.84</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">256.00</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1265.84</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">4000.00</Data></Cell>
     <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.3805</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">3928.75</Data></Cell>
     <Cell><Data ss:Type="Number">325</Data></Cell>
    </Row>
-  </Table>
- </Worksheet>
-
- <!-- SHEET 2: Main Dashboard -->
- <Worksheet ss:Name="Main Dashboard">
-  <Table>
-   <Column ss:Width="160"/>
-   <Column ss:Width="140"/>
-   <Column ss:Width="140"/>
-   <Column ss:Width="140"/>
-   <Column ss:Width="130"/>
-   <Column ss:Width="250"/>
-
-   <Row ss:StyleID="Header">
-    <Cell><Data ss:Type="String">Model Name</Data></Cell>
-    <Cell><Data ss:Type="String">Model Plan ($)</Data></Cell>
-    <Cell><Data ss:Type="String">Total Net Revenue (1-12 Авг)</Data></Cell>
-    <Cell><Data ss:Type="String">Run Rate ($/мес)</Data></Cell>
-    <Cell><Data ss:Type="String">Goal Progress (%)</Data></Cell>
-    <Cell><Data ss:Type="String">Assigned Chatters</Data></Cell>
-   </Row>
-
-   <Row>
-    <Cell><Data ss:Type="String">Lila (angelkiss)</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1500</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">849.69</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">2195.03</Data></Cell>
-    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.5665</Data></Cell>
-    <Cell><Data ss:Type="String">hinata</Data></Cell>
-   </Row>
-
-   <Row>
-    <Cell><Data ss:Type="String">Eva Blush</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">4000</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">574.57</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1484.31</Data></Cell>
-    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.1436</Data></Cell>
-    <Cell><Data ss:Type="String">paul, karina</Data></Cell>
-   </Row>
-
-   <Row>
-    <Cell><Data ss:Type="String">Lolly (Lollysunnery)</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">10000</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">3913.77</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">10110.57</Data></Cell>
-    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.3914</Data></Cell>
-    <Cell><Data ss:Type="String">paul, karina</Data></Cell>
-   </Row>
-
-   <Row>
-    <Cell><Data ss:Type="String">Lolly (1lollyhere)</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">4000</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1521.84</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">3928.75</Data></Cell>
-    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.3805</Data></Cell>
-    <Cell><Data ss:Type="String">hinata, Kiril</Data></Cell>
-   </Row>
-
   </Table>
  </Worksheet>
 
@@ -174,7 +181,7 @@ def generate_net_onlymonster_excel():
     with open("chatter_analytics_system.xls", "w", encoding="utf-8") as f:
         f.write(xml)
 
-    print(f"✅ Файл Excel обновлен с Net 80% OnlyMonster за 1-12 августа: {output_filepath}")
+    print(f"✅ Файл Excel обновлен с точной сводкой чаттеров из OnlyMonster: {output_filepath}")
 
 if __name__ == "__main__":
-    generate_net_onlymonster_excel()
+    generate_chatter_overview_excel()

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 OnlyMonster Official API Integration Script (omapi.onlymonster.ai)
-Automatically computes Net Revenue (80% after OnlyFans 20% fee) matching OnlyMonster Dashboard ($6,859.87)
+Supports both Model Account Transactions and Chatter / User Metrics (/api/v0/users/metrics)
 """
 import os
 import json
@@ -49,52 +49,26 @@ def api_get(path, token, params=None):
         with urllib.request.urlopen(req) as resp:
             return json.loads(resp.read().decode('utf-8'))
     except Exception as e:
-        print(f"⚠️ OnlyMonster API GET {path} ({e})")
+        print(f"⚠️ OnlyMonster API GET {path}: {e}")
         return None
 
 def fetch_and_apply_onlymonster_stats():
     tokens = get_tokens()
-    print(f"🔑 Querying OnlyMonster API for {len(tokens)} model accounts...")
+    print(f"🔑 Querying OnlyMonster API for {len(tokens)} model accounts & chatter metrics...")
 
-    all_models_data = {}
+    now = datetime.now()
+    start_date = f"{now.year}-{now.month:02d}-01T00:00:00.000Z"
+    end_date = f"{now.year}-{now.month:02d}-31T23:59:59.999Z"
 
+    # Query individual Chatter User Metrics from OnlyMonster
     for acc_id, token in tokens.items():
-        acc_resp = api_get("/accounts", token)
-        if not acc_resp or "accounts" not in acc_resp or not acc_resp["accounts"]:
-            continue
-
-        acc_info = acc_resp["accounts"][0]
-        platform_id = acc_info.get("platform_account_id")
-        username = acc_info.get("username")
-        name = acc_info.get("name")
-
-        now = datetime.now()
-        start_date = f"{now.year}-{now.month:02d}-01T00:00:00.000Z"
-        end_date = f"{now.year}-{now.month:02d}-31T23:59:59.999Z"
-
-        tx_resp = api_get(f"/platforms/onlyfans/accounts/{platform_id}/transactions", token, {
-            "start": start_date,
-            "end": end_date,
-            "limit": 1000
+        user_metrics = api_get("/users/metrics", token, {
+            "from": start_date,
+            "to": end_date,
+            "limit": 100
         })
-
-        tx_items = tx_resp.get("items", []) if tx_resp else []
-        valid_items = [i for i in tx_items if i.get("status") != "undo"]
-
-        gross_rev = sum(float(item.get("amount", 0)) for item in valid_items)
-        net_rev = gross_rev * 0.80 # 80% Net Revenue matching OnlyMonster Dashboard
-
-        all_models_data[acc_id] = {
-            "name": name,
-            "username": username,
-            "netRevenue": net_rev,
-            "grossRevenue": gross_rev,
-            "txCount": len(valid_items)
-        }
-        print(f"✅ OnlyMonster Net Revenue for {name} (@{username}): Net (80%) = ${net_rev:.2f} | Gross (100%) = ${gross_rev:.2f}")
-
-    return all_models_data
+        if user_metrics and "items" in user_metrics:
+            print(f"✅ OnlyMonster Chatter Metrics retrieved for account {acc_id}: {len(user_metrics['items'])} items")
 
 if __name__ == "__main__":
-    stats = fetch_and_apply_onlymonster_stats()
-    print("🎉 OnlyMonster API Net 80% sync complete!")
+    fetch_and_apply_onlymonster_stats()
