@@ -16,14 +16,13 @@ const state = {
 // Date calculations per Month
 function getDaysInfo(monthKey) {
   const monthObj = state.months.find(m => m.key === monthKey) || state.months[0];
-  const now = new Date();
   
-  let daysPassed = monthObj.daysPassed || 7;
+  let daysPassed = monthObj.daysPassed || 12;
   let daysInMonth = monthObj.totalDays || 31;
   let reportDateStr = monthObj.label;
 
   if (monthObj.isCurrent) {
-    reportDateStr = `1–${daysPassed} Августа 2026 (Факт 7 дней)`;
+    reportDateStr = `1–${daysPassed} Августа 2026 (Факт ${daysPassed} дн.)`;
   }
 
   return { daysPassed, daysInMonth, reportDateStr, isCurrent: monthObj.isCurrent };
@@ -139,8 +138,17 @@ function renderHeaderInfo() {
   }
 
   document.getElementById('header-report-date').textContent = reportDateStr;
-  document.getElementById('header-days-passed').textContent = `${daysPassed} дн. (1–7 Авг)`;
+  document.getElementById('header-days-passed').textContent = `${daysPassed} дн. (1–${daysPassed} Авг)`;
   document.getElementById('header-days-in-month').textContent = `${daysInMonth} дн.`;
+
+  const cardTitleEl = document.getElementById('dash-card-title-revenue');
+  if (cardTitleEl) {
+    cardTitleEl.textContent = `Общая Выручка (1–${daysPassed} Августа)`;
+  }
+  const cardSubtextEl = document.getElementById('dash-card-subtext-revenue');
+  if (cardSubtextEl) {
+    cardSubtextEl.textContent = `Фактическая сумма за ${daysPassed} дн. по всем моделям`;
+  }
 }
 
 // Render Main Dashboard Tab
