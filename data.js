@@ -1,4 +1,4 @@
-// Seed dataset updated with exact 100% matching values from user's latest Week 2 (8-15 Aug) Lollysunnery export screenshot
+// Seed dataset updated with exact day-by-day ZP sums for Vlada (@hinatada) for W1 (1-7 Aug) and W2 (8-15 Aug)
 
 export const availableMonths = [
   { key: '2026-08', label: 'Август 2026 (1–15 Авг)', isCurrent: true, totalDays: 31, daysPassed: 15 },
@@ -70,15 +70,15 @@ export const initialKPISettings = [
 ];
 
 export const initialChatterWeekly = [
-  // WEEK 1 (1-7 Авг)
+  // WEEK 1 (1-7 Авг) - Exact ZP Sums for Vlada (@hinatada)
   { 
     monthKey: '2026-08', 
     week: 'Week 1', 
     chatter: 'hinata hyuga', 
     accountId: '47892', 
-    totalSales: 302.52, 
-    ppvSales: 250.00, 
-    tips: 52.52, 
+    totalSales: 660.50, // Exact 1-7 Aug ZP sum for 1lollyhere
+    ppvSales: 560.00, 
+    tips: 100.50, 
     messages: 1310, 
     freeMedia: 55, 
     ppvSent: 44, 
@@ -86,7 +86,7 @@ export const initialChatterWeekly = [
     chats: 135, 
     words: 18100, 
     trt: 178.00, 
-    avgPPV: 23.54, 
+    avgPPV: 24.35, 
     openRate: 52.27, 
     avgPriceSent: 22.50, 
     avgPriceSold: 26.20 
@@ -96,9 +96,9 @@ export const initialChatterWeekly = [
     week: 'Week 1', 
     chatter: 'hinata hyuga', 
     accountId: '4967', 
-    totalSales: 482.55, 
-    ppvSales: 450.00, 
-    tips: 32.55, 
+    totalSales: 535.65, // Exact 1-7 Aug ZP sum for Angelkiss
+    ppvSales: 495.00, 
+    tips: 40.65, 
     messages: 1140, 
     freeMedia: 35, 
     ppvSent: 34, 
@@ -106,7 +106,7 @@ export const initialChatterWeekly = [
     chats: 110, 
     words: 13800, 
     trt: 178.00, 
-    avgPPV: 28.72, 
+    avgPPV: 26.05, 
     openRate: 55.88, 
     avgPriceSent: 23.33, 
     avgPriceSold: 24.77 
@@ -212,15 +212,15 @@ export const initialChatterWeekly = [
     avgPriceSold: 36.20 
   },
 
-  // WEEK 2 (8-15 Авг)
+  // WEEK 2 (8-15 Авг) - Exact ZP Sums for Vlada (@hinatada)
   { 
     monthKey: '2026-08', 
     week: 'Week 2', 
     chatter: 'hinata hyuga', 
     accountId: '47892', 
-    totalSales: 1094.54, 
-    ppvSales: 900.00, 
-    tips: 194.54, 
+    totalSales: 578.27, // Exact 8-15 Aug ZP sum for 1lollyhere
+    ppvSales: 480.00, 
+    tips: 98.27, 
     messages: 1415, 
     freeMedia: 62, 
     ppvSent: 51, 
@@ -228,7 +228,7 @@ export const initialChatterWeekly = [
     chats: 152, 
     words: 19600, 
     trt: 178.00, 
-    avgPPV: 19.28, 
+    avgPPV: 17.78, 
     openRate: 52.94, 
     avgPriceSent: 22.50, 
     avgPriceSold: 26.20 
@@ -238,9 +238,9 @@ export const initialChatterWeekly = [
     week: 'Week 2', 
     chatter: 'hinata hyuga', 
     accountId: '4967', 
-    totalSales: 516.48, 
-    ppvSales: 477.53, 
-    tips: 38.95, 
+    totalSales: 356.11, // Exact 8-15 Aug ZP sum for Angelkiss
+    ppvSales: 320.00, 
+    tips: 36.11, 
     messages: 752, 
     freeMedia: 24, 
     ppvSent: 21, 
@@ -248,7 +248,7 @@ export const initialChatterWeekly = [
     chats: 74, 
     words: 8900, 
     trt: 178.00, 
-    avgPPV: 28.51, 
+    avgPPV: 26.67, 
     openRate: 57.14, 
     avgPriceSent: 23.33, 
     avgPriceSold: 24.77 
@@ -356,7 +356,7 @@ export const initialChatterWeekly = [
 ];
 
 export const initialModelWeekly = [
-  // WEEK 1 (1-7 Авг) - Exact OnlyMonster Screenshot Figures
+  // WEEK 1 (1-7 Авг)
   { 
     monthKey: '2026-08', 
     week: 'Week 1', 
@@ -434,7 +434,7 @@ export const initialModelWeekly = [
     arppu: 21.01 
   },
 
-  // WEEK 2 (8-15 Авг) - Exact OnlyMonster Screenshot Figures for Lollysunnery
+  // WEEK 2 (8-15 Авг)
   { 
     monthKey: '2026-08', 
     week: 'Week 2', 
@@ -478,7 +478,7 @@ export const initialModelWeekly = [
     week: 'Week 2', 
     accountId: '39856', 
     modelName: 'Lolly (Lollysunnery)', 
-    totalRevenue: 3269.59, // Exact from Week 2 screenshot
+    totalRevenue: 3269.59, 
     plan: 10000.00, 
     goalProgressPct: 55.39, 
     goalStatusPct: 7.00,
