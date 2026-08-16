@@ -50,11 +50,19 @@ function getModelSummaries() {
       mw.accountId === m.accountId && 
       (mw.monthKey === state.selectedMonthKey || !mw.monthKey)
     );
-    let factRevenue = weeklyRecords.reduce((acc, r) => acc + (r.totalRevenue || 0), 0);
-    
-    const crmRecord = weeklyRecords[0] || {};
-    const runRate = crmRecord.runRate ? crmRecord.runRate : (daysPassed > 0 ? (factRevenue / daysPassed) * daysInMonth : 0);
-    const goalProgressPct = crmRecord.goalProgressPct ? crmRecord.goalProgressPct : (m.plan > 0 ? (factRevenue / m.plan) * 100 : 0);
+
+    const factRevenue = weeklyRecords.reduce((acc, r) => acc + (r.totalRevenue || 0), 0);
+    const goalProgressPct = m.plan > 0 ? (factRevenue / m.plan) * 100 : 0;
+    const runRate = daysPassed > 0 ? (factRevenue / daysPassed) * daysInMonth : 0;
+    const goalStatusPct = goalProgressPct - ((daysPassed / daysInMonth) * 100);
+
+    // Sum aggregate CRM fields
+    const latestRec = weeklyRecords[weeklyRecords.length - 1] || {};
+    const newFans = weeklyRecords.reduce((acc, r) => acc + (r.newFans || 0), 0);
+    const spenders = weeklyRecords.reduce((acc, r) => acc + (r.spenders || 0), 0);
+    const conversion = newFans > 0 ? (spenders / newFans) * 100 : (latestRec.conversion || 0);
+    const apv = latestRec.apv || 0;
+    const arppu = latestRec.arppu || 0;
 
     const cfg = state.config.find(c => c.id === m.accountId);
     const assignedChatters = cfg && cfg.chatters.length > 0 ? cfg.chatters.join(', ') : '—';
@@ -70,12 +78,12 @@ function getModelSummaries() {
       totalRevenue: factRevenue,
       runRate,
       goalProgressPct,
-      goalStatusPct: crmRecord.goalStatusPct || (goalProgressPct - (daysPassed / daysInMonth * 100)),
-      newFans: crmRecord.newFans || 0,
-      spenders: crmRecord.spenders || 0,
-      conversion: crmRecord.conversion || 0,
-      apv: crmRecord.apv || 0,
-      arppu: crmRecord.arppu || 0,
+      goalStatusPct,
+      newFans,
+      spenders,
+      conversion,
+      apv,
+      arppu,
       assignedChatters
     };
   });
