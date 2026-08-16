@@ -7,7 +7,7 @@
  xmlns:html="http://www.w3.org/TR/REC-html40">
  <DocumentProperties xmlns="urn:schemas-microsoft-com:office:office">
   <Author>OnlyMonster Official Full Export</Author>
-  <Title>Dashboard + KPI (100% Точные Данные Lollysunnery)</Title>
+  <Title>Dashboard + KPI (100% Точные Данные Lollysunnery W2)</Title>
  </DocumentProperties>
  <Styles>
   <Style ss:ID="Default" ss:Name="Normal">
@@ -27,8 +27,8 @@
   </Style>
  </Styles>
 
- <!-- SHEET 1: Lollysunnery OnlyMonster CRM Export -->
- <Worksheet ss:Name="Lollysunnery OM Export">
+ <!-- SHEET 1: Lollysunnery OnlyMonster CRM W2 Export -->
+ <Worksheet ss:Name="Lollysunnery W2 Export">
   <Table>
    <Column ss:Width="160"/>
    <Column ss:Width="120"/>
@@ -51,10 +51,10 @@
    </Row>
 
    <Row>
-    <Cell><Data ss:Type="String">39856. Lolly (Lollysunnery)</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1978.09</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">581.08</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1397.01</Data></Cell>
+    <Cell><Data ss:Type="String">39856. Lolly (Lollysunnery W2)</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">3269.59</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">961.55</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">2308.04</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">10000.00</Data></Cell>
     <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.5539</Data></Cell>
     <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.0700</Data></Cell>

@@ -1,4 +1,4 @@
-// Seed dataset updated with exact 100% matching values from user's latest Lollysunnery export screenshot
+// Seed dataset updated with exact 100% matching values from user's latest Week 2 (8-15 Aug) Lollysunnery export screenshot
 
 export const availableMonths = [
   { key: '2026-08', label: 'Август 2026 (1–15 Авг)', isCurrent: true, totalDays: 31, daysPassed: 15 },
@@ -258,9 +258,9 @@ export const initialChatterWeekly = [
     week: 'Week 2', 
     chatter: 'paul walkeeer', 
     accountId: '39856', 
-    totalSales: 2162.20, 
-    ppvSales: 1541.74, 
-    tips: 620.46, 
+    totalSales: 1961.75, 
+    ppvSales: 1331.74, 
+    tips: 630.01, 
     messages: 3450, 
     freeMedia: 87, 
     ppvSent: 76, 
@@ -268,7 +268,7 @@ export const initialChatterWeekly = [
     chats: 254, 
     words: 46900, 
     trt: 270.00, 
-    avgPPV: 30.23, 
+    avgPPV: 26.11, 
     openRate: 67.11, 
     avgPriceSent: 24.80, 
     avgPriceSold: 28.50 
@@ -278,9 +278,9 @@ export const initialChatterWeekly = [
     week: 'Week 2', 
     chatter: 'karina @sanesskio', 
     accountId: '39856', 
-    totalSales: 1441.46, 
-    ppvSales: 1027.83, 
-    tips: 413.63, 
+    totalSales: 1307.84, 
+    ppvSales: 887.83, 
+    tips: 420.01, 
     messages: 2435, 
     freeMedia: 88, 
     ppvSent: 54, 
@@ -288,7 +288,7 @@ export const initialChatterWeekly = [
     chats: 186, 
     words: 31700, 
     trt: 156.00, 
-    avgPPV: 41.11, 
+    avgPPV: 35.51, 
     openRate: 46.30, 
     avgPriceSent: 28.50, 
     avgPriceSold: 32.10 
@@ -400,7 +400,7 @@ export const initialModelWeekly = [
     week: 'Week 1', 
     accountId: '39856', 
     modelName: 'Lolly (Lollysunnery)', 
-    totalRevenue: 1978.09, // Exact from screenshot
+    totalRevenue: 1978.09, 
     plan: 10000.00, 
     goalProgressPct: 55.39, 
     goalStatusPct: 7.00,
@@ -434,7 +434,7 @@ export const initialModelWeekly = [
     arppu: 21.01 
   },
 
-  // WEEK 2 (8-15 Авг) - Exact OnlyMonster Screenshot Figures
+  // WEEK 2 (8-15 Авг) - Exact OnlyMonster Screenshot Figures for Lollysunnery
   { 
     monthKey: '2026-08', 
     week: 'Week 2', 
@@ -478,19 +478,19 @@ export const initialModelWeekly = [
     week: 'Week 2', 
     accountId: '39856', 
     modelName: 'Lolly (Lollysunnery)', 
-    totalRevenue: 3603.66, 
+    totalRevenue: 3269.59, // Exact from Week 2 screenshot
     plan: 10000.00, 
     goalProgressPct: 55.39, 
     goalStatusPct: 7.00,
     runRate: 10731.89, 
     newFans: 314, 
-    spenders: 50, 
+    spenders: 59, 
     ppvRev: 2219.57, 
     tipsRev: 1050.02, 
     transactions: 144, 
-    apc: 2.88, 
-    apv: 25.02, 
-    arppu: 72.07 
+    apc: 2.44, 
+    apv: 22.71, 
+    arppu: 55.42 
   },
   { 
     monthKey: '2026-08', 

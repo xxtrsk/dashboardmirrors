@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Generate Excel Spreadsheet (.xls SpreadsheetML) with exact 100% matching values from full OnlyMonster export screenshots:
-- 39856. Lolly (Lollysunnery): W1 $581.08, W2 $1397.01 | Total $1978.09 | PPV $1608.49 | Tips $369.60 | APC 2.37 | APV $27.86 | ARPPU $65.94
+Generate Excel Spreadsheet (.xls SpreadsheetML) with exact 100% matching values for Week 2 (8-15 Aug) of Lollysunnery:
+- 39856. Lolly Sunnery (Week 2): Net $3,269.59 | PPV $2,219.57 | Tips $1,050.02 | Fans 314 | Spenders 59 | Txs 144 | APC 2.44 | APV $22.71 | ARPPU $55.42
 """
 
 def generate_full_om_screenshot_excel():
@@ -14,7 +14,7 @@ def generate_full_om_screenshot_excel():
  xmlns:html="http://www.w3.org/TR/REC-html40">
  <DocumentProperties xmlns="urn:schemas-microsoft-com:office:office">
   <Author>OnlyMonster Official Full Export</Author>
-  <Title>Dashboard + KPI (100% Точные Данные Lollysunnery)</Title>
+  <Title>Dashboard + KPI (100% Точные Данные Lollysunnery W2)</Title>
  </DocumentProperties>
  <Styles>
   <Style ss:ID="Default" ss:Name="Normal">
@@ -34,8 +34,8 @@ def generate_full_om_screenshot_excel():
   </Style>
  </Styles>
 
- <!-- SHEET 1: Lollysunnery OnlyMonster CRM Export -->
- <Worksheet ss:Name="Lollysunnery OM Export">
+ <!-- SHEET 1: Lollysunnery OnlyMonster CRM W2 Export -->
+ <Worksheet ss:Name="Lollysunnery W2 Export">
   <Table>
    <Column ss:Width="160"/>
    <Column ss:Width="120"/>
@@ -58,10 +58,10 @@ def generate_full_om_screenshot_excel():
    </Row>
 
    <Row>
-    <Cell><Data ss:Type="String">39856. Lolly (Lollysunnery)</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1978.09</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">581.08</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1397.01</Data></Cell>
+    <Cell><Data ss:Type="String">39856. Lolly (Lollysunnery W2)</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">3269.59</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">961.55</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">2308.04</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">10000.00</Data></Cell>
     <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.5539</Data></Cell>
     <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.0700</Data></Cell>
@@ -114,7 +114,7 @@ def generate_full_om_screenshot_excel():
     with open("chatter_analytics_system.xls", "w", encoding="utf-8") as f:
         f.write(xml)
 
-    print(f"✅ Файл Excel обновлен со 100% точными данными Lollysunnery: {output_filepath}")
+    print(f"✅ Файл Excel обновлен со 100% точными данными W2 Lollysunnery: {output_filepath}")
 
 if __name__ == "__main__":
     generate_full_om_screenshot_excel()
