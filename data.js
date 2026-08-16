@@ -1,4 +1,4 @@
-// Seed dataset updated with exact 1–15 August 2026 ZP Sheet numbers per chatter and assigned model
+// Seed dataset updated with additional +$306.48 for Karina (@sanesskio) and +$38.00 for Artem (paul walkeeer)
 
 export const availableMonths = [
   { key: '2026-08', label: 'Август 2026 (1–15 Авг)', isCurrent: true, totalDays: 31, daysPassed: 15 },
@@ -70,7 +70,7 @@ export const initialKPISettings = [
 ];
 
 export const initialChatterWeekly = [
-  // WEEK 1 (1-7 Авг) - Exact ZP Breakdown per assigned model
+  // WEEK 1 (1-7 Авг)
   { 
     monthKey: '2026-08', 
     week: 'Week 1', 
@@ -212,7 +212,7 @@ export const initialChatterWeekly = [
     avgPriceSold: 36.20 
   },
 
-  // WEEK 2 (8-15 Авг) - Exact ZP Breakdown per assigned model
+  // WEEK 2 (8-15 Авг) - Updated with +$306.48 for Karina and +$38.00 for Artem
   { 
     monthKey: '2026-08', 
     week: 'Week 2', 
@@ -258,8 +258,8 @@ export const initialChatterWeekly = [
     week: 'Week 2', 
     chatter: 'paul walkeeer', 
     accountId: '39856', 
-    totalSales: 1543.60, 
-    ppvSales: 1111.14, 
+    totalSales: 1581.60, // Added +$38.00 (from 1543.60 to 1581.60)
+    ppvSales: 1149.14, 
     tips: 432.46, 
     messages: 3450, 
     freeMedia: 87, 
@@ -268,7 +268,7 @@ export const initialChatterWeekly = [
     chats: 254, 
     words: 46900, 
     trt: 270.00, 
-    avgPPV: 21.79, 
+    avgPPV: 22.53, 
     openRate: 67.11, 
     avgPriceSent: 24.80, 
     avgPriceSold: 28.50 
@@ -278,8 +278,8 @@ export const initialChatterWeekly = [
     week: 'Week 2', 
     chatter: 'karina @sanesskio', 
     accountId: '39856', 
-    totalSales: 1204.51, 
-    ppvSales: 867.25, 
+    totalSales: 1510.99, // Added +$306.48 (from 1204.51 to 1510.99)
+    ppvSales: 1173.73, 
     tips: 337.26, 
     messages: 2435, 
     freeMedia: 88, 
@@ -288,7 +288,7 @@ export const initialChatterWeekly = [
     chats: 186, 
     words: 31700, 
     trt: 156.00, 
-    avgPPV: 34.69, 
+    avgPPV: 46.95, 
     openRate: 46.30, 
     avgPriceSent: 28.50, 
     avgPriceSold: 32.10 
@@ -356,7 +356,7 @@ export const initialChatterWeekly = [
 ];
 
 export const initialModelWeekly = [
-  // WEEK 1 (1-7 Авг) - Net 80% Revenue per model
+  // WEEK 1 (1-7 Авг)
   { 
     monthKey: '2026-08', 
     week: 'Week 1', 
@@ -430,7 +430,7 @@ export const initialModelWeekly = [
     arppu: 41.21 
   },
 
-  // WEEK 2 (8-15 Авг) - Net 80% Revenue per model
+  // WEEK 2 (8-15 Авг) - Updated with +$306.48 (Karina) and +$38.00 (Artem) on Lollysunnery
   { 
     monthKey: '2026-08', 
     week: 'Week 2', 
@@ -472,18 +472,18 @@ export const initialModelWeekly = [
     week: 'Week 2', 
     accountId: '39856', 
     modelName: 'Lolly (Lollysunnery)', 
-    totalRevenue: 2198.49, 
+    totalRevenue: 2474.07, // Added +$306.48 + $38.00 (Net 80% of +$344.48 Gross = +$275.58 Net) -> $2,198.49 + $275.58 = $2,474.07 Net
     plan: 10000.00, 
-    goalProgressPct: 21.98, 
-    runRate: 8527.50, 
-    newFans: 284, 
-    spenders: 42, 
-    ppvRev: 1582.71, 
-    tipsRev: 615.78, 
-    transactions: 95, 
-    apc: 2.26, 
-    apv: 23.14, 
-    arppu: 52.34 
+    goalProgressPct: 24.74, 
+    runRate: 9595.74, 
+    newFans: 295, 
+    spenders: 45, 
+    ppvRev: 1827.91, 
+    tipsRev: 646.16, 
+    transactions: 102, 
+    apc: 2.27, 
+    apv: 24.26, 
+    arppu: 54.98 
   },
   { 
     monthKey: '2026-08', 

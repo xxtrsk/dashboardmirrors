@@ -46,10 +46,10 @@
 
    <Row>
     <Cell><Data ss:Type="String">Артем (paul walkeeer)</Data></Cell>
-    <Cell><Data ss:Type="String">Lollysunnery</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">2914.47</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">2331.58</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">582.89</Data></Cell>
+    <Cell><Data ss:Type="String">Lollysunnery (+ $38.00)</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">2952.47</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">2361.98</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">590.49</Data></Cell>
    </Row>
 
    <Row>
@@ -78,10 +78,10 @@
 
    <Row>
     <Cell><Data ss:Type="String">Карина (@sanesskio)</Data></Cell>
-    <Cell><Data ss:Type="String">Lollysunnery</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1578.84</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1263.07</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">315.77</Data></Cell>
+    <Cell><Data ss:Type="String">Lollysunnery (+ $306.48)</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1885.32</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1508.26</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">377.06</Data></Cell>
    </Row>
 
    <Row>
@@ -113,7 +113,7 @@
    <Column ss:Width="140"/>
 
    <Row ss:StyleID="Header">
-    <Cell><Data ss:Type="String">Анком Модель</Data></Cell>
+    <Cell><Data ss:Type="String">Анкета Модель</Data></Cell>
     <Cell><Data ss:Type="String">Gross Rev (1-15 Авг)</Data></Cell>
     <Cell><Data ss:Type="String">Net Rev 80% (1-15 Авг)</Data></Cell>
     <Cell><Data ss:Type="String">План на Месяц ($)</Data></Cell>
@@ -122,10 +122,10 @@
 
    <Row>
     <Cell><Data ss:Type="String">Lolly (Lollysunnery)</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">4493.31</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">3594.65</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">4837.79</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">3870.23</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">10000.00</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">7428.94</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">7998.48</Data></Cell>
    </Row>
 
    <Row>

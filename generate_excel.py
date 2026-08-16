@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-Generate Excel Spreadsheet (.xls SpreadsheetML) with exact 1-15 August ZP Sheet dataset:
-- Артем (paul walkeeer): Lollysunnery $2,914.47, Eva Blush $637.96
+Generate Excel Spreadsheet (.xls SpreadsheetML) with updated August 1-15 ZP Sheet dataset:
+- Артем (paul walkeeer): Lollysunnery $2,952.47 (incl +$38), Eva Blush $637.96
+- Карина (karina @sanesskio): Lollysunnery $1,885.32 (incl +$306.48), Eva Blush $189.71
 - Влада (hinata hyuga): 1lollyhere $1,238.77, Angelkiss $891.76
-- Карина (karina @sanesskio): Lollysunnery $1,578.84, Eva Blush $189.71
 - Кирилл (Kirill Chelusti): 1lollyhere $174.79
 """
 
@@ -56,10 +56,10 @@ def generate_zp_1_15_august_excel():
 
    <Row>
     <Cell><Data ss:Type="String">Артем (paul walkeeer)</Data></Cell>
-    <Cell><Data ss:Type="String">Lollysunnery</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">2914.47</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">2331.58</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">582.89</Data></Cell>
+    <Cell><Data ss:Type="String">Lollysunnery (+ $38.00)</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">2952.47</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">2361.98</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">590.49</Data></Cell>
    </Row>
 
    <Row>
@@ -88,10 +88,10 @@ def generate_zp_1_15_august_excel():
 
    <Row>
     <Cell><Data ss:Type="String">Карина (@sanesskio)</Data></Cell>
-    <Cell><Data ss:Type="String">Lollysunnery</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1578.84</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1263.07</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">315.77</Data></Cell>
+    <Cell><Data ss:Type="String">Lollysunnery (+ $306.48)</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1885.32</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1508.26</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">377.06</Data></Cell>
    </Row>
 
    <Row>
@@ -123,7 +123,7 @@ def generate_zp_1_15_august_excel():
    <Column ss:Width="140"/>
 
    <Row ss:StyleID="Header">
-    <Cell><Data ss:Type="String">Анком Модель</Data></Cell>
+    <Cell><Data ss:Type="String">Анкета Модель</Data></Cell>
     <Cell><Data ss:Type="String">Gross Rev (1-15 Авг)</Data></Cell>
     <Cell><Data ss:Type="String">Net Rev 80% (1-15 Авг)</Data></Cell>
     <Cell><Data ss:Type="String">План на Месяц ($)</Data></Cell>
@@ -132,10 +132,10 @@ def generate_zp_1_15_august_excel():
 
    <Row>
     <Cell><Data ss:Type="String">Lolly (Lollysunnery)</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">4493.31</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">3594.65</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">4837.79</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">3870.23</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">10000.00</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">7428.94</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">7998.48</Data></Cell>
    </Row>
 
    <Row>
@@ -175,7 +175,7 @@ def generate_zp_1_15_august_excel():
     with open("chatter_analytics_system.xls", "w", encoding="utf-8") as f:
         f.write(xml)
 
-    print(f"✅ Файл Excel обновлен с точными данными ЗП за 1-15 августа: {output_filepath}")
+    print(f"✅ Файл Excel обновлен с доплатами Карины (+$306.48) и Артема (+$38.00): {output_filepath}")
 
 if __name__ == "__main__":
     generate_zp_1_15_august_excel()
