@@ -290,9 +290,15 @@ function renderChatterWeeklyDynamics() {
   const tbody = document.getElementById('tbody-chatter-weekly') || document.getElementById('chatter-weekly-table-body');
   if (!tbody) return;
 
-  const getVal = (wName, key) => {
-    const rec = records.find(r => r.week === wName);
-    return rec ? (rec[key] || 0) : 0;
+  const getVal = (wName, key, isSum = true) => {
+    const matching = records.filter(r => r.week === wName);
+    if (matching.length === 0) return 0;
+    if (isSum) {
+      return matching.reduce((a, r) => a + (r[key] || 0), 0);
+    } else {
+      const vals = matching.map(r => r[key] || 0).filter(v => v > 0);
+      return vals.length > 0 ? vals.reduce((a, b) => a + b, 0) / vals.length : 0;
+    }
   };
 
   const getSum = (key) => records.reduce((a,r) => a + (r[key] || 0), 0);
@@ -319,10 +325,10 @@ function renderChatterWeeklyDynamics() {
   ];
 
   tbody.innerHTML = metricsConfig.map(m => {
-    const w1 = getVal('Week 1', m.key);
-    const w2 = getVal('Week 2', m.key);
-    const w3 = getVal('Week 3', m.key);
-    const w4 = getVal('Week 4', m.key);
+    const w1 = getVal('Week 1', m.key, m.isSum);
+    const w2 = getVal('Week 2', m.key, m.isSum);
+    const w3 = getVal('Week 3', m.key, m.isSum);
+    const w4 = getVal('Week 4', m.key, m.isSum);
     const totAvg = m.isSum ? getSum(m.key) : getAvg(m.key);
 
     const fmt = (v) => {
