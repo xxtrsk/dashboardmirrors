@@ -52,12 +52,13 @@ function getModelSummaries() {
     );
 
     const factRevenue = weeklyRecords.reduce((acc, r) => acc + (r.totalRevenue || 0), 0);
-    const goalProgressPct = m.plan > 0 ? (factRevenue / m.plan) * 100 : 0;
-    const runRate = daysPassed > 0 ? (factRevenue / daysPassed) * daysInMonth : 0;
-    const goalStatusPct = goalProgressPct - ((daysPassed / daysInMonth) * 100);
+    const latestRec = weeklyRecords[weeklyRecords.length - 1] || {};
+    
+    const goalProgressPct = latestRec.goalProgressPct ? latestRec.goalProgressPct : (m.plan > 0 ? (factRevenue / m.plan) * 100 : 0);
+    const runRate = latestRec.runRate ? latestRec.runRate : (daysPassed > 0 ? (factRevenue / daysPassed) * daysInMonth : 0);
+    const goalStatusPct = latestRec.goalStatusPct !== undefined ? latestRec.goalStatusPct : (goalProgressPct - ((daysPassed / daysInMonth) * 100));
 
     // Sum aggregate CRM fields
-    const latestRec = weeklyRecords[weeklyRecords.length - 1] || {};
     const newFans = weeklyRecords.reduce((acc, r) => acc + (r.newFans || 0), 0);
     const spenders = weeklyRecords.reduce((acc, r) => acc + (r.spenders || 0), 0);
     const conversion = newFans > 0 ? (spenders / newFans) * 100 : (latestRec.conversion || 0);
