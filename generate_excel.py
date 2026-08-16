@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """
-Generate Excel Spreadsheet (.xls SpreadsheetML) with exact Week 1 (1-7 Aug) and Week 2 (8-12 Aug) API breakdown:
-- Lollysunnery: Week 1 = $1,978.10, Week 2 = $1,935.66 (Total 1-12 = $3,913.77)
-- 1lollyhere: Week 1 = $992.80, Week 2 = $529.04 (Total 1-12 = $1,521.84)
-- Lila (angelkiss): Week 1 = $593.62, Week 2 = $256.07 (Total 1-12 = $849.69)
-- Eva Blush: Week 1 = $253.59, Week 2 = $320.98 (Total 1-12 = $574.57)
+Generate Excel Spreadsheet (.xls SpreadsheetML) with exact 1-15 August ZP Sheet dataset:
+- Артем (paul walkeeer): Lollysunnery $2,914.47, Eva Blush $637.96
+- Влада (hinata hyuga): 1lollyhere $1,238.77, Angelkiss $891.76
+- Карина (karina @sanesskio): Lollysunnery $1,578.84, Eva Blush $189.71
+- Кирилл (Kirill Chelusti): 1lollyhere $174.79
 """
 
-def generate_weekly_breakdown_excel():
+def generate_zp_1_15_august_excel():
     xml = """<?xml version="1.0"?>
 <?mso-application progid="Excel.Sheet"?>
 <Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
@@ -16,8 +16,8 @@ def generate_weekly_breakdown_excel():
  xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
  xmlns:html="http://www.w3.org/TR/REC-html40">
  <DocumentProperties xmlns="urn:schemas-microsoft-com:office:office">
-  <Author>OnlyMonster Direct API</Author>
-  <Title>Dashboard + KPI (Weekly Breakdown 1-7 and 8-12 Aug)</Title>
+  <Author>MIRRORS ZP System</Author>
+  <Title>Dashboard + KPI (Таблицы ЗП 1-15 Августа)</Title>
  </DocumentProperties>
  <Styles>
   <Style ss:ID="Default" ss:Name="Normal">
@@ -37,8 +37,84 @@ def generate_weekly_breakdown_excel():
   </Style>
  </Styles>
 
- <!-- SHEET 1: Недельная Динамика Моделей -->
- <Worksheet ss:Name="Недельная Динамика">
+ <!-- SHEET 1: ЗП Таблицы Чаттеров (1-15 Августа) -->
+ <Worksheet ss:Name="ЗП 1-15 Августа">
+  <Table>
+   <Column ss:Width="160"/>
+   <Column ss:Width="160"/>
+   <Column ss:Width="130"/>
+   <Column ss:Width="130"/>
+   <Column ss:Width="130"/>
+
+   <Row ss:StyleID="Header">
+    <Cell><Data ss:Type="String">Чаттер</Data></Cell>
+    <Cell><Data ss:Type="String">Привязанная Анкета</Data></Cell>
+    <Cell><Data ss:Type="String">Gross Rev (1-15 Авг)</Data></Cell>
+    <Cell><Data ss:Type="String">Net 80% (1-15 Авг)</Data></Cell>
+    <Cell><Data ss:Type="String">ЗП 20% К Выплате</Data></Cell>
+   </Row>
+
+   <Row>
+    <Cell><Data ss:Type="String">Артем (paul walkeeer)</Data></Cell>
+    <Cell><Data ss:Type="String">Lollysunnery</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">2914.47</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">2331.58</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">582.89</Data></Cell>
+   </Row>
+
+   <Row>
+    <Cell><Data ss:Type="String">Артем (paul walkeeer)</Data></Cell>
+    <Cell><Data ss:Type="String">Eva Blush</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">637.96</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">510.37</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">127.59</Data></Cell>
+   </Row>
+
+   <Row>
+    <Cell><Data ss:Type="String">Влада (hinata hyuga)</Data></Cell>
+    <Cell><Data ss:Type="String">1lollyhere</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1238.77</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">991.02</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">247.75</Data></Cell>
+   </Row>
+
+   <Row>
+    <Cell><Data ss:Type="String">Влада (hinata hyuga)</Data></Cell>
+    <Cell><Data ss:Type="String">Angelkiss</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">891.76</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">713.41</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">178.35</Data></Cell>
+   </Row>
+
+   <Row>
+    <Cell><Data ss:Type="String">Карина (@sanesskio)</Data></Cell>
+    <Cell><Data ss:Type="String">Lollysunnery</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1578.84</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1263.07</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">315.77</Data></Cell>
+   </Row>
+
+   <Row>
+    <Cell><Data ss:Type="String">Карина (@sanesskio)</Data></Cell>
+    <Cell><Data ss:Type="String">Eva Blush</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">189.71</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">151.77</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">37.94</Data></Cell>
+   </Row>
+
+   <Row>
+    <Cell><Data ss:Type="String">Кирилл (Kirill Chelusti)</Data></Cell>
+    <Cell><Data ss:Type="String">1lollyhere</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">174.79</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">139.83</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">34.96</Data></Cell>
+   </Row>
+
+  </Table>
+ </Worksheet>
+
+ <!-- SHEET 2: Свод Анкет (1-15 Августа) -->
+ <Worksheet ss:Name="Свод Анкет">
   <Table>
    <Column ss:Width="160"/>
    <Column ss:Width="130"/>
@@ -47,43 +123,43 @@ def generate_weekly_breakdown_excel():
    <Column ss:Width="140"/>
 
    <Row ss:StyleID="Header">
-    <Cell><Data ss:Type="String">Model Name</Data></Cell>
-    <Cell><Data ss:Type="String">Week 1 (1-7 Авг)</Data></Cell>
-    <Cell><Data ss:Type="String">Week 2 (8-12 Авг)</Data></Cell>
-    <Cell><Data ss:Type="String">Total Net (1-12 Авг)</Data></Cell>
-    <Cell><Data ss:Type="String">Monthly Goal ($)</Data></Cell>
+    <Cell><Data ss:Type="String">Анком Модель</Data></Cell>
+    <Cell><Data ss:Type="String">Gross Rev (1-15 Авг)</Data></Cell>
+    <Cell><Data ss:Type="String">Net Rev 80% (1-15 Авг)</Data></Cell>
+    <Cell><Data ss:Type="String">План на Месяц ($)</Data></Cell>
+    <Cell><Data ss:Type="String">Run Rate (Прогноз)</Data></Cell>
    </Row>
 
    <Row>
     <Cell><Data ss:Type="String">Lolly (Lollysunnery)</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1978.10</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1935.66</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">3913.77</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">4493.31</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">3594.65</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">10000.00</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">7428.94</Data></Cell>
    </Row>
 
    <Row>
     <Cell><Data ss:Type="String">Lolly (1lollyhere)</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">992.80</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">529.04</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1521.84</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1413.56</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1130.85</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">4000.00</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">2337.09</Data></Cell>
    </Row>
 
    <Row>
     <Cell><Data ss:Type="String">Lila (angelkiss)</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">593.62</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">256.07</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">849.69</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">891.76</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">713.41</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">1500.00</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1474.38</Data></Cell>
    </Row>
 
    <Row>
     <Cell><Data ss:Type="String">Eva Blush</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">253.59</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">320.98</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">574.57</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">827.67</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">662.14</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">4000.00</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1368.42</Data></Cell>
    </Row>
 
   </Table>
@@ -99,7 +175,7 @@ def generate_weekly_breakdown_excel():
     with open("chatter_analytics_system.xls", "w", encoding="utf-8") as f:
         f.write(xml)
 
-    print(f"✅ Файл Excel обновлен с недели 1 (1-7 Авг) и недели 2 (8-12 Авг): {output_filepath}")
+    print(f"✅ Файл Excel обновлен с точными данными ЗП за 1-15 августа: {output_filepath}")
 
 if __name__ == "__main__":
-    generate_weekly_breakdown_excel()
+    generate_zp_1_15_august_excel()
