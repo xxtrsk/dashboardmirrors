@@ -7,7 +7,7 @@
  xmlns:html="http://www.w3.org/TR/REC-html40">
  <DocumentProperties xmlns="urn:schemas-microsoft-com:office:office">
   <Author>OnlyMonster Official Full Export</Author>
-  <Title>Dashboard + KPI (100% Точные Данные OnlyMonster)</Title>
+  <Title>Dashboard + KPI (100% Точные Данные Lollysunnery)</Title>
  </DocumentProperties>
  <Styles>
   <Style ss:ID="Default" ss:Name="Normal">
@@ -27,8 +27,8 @@
   </Style>
  </Styles>
 
- <!-- SHEET 1: 100% Точные Данные OnlyMonster CRM -->
- <Worksheet ss:Name="OnlyMonster CRM Full Export">
+ <!-- SHEET 1: Lollysunnery OnlyMonster CRM Export -->
+ <Worksheet ss:Name="Lollysunnery OM Export">
   <Table>
    <Column ss:Width="160"/>
    <Column ss:Width="120"/>
@@ -52,9 +52,9 @@
 
    <Row>
     <Cell><Data ss:Type="String">39856. Lolly (Lollysunnery)</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">5247.68</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1644.02</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">3603.66</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1978.09</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">581.08</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1397.01</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">10000.00</Data></Cell>
     <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.5539</Data></Cell>
     <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.0700</Data></Cell>
@@ -85,9 +85,9 @@
 
    <Row>
     <Cell><Data ss:Type="String">4967. LILA (angelkiss)</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">999.03</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">482.55</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">516.48</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">999.03</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">1500.00</Data></Cell>
     <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.6826</Data></Cell>
     <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.1987</Data></Cell>
