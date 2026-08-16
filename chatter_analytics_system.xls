@@ -6,8 +6,8 @@
  xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
  xmlns:html="http://www.w3.org/TR/REC-html40">
  <DocumentProperties xmlns="urn:schemas-microsoft-com:office:office">
-  <Author>MIRRORS ZP System</Author>
-  <Title>Dashboard + KPI (Таблицы ЗП 1-15 Августа)</Title>
+  <Author>OnlyMonster Official Dashboard</Author>
+  <Title>Dashboard + KPI (Официальные Данные 1-15 Августа)</Title>
  </DocumentProperties>
  <Styles>
   <Style ss:ID="Default" ss:Name="Normal">
@@ -27,129 +27,59 @@
   </Style>
  </Styles>
 
- <!-- SHEET 1: ЗП Таблицы Чаттеров (1-15 Августа) -->
- <Worksheet ss:Name="ЗП 1-15 Августа">
+ <!-- SHEET 1: Свод Моделей OnlyMonster (1-15 Августа) -->
+ <Worksheet ss:Name="Свод Моделей OnlyMonster">
   <Table>
    <Column ss:Width="160"/>
-   <Column ss:Width="160"/>
    <Column ss:Width="130"/>
-   <Column ss:Width="130"/>
-   <Column ss:Width="130"/>
-
-   <Row ss:StyleID="Header">
-    <Cell><Data ss:Type="String">Чаттер</Data></Cell>
-    <Cell><Data ss:Type="String">Привязанная Анкета</Data></Cell>
-    <Cell><Data ss:Type="String">Gross Rev (1-15 Авг)</Data></Cell>
-    <Cell><Data ss:Type="String">Net 80% (1-15 Авг)</Data></Cell>
-    <Cell><Data ss:Type="String">ЗП 20% К Выплате</Data></Cell>
-   </Row>
-
-   <Row>
-    <Cell><Data ss:Type="String">Артем (paul walkeeer)</Data></Cell>
-    <Cell><Data ss:Type="String">Lollysunnery (+ $38.00)</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">2952.47</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">2361.98</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">590.49</Data></Cell>
-   </Row>
-
-   <Row>
-    <Cell><Data ss:Type="String">Артем (paul walkeeer)</Data></Cell>
-    <Cell><Data ss:Type="String">Eva Blush</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">637.96</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">510.37</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">127.59</Data></Cell>
-   </Row>
-
-   <Row>
-    <Cell><Data ss:Type="String">Влада (hinata hyuga)</Data></Cell>
-    <Cell><Data ss:Type="String">1lollyhere</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1238.77</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">991.02</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">247.75</Data></Cell>
-   </Row>
-
-   <Row>
-    <Cell><Data ss:Type="String">Влада (hinata hyuga)</Data></Cell>
-    <Cell><Data ss:Type="String">Angelkiss</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">891.76</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">713.41</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">178.35</Data></Cell>
-   </Row>
-
-   <Row>
-    <Cell><Data ss:Type="String">Карина (@sanesskio)</Data></Cell>
-    <Cell><Data ss:Type="String">Lollysunnery (+ $306.48)</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1885.32</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1508.26</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">377.06</Data></Cell>
-   </Row>
-
-   <Row>
-    <Cell><Data ss:Type="String">Карина (@sanesskio)</Data></Cell>
-    <Cell><Data ss:Type="String">Eva Blush</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">189.71</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">151.77</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">37.94</Data></Cell>
-   </Row>
-
-   <Row>
-    <Cell><Data ss:Type="String">Кирилл (Kirill Chelusti)</Data></Cell>
-    <Cell><Data ss:Type="String">1lollyhere</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">174.79</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">139.83</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">34.96</Data></Cell>
-   </Row>
-
-  </Table>
- </Worksheet>
-
- <!-- SHEET 2: Свод Анкет (1-15 Августа) -->
- <Worksheet ss:Name="Свод Анкет">
-  <Table>
-   <Column ss:Width="160"/>
    <Column ss:Width="130"/>
    <Column ss:Width="130"/>
    <Column ss:Width="130"/>
    <Column ss:Width="140"/>
 
    <Row ss:StyleID="Header">
-    <Cell><Data ss:Type="String">Анкета Модель</Data></Cell>
-    <Cell><Data ss:Type="String">Gross Rev (1-15 Авг)</Data></Cell>
-    <Cell><Data ss:Type="String">Net Rev 80% (1-15 Авг)</Data></Cell>
-    <Cell><Data ss:Type="String">План на Месяц ($)</Data></Cell>
+    <Cell><Data ss:Type="String">Account / Model</Data></Cell>
+    <Cell><Data ss:Type="String">Revenue 1-7 (W1)</Data></Cell>
+    <Cell><Data ss:Type="String">Revenue 8-15 (W2)</Data></Cell>
+    <Cell><Data ss:Type="String">Total Net (1-15 Авг)</Data></Cell>
+    <Cell><Data ss:Type="String">Plan ($)</Data></Cell>
     <Cell><Data ss:Type="String">Run Rate (Прогноз)</Data></Cell>
    </Row>
 
    <Row>
-    <Cell><Data ss:Type="String">Lolly (Lollysunnery)</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">4837.79</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">3870.23</Data></Cell>
+    <Cell><Data ss:Type="String">39856. Lolly (Lollysunnery)</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1644.02</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">3603.66</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">5247.68</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">10000.00</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">7998.48</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">10845.20</Data></Cell>
    </Row>
 
    <Row>
-    <Cell><Data ss:Type="String">Lolly (1lollyhere)</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1413.56</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1130.85</Data></Cell>
+    <Cell><Data ss:Type="String">47892. Lolly (1lollyhere)</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">378.15</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1368.18</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1746.33</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">4000.00</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">2337.09</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">3609.08</Data></Cell>
    </Row>
 
    <Row>
-    <Cell><Data ss:Type="String">Lila (angelkiss)</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">891.76</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">713.41</Data></Cell>
+    <Cell><Data ss:Type="String">30201. Eva (Eva Blush)</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">549.69</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">460.47</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1010.16</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">4000.00</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">2087.66</Data></Cell>
+   </Row>
+
+   <Row>
+    <Cell><Data ss:Type="String">4967. LILA (angelkiss)</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">482.55</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">516.48</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">999.03</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">1500.00</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1474.38</Data></Cell>
-   </Row>
-
-   <Row>
-    <Cell><Data ss:Type="String">Eva Blush</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">827.67</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">662.14</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">4000.00</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1368.42</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">2064.66</Data></Cell>
    </Row>
 
   </Table>
