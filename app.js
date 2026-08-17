@@ -156,7 +156,7 @@ function renderHeaderInfo() {
   }
   const cardSubtextEl = document.getElementById('dash-card-subtext-revenue');
   if (cardSubtextEl) {
-    cardSubtextEl.textContent = `Фактическая сумма за ${daysPassed} дн. по всем моделям`;
+    cardSubtextEl.innerHTML = `Фактическая сумма за ${daysPassed} дн. по всем моделям <br><span style="color: var(--accent-purple); font-weight: 600;">(включая +$424.48 доход с PP)</span>`;
   }
 }
 
@@ -165,10 +165,14 @@ function renderMainDashboard() {
   const models = getModelSummaries();
   const chatters = getChatterBreakdown();
 
-  // Summary Metrics
+  // Summary Metrics including PP Income (+$424.48)
+  const ppIncome = 424.48;
   const grandPlan = models.reduce((acc, m) => acc + m.plan, 0);
-  const grandFact = models.reduce((acc, m) => acc + m.totalRevenue, 0);
-  const grandRunRate = models.reduce((acc, m) => acc + m.runRate, 0);
+  const modelsFact = models.reduce((acc, m) => acc + m.totalRevenue, 0);
+  const grandFact = modelsFact + ppIncome;
+  
+  const { daysPassed, daysInMonth } = getDaysInfo(state.selectedMonthKey);
+  const grandRunRate = daysPassed > 0 ? (grandFact / daysPassed) * daysInMonth : 0;
 
   document.getElementById('dash-grand-fact').textContent = formatCurrency(grandFact);
   document.getElementById('dash-grand-plan').textContent = formatCurrency(grandPlan);
