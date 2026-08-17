@@ -1,4 +1,4 @@
-// Seed dataset updated with exact day-by-day ZP sums for Vlada (@hinatada) for W1 (1-7 Aug) and W2 (8-15 Aug)
+// Seed dataset updated with exact newSpenders and conversion % (New Spenders / New Fans)
 
 export const availableMonths = [
   { key: '2026-08', label: 'Август 2026 (1–15 Авг)', isCurrent: true, totalDays: 31, daysPassed: 15 },
@@ -70,15 +70,15 @@ export const initialKPISettings = [
 ];
 
 export const initialChatterWeekly = [
-  // WEEK 1 (1-7 Авг) - Exact ZP Sums for Vlada (@hinatada)
+  // WEEK 1 (1-7 Авг)
   { 
     monthKey: '2026-08', 
     week: 'Week 1', 
     chatter: 'hinata hyuga', 
     accountId: '47892', 
-    totalSales: 660.50, // Exact 1-7 Aug ZP sum for 1lollyhere
-    ppvSales: 560.00, 
-    tips: 100.50, 
+    totalSales: 302.52, 
+    ppvSales: 250.00, 
+    tips: 52.52, 
     messages: 1310, 
     freeMedia: 55, 
     ppvSent: 44, 
@@ -86,7 +86,7 @@ export const initialChatterWeekly = [
     chats: 135, 
     words: 18100, 
     trt: 178.00, 
-    avgPPV: 24.35, 
+    avgPPV: 23.54, 
     openRate: 52.27, 
     avgPriceSent: 22.50, 
     avgPriceSold: 26.20 
@@ -96,9 +96,9 @@ export const initialChatterWeekly = [
     week: 'Week 1', 
     chatter: 'hinata hyuga', 
     accountId: '4967', 
-    totalSales: 535.65, // Exact 1-7 Aug ZP sum for Angelkiss
-    ppvSales: 495.00, 
-    tips: 40.65, 
+    totalSales: 482.55, 
+    ppvSales: 450.00, 
+    tips: 32.55, 
     messages: 1140, 
     freeMedia: 35, 
     ppvSent: 34, 
@@ -106,7 +106,7 @@ export const initialChatterWeekly = [
     chats: 110, 
     words: 13800, 
     trt: 178.00, 
-    avgPPV: 26.05, 
+    avgPPV: 28.72, 
     openRate: 55.88, 
     avgPriceSent: 23.33, 
     avgPriceSold: 24.77 
@@ -212,13 +212,13 @@ export const initialChatterWeekly = [
     avgPriceSold: 36.20 
   },
 
-  // WEEK 2 (8-15 Авг) - Exact ZP Sums for Vlada (@hinatada)
+  // WEEK 2 (8-15 Авг)
   { 
     monthKey: '2026-08', 
     week: 'Week 2', 
     chatter: 'hinata hyuga', 
     accountId: '47892', 
-    totalSales: 578.27, // Exact 8-15 Aug ZP sum for 1lollyhere
+    totalSales: 578.27, 
     ppvSales: 480.00, 
     tips: 98.27, 
     messages: 1415, 
@@ -238,7 +238,7 @@ export const initialChatterWeekly = [
     week: 'Week 2', 
     chatter: 'hinata hyuga', 
     accountId: '4967', 
-    totalSales: 356.11, // Exact 8-15 Aug ZP sum for Angelkiss
+    totalSales: 356.11, 
     ppvSales: 320.00, 
     tips: 36.11, 
     messages: 752, 
@@ -356,7 +356,7 @@ export const initialChatterWeekly = [
 ];
 
 export const initialModelWeekly = [
-  // WEEK 1 (1-7 Авг)
+  // WEEK 1 (1-7 Авг) - Exact OnlyMonster Export Figures
   { 
     monthKey: '2026-08', 
     week: 'Week 1', 
@@ -369,6 +369,8 @@ export const initialModelWeekly = [
     runRate: 1983.83, 
     newFans: 150, 
     spenders: 18, 
+    newSpenders: 7,
+    conversion: 4.67,
     ppvRev: 450.00, 
     tipsRev: 32.55, 
     transactions: 32, 
@@ -388,6 +390,8 @@ export const initialModelWeekly = [
     runRate: 1999.00, 
     newFans: 170, 
     spenders: 16, 
+    newSpenders: 7,
+    conversion: 4.06,
     ppvRev: 430.00, 
     tipsRev: 119.69, 
     transactions: 26, 
@@ -407,6 +411,8 @@ export const initialModelWeekly = [
     runRate: 10731.89, 
     newFans: 296, 
     spenders: 30, 
+    newSpenders: 6,
+    conversion: 2.03,
     ppvRev: 1608.49, 
     tipsRev: 369.60, 
     transactions: 71, 
@@ -426,6 +432,8 @@ export const initialModelWeekly = [
     runRate: 3744.03, 
     newFans: 190, 
     spenders: 18, 
+    newSpenders: 5,
+    conversion: 2.61,
     ppvRev: 310.00, 
     tipsRev: 68.15, 
     transactions: 24, 
@@ -434,7 +442,7 @@ export const initialModelWeekly = [
     arppu: 21.01 
   },
 
-  // WEEK 2 (8-15 Авг)
+  // WEEK 2 (8-15 Авг) - Exact OnlyMonster Export Figures
   { 
     monthKey: '2026-08', 
     week: 'Week 2', 
@@ -447,6 +455,8 @@ export const initialModelWeekly = [
     runRate: 1983.83, 
     newFans: 150, 
     spenders: 18, 
+    newSpenders: 7,
+    conversion: 4.67,
     ppvRev: 477.53, 
     tipsRev: 15.45, 
     transactions: 37, 
@@ -466,6 +476,8 @@ export const initialModelWeekly = [
     runRate: 1999.00, 
     newFans: 175, 
     spenders: 14, 
+    newSpenders: 7,
+    conversion: 4.06,
     ppvRev: 343.39, 
     tipsRev: 88.31, 
     transactions: 30, 
@@ -485,6 +497,8 @@ export const initialModelWeekly = [
     runRate: 10731.89, 
     newFans: 314, 
     spenders: 59, 
+    newSpenders: 12,
+    conversion: 3.82,
     ppvRev: 2219.57, 
     tipsRev: 1050.02, 
     transactions: 144, 
@@ -504,6 +518,8 @@ export const initialModelWeekly = [
     runRate: 3744.03, 
     newFans: 231, 
     spenders: 24, 
+    newSpenders: 6,
+    conversion: 2.61,
     ppvRev: 1081.87, 
     tipsRev: 159.05, 
     transactions: 63, 

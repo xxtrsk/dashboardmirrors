@@ -61,7 +61,8 @@ function getModelSummaries() {
     // Sum aggregate CRM fields
     const newFans = weeklyRecords.reduce((acc, r) => acc + (r.newFans || 0), 0);
     const spenders = weeklyRecords.reduce((acc, r) => acc + (r.spenders || 0), 0);
-    const conversion = newFans > 0 ? (spenders / newFans) * 100 : (latestRec.conversion || 0);
+    const newSpenders = weeklyRecords.reduce((acc, r) => acc + (r.newSpenders || 0), 0);
+    const conversion = newFans > 0 ? (newSpenders / newFans) * 100 : (latestRec.conversion || 0);
     const apv = latestRec.apv || 0;
     const arppu = latestRec.arppu || 0;
 
