@@ -63,6 +63,7 @@ function getModelSummaries() {
     const spenders = weeklyRecords.reduce((acc, r) => acc + (r.spenders || 0), 0);
     const newSpenders = weeklyRecords.reduce((acc, r) => acc + (r.newSpenders || 0), 0);
     const conversion = newFans > 0 ? (newSpenders / newFans) * 100 : (latestRec.conversion || 0);
+    const apc = latestRec.apc || 0;
     const apv = latestRec.apv || 0;
     const arppu = latestRec.arppu || 0;
 
@@ -84,6 +85,7 @@ function getModelSummaries() {
       newFans,
       spenders,
       conversion,
+      apc,
       apv,
       arppu,
       assignedChatters
@@ -242,6 +244,7 @@ function renderMainDashboard() {
         <td>${m.newFans}</td>
         <td>${m.spenders}</td>
         <td>${formatPercent(m.conversion)}</td>
+        <td style="font-family: var(--font-mono); font-weight: 600; color: var(--accent-purple);">${m.apc > 0 ? m.apc.toFixed(2) : '—'}</td>
         <td>$${m.apv.toFixed(2)}</td>
         <td style="font-size: 13px; color: var(--text-muted);">${m.assignedChatters}</td>
       </tr>

@@ -396,7 +396,7 @@ export const initialModelWeekly = [
     tipsRev: 119.69, 
     transactions: 26, 
     apc: 1.63, 
-    apv: 21.14, 
+    apv: 16.55, 
     arppu: 34.36 
   },
   { 

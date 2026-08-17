@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """
-Generate Excel Spreadsheet (.xls SpreadsheetML) with exact 100% matching values from full OnlyMonster export screenshots:
-- Conversion (%) = (New Spenders / New Fans) * 100
+Generate Excel Spreadsheet (.xls SpreadsheetML) with APC (Average Purchases by Customer) and Eva Blush APV = $16.55:
 """
 
 def generate_full_om_screenshot_excel():
@@ -14,7 +13,7 @@ def generate_full_om_screenshot_excel():
  xmlns:html="http://www.w3.org/TR/REC-html40">
  <DocumentProperties xmlns="urn:schemas-microsoft-com:office:office">
   <Author>OnlyMonster Official Full Export</Author>
-  <Title>Dashboard + KPI (Точная Формула Конверсии)</Title>
+  <Title>Dashboard + KPI (APC + Eva Blush APV 16.55)</Title>
  </DocumentProperties>
  <Styles>
   <Style ss:ID="Default" ss:Name="Normal">
@@ -34,25 +33,25 @@ def generate_full_om_screenshot_excel():
   </Style>
  </Styles>
 
- <!-- SHEET 1: OnlyMonster CRM Export со 100% Точной Конверсией -->
- <Worksheet ss:Name="OM Export Exact Conversion">
+ <!-- SHEET 1: OnlyMonster CRM Export с APC и APV Eva Blush -->
+ <Worksheet ss:Name="OM Export APC & APV">
   <Table>
    <Column ss:Width="180"/>
-   <Column ss:Width="110"/>
-   <Column ss:Width="110"/>
-   <Column ss:Width="110"/>
-   <Column ss:Width="110"/>
-   <Column ss:Width="110"/>
-   <Column ss:Width="110"/>
+   <Column ss:Width="90"/>
+   <Column ss:Width="90"/>
+   <Column ss:Width="90"/>
+   <Column ss:Width="100"/>
+   <Column ss:Width="160"/>
+   <Column ss:Width="120"/>
 
    <Row ss:StyleID="Header">
     <Cell><Data ss:Type="String">Account / Model</Data></Cell>
     <Cell><Data ss:Type="String">New Fans</Data></Cell>
-    <Cell><Data ss:Type="String">Total Spenders</Data></Cell>
+    <Cell><Data ss:Type="String">Spenders</Data></Cell>
     <Cell><Data ss:Type="String">New Spenders</Data></Cell>
     <Cell><Data ss:Type="String">Conversion (%)</Data></Cell>
-    <Cell><Data ss:Type="String">Transactions</Data></Cell>
-    <Cell><Data ss:Type="String">ARPPU ($)</Data></Cell>
+    <Cell><Data ss:Type="String">APC (Avg Purchases / Cust)</Data></Cell>
+    <Cell><Data ss:Type="String">APV ($ Средний Чек)</Data></Cell>
    </Row>
 
    <Row>
@@ -61,8 +60,8 @@ def generate_full_om_screenshot_excel():
     <Cell><Data ss:Type="Number">36</Data></Cell>
     <Cell><Data ss:Type="Number">14</Data></Cell>
     <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.0467</Data></Cell>
-    <Cell><Data ss:Type="Number">69</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">27.75</Data></Cell>
+    <Cell><Data ss:Type="Number">1.92</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">14.48</Data></Cell>
    </Row>
 
    <Row>
@@ -71,8 +70,8 @@ def generate_full_om_screenshot_excel():
     <Cell><Data ss:Type="Number">30</Data></Cell>
     <Cell><Data ss:Type="Number">14</Data></Cell>
     <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.0406</Data></Cell>
-    <Cell><Data ss:Type="Number">56</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">33.67</Data></Cell>
+    <Cell><Data ss:Type="Number">1.87</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">16.55</Data></Cell>
    </Row>
 
    <Row>
@@ -81,8 +80,8 @@ def generate_full_om_screenshot_excel():
     <Cell><Data ss:Type="Number">80</Data></Cell>
     <Cell><Data ss:Type="Number">21</Data></Cell>
     <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.0344</Data></Cell>
-    <Cell><Data ss:Type="Number">215</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">65.60</Data></Cell>
+    <Cell><Data ss:Type="Number">2.69</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">24.41</Data></Cell>
    </Row>
 
    <Row>
@@ -91,8 +90,8 @@ def generate_full_om_screenshot_excel():
     <Cell><Data ss:Type="Number">42</Data></Cell>
     <Cell><Data ss:Type="Number">11</Data></Cell>
     <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.0261</Data></Cell>
-    <Cell><Data ss:Type="Number">87</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">41.58</Data></Cell>
+    <Cell><Data ss:Type="Number">2.07</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">20.07</Data></Cell>
    </Row>
 
   </Table>
@@ -108,7 +107,7 @@ def generate_full_om_screenshot_excel():
     with open("chatter_analytics_system.xls", "w", encoding="utf-8") as f:
         f.write(xml)
 
-    print(f"✅ Файл Excel обновлен с точной формулой конверсии: {output_filepath}")
+    print(f"✅ Файл Excel обновлен с APC и APV 16.55 для Eva Blush: {output_filepath}")
 
 if __name__ == "__main__":
     generate_full_om_screenshot_excel()
