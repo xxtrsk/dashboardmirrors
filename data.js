@@ -1,4 +1,4 @@
-// Seed dataset updated with exact newSpenders and conversion % (New Spenders / New Fans)
+// Seed dataset updated with exact model ordering (Lollysunnery, 1lollyhere, Eva Blush, angelkiss) and exact OM CRM conversion rates
 
 export const availableMonths = [
   { key: '2026-08', label: 'Август 2026 (1–15 Авг)', isCurrent: true, totalDays: 31, daysPassed: 15 },
@@ -6,23 +6,13 @@ export const availableMonths = [
 ];
 
 export const initialConfig = [
-  { id: '47892', modelName: 'Lolly (1lollyhere)', page: '1lollyhere', chatters: ['hinata hyuga', 'Kirill Chelusti'] },
   { id: '39856', modelName: 'Lolly (Lollysunnery)', page: 'lollysunnery', chatters: ['paul walkeeer', 'karina @sanesskio'] },
+  { id: '47892', modelName: 'Lolly (1lollyhere)', page: '1lollyhere', chatters: ['hinata hyuga', 'Kirill Chelusti'] },
   { id: '30201', modelName: 'Eva Blush', page: 'evablush', chatters: ['paul walkeeer', 'karina @sanesskio'] },
   { id: '4967', modelName: 'Lila (angelkiss)', page: 'angelkiss', chatters: ['hinata hyuga'] }
 ];
 
 export const initialModels = [
-  { 
-    id: '47892', 
-    name: 'Lolly (1lollyhere)', 
-    plan: 4000, 
-    totalBonusPool: 80, 
-    teamBonusPool: 40, 
-    kpiBonusPool: 40, 
-    teamPct: '50%',
-    accountId: '47892' 
-  },
   { 
     id: '39856', 
     name: 'Lolly (Lollysunnery)', 
@@ -32,6 +22,16 @@ export const initialModels = [
     kpiBonusPool: 100, 
     teamPct: '50%',
     accountId: '39856' 
+  },
+  { 
+    id: '47892', 
+    name: 'Lolly (1lollyhere)', 
+    plan: 4000, 
+    totalBonusPool: 80, 
+    teamBonusPool: 40, 
+    kpiBonusPool: 40, 
+    teamPct: '50%',
+    accountId: '47892' 
   },
   { 
     id: '30201', 
@@ -56,13 +56,13 @@ export const initialModels = [
 ];
 
 export const initialKPISettings = [
-  // Lolly (1lollyhere)
-  { chatter: 'hinata hyuga', model: 'Lolly (1lollyhere)', targetOpenRate: 40, targetAvgPrice: 25, targetTRT: 200, targetPlan: 1800 },
-  { chatter: 'Kirill Chelusti', model: 'Lolly (1lollyhere)', targetOpenRate: 35, targetAvgPrice: 23, targetTRT: 220, targetPlan: 1200 },
-
   // Lolly (Lollysunnery)
   { chatter: 'paul walkeeer', model: 'Lolly (Lollysunnery)', targetOpenRate: 50, targetAvgPrice: 27, targetTRT: 200, targetPlan: 4000 },
   { chatter: 'karina @sanesskio', model: 'Lolly (Lollysunnery)', targetOpenRate: 40, targetAvgPrice: 30, targetTRT: 160, targetPlan: 3500 },
+
+  // Lolly (1lollyhere)
+  { chatter: 'hinata hyuga', model: 'Lolly (1lollyhere)', targetOpenRate: 40, targetAvgPrice: 25, targetTRT: 200, targetPlan: 1800 },
+  { chatter: 'Kirill Chelusti', model: 'Lolly (1lollyhere)', targetOpenRate: 35, targetAvgPrice: 23, targetTRT: 220, targetPlan: 1200 },
 
   // Eva Blush
   { chatter: 'paul walkeeer', model: 'Eva Blush', targetOpenRate: 45, targetAvgPrice: 26, targetTRT: 200, targetPlan: 1600 },
@@ -71,46 +71,6 @@ export const initialKPISettings = [
 
 export const initialChatterWeekly = [
   // WEEK 1 (1-7 Авг)
-  { 
-    monthKey: '2026-08', 
-    week: 'Week 1', 
-    chatter: 'hinata hyuga', 
-    accountId: '47892', 
-    totalSales: 302.52, 
-    ppvSales: 250.00, 
-    tips: 52.52, 
-    messages: 1310, 
-    freeMedia: 55, 
-    ppvSent: 44, 
-    ppvSold: 23, 
-    chats: 135, 
-    words: 18100, 
-    trt: 178.00, 
-    avgPPV: 23.54, 
-    openRate: 52.27, 
-    avgPriceSent: 22.50, 
-    avgPriceSold: 26.20 
-  },
-  { 
-    monthKey: '2026-08', 
-    week: 'Week 1', 
-    chatter: 'hinata hyuga', 
-    accountId: '4967', 
-    totalSales: 482.55, 
-    ppvSales: 450.00, 
-    tips: 32.55, 
-    messages: 1140, 
-    freeMedia: 35, 
-    ppvSent: 34, 
-    ppvSold: 19, 
-    chats: 110, 
-    words: 13800, 
-    trt: 178.00, 
-    avgPPV: 28.72, 
-    openRate: 55.88, 
-    avgPriceSent: 23.33, 
-    avgPriceSold: 24.77 
-  },
   { 
     monthKey: '2026-08', 
     week: 'Week 1', 
@@ -154,6 +114,66 @@ export const initialChatterWeekly = [
   { 
     monthKey: '2026-08', 
     week: 'Week 1', 
+    chatter: 'hinata hyuga', 
+    accountId: '47892', 
+    totalSales: 302.52, 
+    ppvSales: 250.00, 
+    tips: 52.52, 
+    messages: 1310, 
+    freeMedia: 55, 
+    ppvSent: 44, 
+    ppvSold: 23, 
+    chats: 135, 
+    words: 18100, 
+    trt: 178.00, 
+    avgPPV: 23.54, 
+    openRate: 52.27, 
+    avgPriceSent: 22.50, 
+    avgPriceSold: 26.20 
+  },
+  { 
+    monthKey: '2026-08', 
+    week: 'Week 1', 
+    chatter: 'Kirill Chelusti', 
+    accountId: '47892', 
+    totalSales: 75.63, 
+    ppvSales: 60.00, 
+    tips: 15.63, 
+    messages: 1520, 
+    freeMedia: 44, 
+    ppvSent: 22, 
+    ppvSold: 9, 
+    chats: 190, 
+    words: 19400, 
+    trt: 295.00, 
+    avgPPV: 28.16, 
+    openRate: 40.91, 
+    avgPriceSent: 30.50, 
+    avgPriceSold: 36.20 
+  },
+  { 
+    monthKey: '2026-08', 
+    week: 'Week 1', 
+    chatter: 'hinata hyuga', 
+    accountId: '4967', 
+    totalSales: 482.55, 
+    ppvSales: 450.00, 
+    tips: 32.55, 
+    messages: 1140, 
+    freeMedia: 35, 
+    ppvSent: 34, 
+    ppvSold: 19, 
+    chats: 110, 
+    words: 13800, 
+    trt: 178.00, 
+    avgPPV: 28.72, 
+    openRate: 55.88, 
+    avgPriceSent: 23.33, 
+    avgPriceSold: 24.77 
+  },
+  { 
+    monthKey: '2026-08', 
+    week: 'Week 1', 
     chatter: 'paul walkeeer', 
     accountId: '30201', 
     totalSales: 439.75, 
@@ -191,68 +211,8 @@ export const initialChatterWeekly = [
     avgPriceSent: 17.20, 
     avgPriceSold: 18.50 
   },
-  { 
-    monthKey: '2026-08', 
-    week: 'Week 1', 
-    chatter: 'Kirill Chelusti', 
-    accountId: '47892', 
-    totalSales: 75.63, 
-    ppvSales: 60.00, 
-    tips: 15.63, 
-    messages: 1520, 
-    freeMedia: 44, 
-    ppvSent: 22, 
-    ppvSold: 9, 
-    chats: 190, 
-    words: 19400, 
-    trt: 295.00, 
-    avgPPV: 28.16, 
-    openRate: 40.91, 
-    avgPriceSent: 30.50, 
-    avgPriceSold: 36.20 
-  },
 
   // WEEK 2 (8-15 Авг)
-  { 
-    monthKey: '2026-08', 
-    week: 'Week 2', 
-    chatter: 'hinata hyuga', 
-    accountId: '47892', 
-    totalSales: 578.27, 
-    ppvSales: 480.00, 
-    tips: 98.27, 
-    messages: 1415, 
-    freeMedia: 62, 
-    ppvSent: 51, 
-    ppvSold: 27, 
-    chats: 152, 
-    words: 19600, 
-    trt: 178.00, 
-    avgPPV: 17.78, 
-    openRate: 52.94, 
-    avgPriceSent: 22.50, 
-    avgPriceSold: 26.20 
-  },
-  { 
-    monthKey: '2026-08', 
-    week: 'Week 2', 
-    chatter: 'hinata hyuga', 
-    accountId: '4967', 
-    totalSales: 356.11, 
-    ppvSales: 320.00, 
-    tips: 36.11, 
-    messages: 752, 
-    freeMedia: 24, 
-    ppvSent: 21, 
-    ppvSold: 12, 
-    chats: 74, 
-    words: 8900, 
-    trt: 178.00, 
-    avgPPV: 26.67, 
-    openRate: 57.14, 
-    avgPriceSent: 23.33, 
-    avgPriceSold: 24.77 
-  },
   { 
     monthKey: '2026-08', 
     week: 'Week 2', 
@@ -296,6 +256,66 @@ export const initialChatterWeekly = [
   { 
     monthKey: '2026-08', 
     week: 'Week 2', 
+    chatter: 'hinata hyuga', 
+    accountId: '47892', 
+    totalSales: 578.27, 
+    ppvSales: 480.00, 
+    tips: 98.27, 
+    messages: 1415, 
+    freeMedia: 62, 
+    ppvSent: 51, 
+    ppvSold: 27, 
+    chats: 152, 
+    words: 19600, 
+    trt: 178.00, 
+    avgPPV: 17.78, 
+    openRate: 52.94, 
+    avgPriceSent: 22.50, 
+    avgPriceSold: 26.20 
+  },
+  { 
+    monthKey: '2026-08', 
+    week: 'Week 2', 
+    chatter: 'Kirill Chelusti', 
+    accountId: '47892', 
+    totalSales: 273.64, 
+    ppvSales: 231.87, 
+    tips: 41.77, 
+    messages: 887, 
+    freeMedia: 25, 
+    ppvSent: 13, 
+    ppvSold: 5, 
+    chats: 107, 
+    words: 11300, 
+    trt: 295.00, 
+    avgPPV: 29.96, 
+    openRate: 38.46, 
+    avgPriceSent: 30.50, 
+    avgPriceSold: 36.20 
+  },
+  { 
+    monthKey: '2026-08', 
+    week: 'Week 2', 
+    chatter: 'hinata hyuga', 
+    accountId: '4967', 
+    totalSales: 356.11, 
+    ppvSales: 320.00, 
+    tips: 36.11, 
+    messages: 752, 
+    freeMedia: 24, 
+    ppvSent: 21, 
+    ppvSold: 12, 
+    chats: 74, 
+    words: 8900, 
+    trt: 178.00, 
+    avgPPV: 26.67, 
+    openRate: 57.14, 
+    avgPriceSent: 23.33, 
+    avgPriceSold: 24.77 
+  },
+  { 
+    monthKey: '2026-08', 
+    week: 'Week 2', 
     chatter: 'paul walkeeer', 
     accountId: '30201', 
     totalSales: 368.38, 
@@ -332,73 +352,11 @@ export const initialChatterWeekly = [
     openRate: 31.03, 
     avgPriceSent: 27.10, 
     avgPriceSold: 21.53 
-  },
-  { 
-    monthKey: '2026-08', 
-    week: 'Week 2', 
-    chatter: 'Kirill Chelusti', 
-    accountId: '47892', 
-    totalSales: 273.64, 
-    ppvSales: 231.87, 
-    tips: 41.77, 
-    messages: 887, 
-    freeMedia: 25, 
-    ppvSent: 13, 
-    ppvSold: 5, 
-    chats: 107, 
-    words: 11300, 
-    trt: 295.00, 
-    avgPPV: 29.96, 
-    openRate: 38.46, 
-    avgPriceSent: 30.50, 
-    avgPriceSold: 36.20 
   }
 ];
 
 export const initialModelWeekly = [
-  // WEEK 1 (1-7 Авг) - Exact OnlyMonster Export Figures
-  { 
-    monthKey: '2026-08', 
-    week: 'Week 1', 
-    accountId: '4967', 
-    modelName: 'Lila (angelkiss)', 
-    totalRevenue: 482.55, 
-    plan: 1500.00, 
-    goalProgressPct: 68.26, 
-    goalStatusPct: 19.87,
-    runRate: 1983.83, 
-    newFans: 150, 
-    spenders: 18, 
-    newSpenders: 7,
-    conversion: 4.67,
-    ppvRev: 450.00, 
-    tipsRev: 32.55, 
-    transactions: 32, 
-    apc: 1.78, 
-    apv: 15.08, 
-    arppu: 26.81 
-  },
-  { 
-    monthKey: '2026-08', 
-    week: 'Week 1', 
-    accountId: '30201', 
-    modelName: 'Eva Blush', 
-    totalRevenue: 549.69, 
-    plan: 3500.00, 
-    goalProgressPct: 29.48, 
-    goalStatusPct: -18.91,
-    runRate: 1999.00, 
-    newFans: 170, 
-    spenders: 16, 
-    newSpenders: 7,
-    conversion: 4.06,
-    ppvRev: 430.00, 
-    tipsRev: 119.69, 
-    transactions: 26, 
-    apc: 1.63, 
-    apv: 16.55, 
-    arppu: 34.36 
-  },
+  // WEEK 1 (1-7 Авг) - Exact OnlyMonster Export Figures in exact order (Lollysunnery, 1lollyhere, Eva Blush, angelkiss)
   { 
     monthKey: '2026-08', 
     week: 'Week 1', 
@@ -411,14 +369,14 @@ export const initialModelWeekly = [
     runRate: 10731.89, 
     newFans: 296, 
     spenders: 30, 
-    newSpenders: 6,
-    conversion: 2.03,
+    newSpenders: 10,
+    conversion: 3.44,
     ppvRev: 1608.49, 
     tipsRev: 369.60, 
     transactions: 71, 
     apc: 2.37, 
-    apv: 27.86, 
-    arppu: 65.94 
+    apv: 24.41, 
+    arppu: 65.60 
   },
   { 
     monthKey: '2026-08', 
@@ -437,18 +395,37 @@ export const initialModelWeekly = [
     ppvRev: 310.00, 
     tipsRev: 68.15, 
     transactions: 24, 
-    apc: 1.33, 
-    apv: 15.76, 
-    arppu: 21.01 
+    apc: 2.07, 
+    apv: 20.07, 
+    arppu: 41.58 
   },
-
-  // WEEK 2 (8-15 Авг) - Exact OnlyMonster Export Figures
   { 
     monthKey: '2026-08', 
-    week: 'Week 2', 
+    week: 'Week 1', 
+    accountId: '30201', 
+    modelName: 'Eva Blush', 
+    totalRevenue: 549.69, 
+    plan: 3500.00, 
+    goalProgressPct: 29.48, 
+    goalStatusPct: -18.91,
+    runRate: 1999.00, 
+    newFans: 170, 
+    spenders: 16, 
+    newSpenders: 7,
+    conversion: 4.06,
+    ppvRev: 430.00, 
+    tipsRev: 119.69, 
+    transactions: 26, 
+    apc: 1.87, 
+    apv: 16.55, 
+    arppu: 33.67 
+  },
+  { 
+    monthKey: '2026-08', 
+    week: 'Week 1', 
     accountId: '4967', 
     modelName: 'Lila (angelkiss)', 
-    totalRevenue: 516.48, 
+    totalRevenue: 482.55, 
     plan: 1500.00, 
     goalProgressPct: 68.26, 
     goalStatusPct: 19.87,
@@ -457,34 +434,15 @@ export const initialModelWeekly = [
     spenders: 18, 
     newSpenders: 7,
     conversion: 4.67,
-    ppvRev: 477.53, 
-    tipsRev: 15.45, 
-    transactions: 37, 
-    apc: 2.06, 
-    apv: 13.96, 
-    arppu: 28.69 
+    ppvRev: 450.00, 
+    tipsRev: 32.55, 
+    transactions: 32, 
+    apc: 1.92, 
+    apv: 14.48, 
+    arppu: 27.75 
   },
-  { 
-    monthKey: '2026-08', 
-    week: 'Week 2', 
-    accountId: '30201', 
-    modelName: 'Eva Blush', 
-    totalRevenue: 460.47, 
-    plan: 3500.00, 
-    goalProgressPct: 29.48, 
-    goalStatusPct: -18.91,
-    runRate: 1999.00, 
-    newFans: 175, 
-    spenders: 14, 
-    newSpenders: 7,
-    conversion: 4.06,
-    ppvRev: 343.39, 
-    tipsRev: 88.31, 
-    transactions: 30, 
-    apc: 2.14, 
-    apv: 15.35, 
-    arppu: 32.89 
-  },
+
+  // WEEK 2 (8-15 Авг) - Exact OnlyMonster Export Figures in exact order (Lollysunnery, 1lollyhere, Eva Blush, angelkiss)
   { 
     monthKey: '2026-08', 
     week: 'Week 2', 
@@ -497,14 +455,14 @@ export const initialModelWeekly = [
     runRate: 10731.89, 
     newFans: 314, 
     spenders: 59, 
-    newSpenders: 12,
-    conversion: 3.82,
+    newSpenders: 11,
+    conversion: 3.44,
     ppvRev: 2219.57, 
     tipsRev: 1050.02, 
     transactions: 144, 
-    apc: 2.44, 
-    apv: 22.71, 
-    arppu: 55.42 
+    apc: 2.37, 
+    apv: 24.41, 
+    arppu: 65.60 
   },
   { 
     monthKey: '2026-08', 
@@ -523,8 +481,50 @@ export const initialModelWeekly = [
     ppvRev: 1081.87, 
     tipsRev: 159.05, 
     transactions: 63, 
-    apc: 2.63, 
-    apv: 21.72, 
-    arppu: 57.01 
+    apc: 2.07, 
+    apv: 20.07, 
+    arppu: 41.58 
+  },
+  { 
+    monthKey: '2026-08', 
+    week: 'Week 2', 
+    accountId: '30201', 
+    modelName: 'Eva Blush', 
+    totalRevenue: 460.47, 
+    plan: 3500.00, 
+    goalProgressPct: 29.48, 
+    goalStatusPct: -18.91,
+    runRate: 1999.00, 
+    newFans: 175, 
+    spenders: 14, 
+    newSpenders: 7,
+    conversion: 4.06,
+    ppvRev: 343.39, 
+    tipsRev: 88.31, 
+    transactions: 30, 
+    apc: 1.87, 
+    apv: 16.55, 
+    arppu: 33.67 
+  },
+  { 
+    monthKey: '2026-08', 
+    week: 'Week 2', 
+    accountId: '4967', 
+    modelName: 'Lila (angelkiss)', 
+    totalRevenue: 516.48, 
+    plan: 1500.00, 
+    goalProgressPct: 68.26, 
+    goalStatusPct: 19.87,
+    runRate: 1983.83, 
+    newFans: 150, 
+    spenders: 18, 
+    newSpenders: 7,
+    conversion: 4.67,
+    ppvRev: 477.53, 
+    tipsRev: 15.45, 
+    transactions: 37, 
+    apc: 1.92, 
+    apv: 14.48, 
+    arppu: 27.75 
   }
 ];

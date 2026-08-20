@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 """
-Generate Excel Spreadsheet (.xls SpreadsheetML) with APC (Average Purchases by Customer) and Eva Blush APV = $16.55:
+Generate Excel Spreadsheet (.xls SpreadsheetML) with exact model ordering and exact OM CRM conversion rates:
+1. Lollysunnery: 3.44%
+2. 1lollyhere: 2.61%
+3. Eva Blush: 4.06%
+4. Lila (angelkiss): 4.67%
 """
 
 def generate_full_om_screenshot_excel():
@@ -13,7 +17,7 @@ def generate_full_om_screenshot_excel():
  xmlns:html="http://www.w3.org/TR/REC-html40">
  <DocumentProperties xmlns="urn:schemas-microsoft-com:office:office">
   <Author>OnlyMonster Official Full Export</Author>
-  <Title>Dashboard + KPI (APC + Eva Blush APV 16.55)</Title>
+  <Title>Dashboard + KPI (Точный Порядок и Конверсия)</Title>
  </DocumentProperties>
  <Styles>
   <Style ss:ID="Default" ss:Name="Normal">
@@ -33,8 +37,8 @@ def generate_full_om_screenshot_excel():
   </Style>
  </Styles>
 
- <!-- SHEET 1: OnlyMonster CRM Export с APC и APV Eva Blush -->
- <Worksheet ss:Name="OM Export APC & APV">
+ <!-- SHEET 1: OnlyMonster CRM Export в Точном Порядке -->
+ <Worksheet ss:Name="OM Export Ordered">
   <Table>
    <Column ss:Width="180"/>
    <Column ss:Width="90"/>
@@ -54,26 +58,7 @@ def generate_full_om_screenshot_excel():
     <Cell><Data ss:Type="String">APV ($ Средний Чек)</Data></Cell>
    </Row>
 
-   <Row>
-    <Cell><Data ss:Type="String">4967. LILA (angelkiss)</Data></Cell>
-    <Cell><Data ss:Type="Number">300</Data></Cell>
-    <Cell><Data ss:Type="Number">36</Data></Cell>
-    <Cell><Data ss:Type="Number">14</Data></Cell>
-    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.0467</Data></Cell>
-    <Cell><Data ss:Type="Number">1.92</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">14.48</Data></Cell>
-   </Row>
-
-   <Row>
-    <Cell><Data ss:Type="String">30201. Eva (Eva Blush)</Data></Cell>
-    <Cell><Data ss:Type="Number">345</Data></Cell>
-    <Cell><Data ss:Type="Number">30</Data></Cell>
-    <Cell><Data ss:Type="Number">14</Data></Cell>
-    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.0406</Data></Cell>
-    <Cell><Data ss:Type="Number">1.87</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">16.55</Data></Cell>
-   </Row>
-
+   <!-- 1. Lollysunnery -->
    <Row>
     <Cell><Data ss:Type="String">39856. Lolly (Lollysunnery)</Data></Cell>
     <Cell><Data ss:Type="Number">610</Data></Cell>
@@ -84,6 +69,7 @@ def generate_full_om_screenshot_excel():
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">24.41</Data></Cell>
    </Row>
 
+   <!-- 2. 1lollyhere -->
    <Row>
     <Cell><Data ss:Type="String">47892. Lolly (1lollyhere)</Data></Cell>
     <Cell><Data ss:Type="Number">421</Data></Cell>
@@ -92,6 +78,28 @@ def generate_full_om_screenshot_excel():
     <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.0261</Data></Cell>
     <Cell><Data ss:Type="Number">2.07</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">20.07</Data></Cell>
+   </Row>
+
+   <!-- 3. Eva Blush -->
+   <Row>
+    <Cell><Data ss:Type="String">30201. Eva (Eva Blush)</Data></Cell>
+    <Cell><Data ss:Type="Number">345</Data></Cell>
+    <Cell><Data ss:Type="Number">30</Data></Cell>
+    <Cell><Data ss:Type="Number">14</Data></Cell>
+    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.0406</Data></Cell>
+    <Cell><Data ss:Type="Number">1.87</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">16.55</Data></Cell>
+   </Row>
+
+   <!-- 4. Lila (angelkiss) -->
+   <Row>
+    <Cell><Data ss:Type="String">4967. LILA (angelkiss)</Data></Cell>
+    <Cell><Data ss:Type="Number">300</Data></Cell>
+    <Cell><Data ss:Type="Number">36</Data></Cell>
+    <Cell><Data ss:Type="Number">14</Data></Cell>
+    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.0467</Data></Cell>
+    <Cell><Data ss:Type="Number">1.92</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">14.48</Data></Cell>
    </Row>
 
   </Table>
@@ -107,7 +115,7 @@ def generate_full_om_screenshot_excel():
     with open("chatter_analytics_system.xls", "w", encoding="utf-8") as f:
         f.write(xml)
 
-    print(f"✅ Файл Excel обновлен с APC и APV 16.55 для Eva Blush: {output_filepath}")
+    print(f"✅ Файл Excel обновлен в точном порядке моделей: {output_filepath}")
 
 if __name__ == "__main__":
     generate_full_om_screenshot_excel()
