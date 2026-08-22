@@ -159,7 +159,7 @@ function renderHeaderInfo() {
   }
   const cardSubtextEl = document.getElementById('dash-card-subtext-revenue');
   if (cardSubtextEl) {
-    cardSubtextEl.innerHTML = `Фактическая сумма за ${daysPassed} дн. по всем моделям <br><span style="color: var(--accent-purple); font-weight: 600;">(включая +$424.48 доход с PP)</span>`;
+    cardSubtextEl.innerHTML = `Фактическая сумма за ${daysPassed} дн. по всем моделям <br><span style="color: var(--accent-purple); font-weight: 600;">(включая +$1,423.95 PP: Lollysunnery $1,141.45 + Eva $282.50)</span>`;
   }
 }
 
@@ -168,8 +168,8 @@ function renderMainDashboard() {
   const models = getModelSummaries();
   const chatters = getChatterBreakdown();
 
-  // Summary Metrics including PP Income (+$424.48)
-  const ppIncome = 424.48;
+  // Summary Metrics including PayPal Income (+$1,423.95)
+  const ppIncome = 1423.95; // Lollysunnery $1,141.45 + Eva Blush $282.50
   const grandPlan = models.reduce((acc, m) => acc + m.plan, 0);
   const modelsFact = models.reduce((acc, m) => acc + m.totalRevenue, 0);
   const grandFact = modelsFact + ppIncome;
