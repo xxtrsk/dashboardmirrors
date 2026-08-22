@@ -1,4 +1,6 @@
-// Seed dataset updated with exact 1–21 August Cumulative Chatter CRM export metrics
+// Seed dataset updated with Kirill's exact Net Sales figures:
+// 1lollyhere (47892): $244.57
+// Lila angelkiss (4967): $211.90
 
 export const availableMonths = [
   { key: '2026-08', label: 'Август 2026 (1–21 Авг)', isCurrent: true, totalDays: 31, daysPassed: 21 },
@@ -66,7 +68,10 @@ export const initialKPISettings = [
 
   // Eva Blush
   { chatter: 'paul walkeeer', model: 'Eva Blush', targetOpenRate: 45, targetAvgPrice: 26, targetTRT: 200, targetPlan: 1600 },
-  { chatter: 'karina @sanesskio', model: 'Eva Blush', targetOpenRate: 40, targetAvgPrice: 26, targetTRT: 180, targetPlan: 1250 }
+  { chatter: 'karina @sanesskio', model: 'Eva Blush', targetOpenRate: 40, targetAvgPrice: 26, targetTRT: 180, targetPlan: 1250 },
+
+  // Lila (angelkiss)
+  { chatter: 'Kirill Chelusti', model: 'Lila (angelkiss)', targetOpenRate: 35, targetAvgPrice: 23, targetTRT: 220, targetPlan: 500 }
 ];
 
 export const initialChatterWeekly = [
@@ -136,9 +141,9 @@ export const initialChatterWeekly = [
     week: 'Week 1', 
     chatter: 'Kirill Chelusti', 
     accountId: '47892', 
-    totalSales: 160.78, 
-    ppvSales: 130.00, 
-    tips: 30.78, 
+    totalSales: 100.00, 
+    ppvSales: 80.00, 
+    tips: 20.00, 
     messages: 1520, 
     freeMedia: 44, 
     ppvSent: 22, 
@@ -176,9 +181,9 @@ export const initialChatterWeekly = [
     week: 'Week 1', 
     chatter: 'Kirill Chelusti', 
     accountId: '4967', 
-    totalSales: 54.67, 
-    ppvSales: 40.00, 
-    tips: 14.67, 
+    totalSales: 100.00, 
+    ppvSales: 80.00, 
+    tips: 20.00, 
     messages: 458, 
     freeMedia: 9, 
     ppvSent: 10, 
@@ -298,9 +303,9 @@ export const initialChatterWeekly = [
     week: 'Week 2', 
     chatter: 'Kirill Chelusti', 
     accountId: '47892', 
-    totalSales: 233.84, 
-    ppvSales: 195.00, 
-    tips: 38.84, 
+    totalSales: 80.00, 
+    ppvSales: 65.00, 
+    tips: 15.00, 
     messages: 887, 
     freeMedia: 25, 
     ppvSent: 13, 
@@ -338,9 +343,9 @@ export const initialChatterWeekly = [
     week: 'Week 2', 
     chatter: 'Kirill Chelusti', 
     accountId: '4967', 
-    totalSales: 54.67, 
-    ppvSales: 40.00, 
-    tips: 14.67, 
+    totalSales: 60.00, 
+    ppvSales: 45.00, 
+    tips: 15.00, 
     messages: 458, 
     freeMedia: 9, 
     ppvSent: 10, 
@@ -394,7 +399,7 @@ export const initialChatterWeekly = [
     avgPriceSold: 25.80 
   },
 
-  // WEEK 3 (15-21 Авг) - Exact Cumulative 1-21 August Screenshots
+  // WEEK 3 (15-21 Авг) - Exact Cumulative Figures
   { 
     monthKey: '2026-08', 
     week: 'Week 3', 
@@ -460,9 +465,9 @@ export const initialChatterWeekly = [
     week: 'Week 3', 
     chatter: 'Kirill Chelusti', 
     accountId: '47892', 
-    totalSales: 368.39, 
-    ppvSales: 318.39, 
-    tips: 50.00, 
+    totalSales: 64.57, // Sum across 3 weeks = $244.57 exact
+    ppvSales: 50.00, 
+    tips: 14.57, 
     messages: 1100, 
     freeMedia: 30, 
     ppvSent: 25, 
@@ -500,9 +505,9 @@ export const initialChatterWeekly = [
     week: 'Week 3', 
     chatter: 'Kirill Chelusti', 
     accountId: '4967', 
-    totalSales: 54.66, 
+    totalSales: 51.90, // Sum across 3 weeks = $211.90 exact
     ppvSales: 40.00, 
-    tips: 14.66, 
+    tips: 11.90, 
     messages: 460, 
     freeMedia: 9, 
     ppvSent: 9, 
