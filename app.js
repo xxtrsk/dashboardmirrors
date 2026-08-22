@@ -177,11 +177,9 @@ function renderMainDashboard() {
   const models = getModelSummaries();
   const chatters = getChatterBreakdown();
 
-  // Summary Metrics including PayPal Income (+$1,423.95)
-  const ppIncome = 1423.95; // Lollysunnery $1,141.45 + Eva Blush $282.50
+  // Summary Metrics
   const grandPlan = models.reduce((acc, m) => acc + m.plan, 0);
-  const modelsFact = models.reduce((acc, m) => acc + m.totalRevenue, 0);
-  const grandFact = modelsFact + ppIncome;
+  const grandFact = models.reduce((acc, m) => acc + m.totalRevenue, 0);
   
   const { daysPassed, daysInMonth } = getDaysInfo(state.selectedMonthKey);
   const grandRunRate = daysPassed > 0 ? (grandFact / daysPassed) * daysInMonth : 0;

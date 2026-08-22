@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
 """
-Generate Excel Spreadsheet (.xls SpreadsheetML) with exact 100% matching 1–21 August Cumulative Summary OnlyMonster CRM export + PayPal Income Breakdown:
-- 39856. Lollysunnery: CRM Net $7,120.28 (+ PayPal $1,141.45)
-- 47892. 1lollyhere: CRM Net $2,560.25
-- 30201. Eva Blush: CRM Net $1,534.37 (+ PayPal $282.50)
-- 4967. Lila (angelkiss): CRM Net $1,216.88
-- Total PayPal Income: +$1,423.95
+Generate Excel Spreadsheet (.xls SpreadsheetML) with model total revenue = OnlyFans Net + PayPal Income:
+- 39856. Lollysunnery: OF $7,120.28 + PayPal $1,141.45 = $8,261.73 Net
+- 47892. 1lollyhere: OF $2,560.25 Net
+- 30201. Eva Blush: OF $1,534.37 + PayPal $282.50 = $1,816.87 Net
+- 4967. Lila (angelkiss): OF $1,216.88 Net
 - Grand Total Net Revenue: $13,855.73
 - Monthly Goal Progress: 72.92% ($13,855.73 / $19,000.00)
 - Monthly Revenue Forecast: $20,453.70
@@ -21,7 +20,7 @@ def generate_full_om_screenshot_excel():
  xmlns:html="http://www.w3.org/TR/REC-html40">
  <DocumentProperties xmlns="urn:schemas-microsoft-com:office:office">
   <Author>OnlyMonster Official Full Export</Author>
-  <Title>Dashboard + KPI (1–21 Августа с Учетом PayPal)</Title>
+  <Title>Dashboard + KPI (Балансы Моделей OF + PayPal)</Title>
  </DocumentProperties>
  <Styles>
   <Style ss:ID="Default" ss:Name="Normal">
@@ -41,12 +40,12 @@ def generate_full_om_screenshot_excel():
   </Style>
  </Styles>
 
- <!-- SHEET 1: 1–21 Августа Полный Свод с Учетом PayPal -->
- <Worksheet ss:Name="OM Export 1-21 Aug + PayPal">
+ <!-- SHEET 1: Балансы Моделей OF + PayPal -->
+ <Worksheet ss:Name="OM Export Models (OF + PP)">
   <Table>
    <Column ss:Width="180"/>
    <Column ss:Width="110"/>
-   <Column ss:Width="120"/>
+   <Column ss:Width="110"/>
    <Column ss:Width="120"/>
    <Column ss:Width="110"/>
    <Column ss:Width="100"/>
@@ -55,7 +54,7 @@ def generate_full_om_screenshot_excel():
 
    <Row ss:StyleID="Header">
     <Cell><Data ss:Type="String">Account / Model</Data></Cell>
-    <Cell><Data ss:Type="String">CRM Revenue Net</Data></Cell>
+    <Cell><Data ss:Type="String">OF Net Rev</Data></Cell>
     <Cell><Data ss:Type="String">PayPal Income</Data></Cell>
     <Cell><Data ss:Type="String">Total Model Rev</Data></Cell>
     <Cell><Data ss:Type="String">Monthly Goal</Data></Cell>
@@ -83,8 +82,8 @@ def generate_full_om_screenshot_excel():
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">0.00</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">2560.25</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">4000.00</Data></Cell>
-    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.6431</Data></Cell>
-    <Cell ss:StyleID="Percent"><Data ss:Type="Number">-0.0344</Data></Cell>
+    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.6401</Data></Cell>
+    <Cell ss:StyleID="Percent"><Data ss:Type="Number">-0.0373</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">3779.42</Data></Cell>
    </Row>
 
@@ -107,8 +106,8 @@ def generate_full_om_screenshot_excel():
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">0.00</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">1216.88</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">1500.00</Data></Cell>
-    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.8193</Data></Cell>
-    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.1418</Data></Cell>
+    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.8113</Data></Cell>
+    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.1339</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">1796.44</Data></Cell>
    </Row>
 
@@ -137,7 +136,7 @@ def generate_full_om_screenshot_excel():
     with open("chatter_analytics_system.xls", "w", encoding="utf-8") as f:
         f.write(xml)
 
-    print(f"✅ Файл Excel обновлен с PayPal ($1,423.95): {output_filepath}")
+    print(f"✅ Файл Excel обновлен с учетом балансов моделей OF + PayPal: {output_filepath}")
 
 if __name__ == "__main__":
     generate_full_om_screenshot_excel()
