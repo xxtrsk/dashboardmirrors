@@ -275,7 +275,7 @@ function renderMainDashboard() {
         <td style="font-family: var(--font-mono); color: var(--primary); font-weight: 600;">${formatCurrency(c.forecast)}</td>
         <td style="font-family: var(--font-mono);">${Math.round(c.trt)}s (Цель ${c.targetTRT}s)</td>
         <td>${formatPercent(c.openRate)} (Цель ${formatPercent(c.targetOpenRate)})</td>
-        <td>$${c.avgPriceSent > 0 ? c.avgPriceSent.toFixed(2) : c.avgPriceSold.toFixed(2)} (Цель $${c.targetAvgPrice})</td>
+        <td>$${c.avgPriceSold.toFixed(2)} (Цель $${c.targetAvgPrice})</td>
         <td>
           <span class="badge-status ${c.isGoalAchieved ? 'badge-green' : 'badge-amber'}">
             ${c.isGoalAchieved ? '🟢 Выполнен' : '🟡 В процессе'}
