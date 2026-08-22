@@ -113,11 +113,19 @@ function getChatterBreakdown() {
     const forecast = runRate;
     const isGoalAchieved = factSales >= kpi.targetPlan;
 
-    // Actual CRM metrics
-    const latestRec = records[0] || {};
-    const openRate = latestRec.openRate || 0;
-    const avgPriceSold = latestRec.avgPriceSold || 0;
-    const trt = latestRec.trt || 0;
+    // Actual CRM metrics aggregated across all weeks
+    const totalPPVSent = records.reduce((acc, r) => acc + (r.ppvSent || 0), 0);
+    const totalPPVSold = records.reduce((acc, r) => acc + (r.ppvSold || 0), 0);
+    const totalPPVSales = records.reduce((acc, r) => acc + (r.ppvSales || 0), 0);
+
+    const openRate = totalPPVSent > 0 ? (totalPPVSold / totalPPVSent) * 100 : (
+      records.length > 0 ? records.reduce((acc, r) => acc + (r.openRate || 0), 0) / records.length : 0
+    );
+    const avgPriceSent = records.length > 0 ? records.reduce((acc, r) => acc + (r.avgPriceSent || 0), 0) / records.length : 0;
+    const avgPriceSold = totalPPVSold > 0 ? (totalPPVSales / totalPPVSold) : (
+      records.length > 0 ? records.reduce((acc, r) => acc + (r.avgPriceSold || 0), 0) / records.length : 0
+    );
+    const trt = records.length > 0 ? records.reduce((acc, r) => acc + (r.trt || 0), 0) / records.length : 0;
 
     return {
       chatter: kpi.chatter,
@@ -131,6 +139,7 @@ function getChatterBreakdown() {
       targetOpenRate: kpi.targetOpenRate,
       openRate,
       targetAvgPrice: kpi.targetAvgPrice,
+      avgPriceSent,
       avgPriceSold,
       targetTRT: kpi.targetTRT,
       trt
@@ -268,7 +277,7 @@ function renderMainDashboard() {
         <td style="font-family: var(--font-mono); color: var(--primary); font-weight: 600;">${formatCurrency(c.forecast)}</td>
         <td style="font-family: var(--font-mono);">${Math.round(c.trt)}s (Цель ${c.targetTRT}s)</td>
         <td>${formatPercent(c.openRate)} (Цель ${formatPercent(c.targetOpenRate)})</td>
-        <td>$${c.avgPriceSold.toFixed(2)} (Цель $${c.targetAvgPrice})</td>
+        <td>$${c.avgPriceSent > 0 ? c.avgPriceSent.toFixed(2) : c.avgPriceSold.toFixed(2)} (Цель $${c.targetAvgPrice})</td>
         <td>
           <span class="badge-status ${c.isGoalAchieved ? 'badge-green' : 'badge-amber'}">
             ${c.isGoalAchieved ? '🟢 Выполнен' : '🟡 В процессе'}
