@@ -7,7 +7,7 @@
  xmlns:html="http://www.w3.org/TR/REC-html40">
  <DocumentProperties xmlns="urn:schemas-microsoft-com:office:office">
   <Author>OnlyMonster Official Full Export</Author>
-  <Title>Dashboard + KPI (Балансы Моделей OF + PayPal)</Title>
+  <Title>Dashboard + KPI (1–31 Августа Полный Итог)</Title>
  </DocumentProperties>
  <Styles>
   <Style ss:ID="Default" ss:Name="Normal">
@@ -27,8 +27,8 @@
   </Style>
  </Styles>
 
- <!-- SHEET 1: Балансы Моделей OF + PayPal -->
- <Worksheet ss:Name="OM Export Models (OF + PP)">
+ <!-- SHEET 1: 1–31 Августа Полный Итог (OF + PayPal) -->
+ <Worksheet ss:Name="OM Export 1-31 Aug Full Summary">
   <Table>
    <Column ss:Width="180"/>
    <Column ss:Width="110"/>
@@ -53,61 +53,61 @@
    <!-- 1. Lollysunnery -->
    <Row>
     <Cell><Data ss:Type="String">39856. Lolly (Lollysunnery)</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">7120.28</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1141.45</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">8261.73</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">10009.90</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1360.89</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">11370.79</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">10000.00</Data></Cell>
-    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.8262</Data></Cell>
-    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.1488</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">12195.89</Data></Cell>
+    <Cell ss:StyleID="Percent"><Data ss:Type="Number">1.1371</Data></Cell>
+    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.1371</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">11370.79</Data></Cell>
    </Row>
 
    <!-- 2. 1lollyhere -->
    <Row>
     <Cell><Data ss:Type="String">47892. Lolly (1lollyhere)</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">2560.25</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">0.00</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">2560.25</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">3577.07</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">210.00</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">3787.07</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">4000.00</Data></Cell>
-    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.6401</Data></Cell>
-    <Cell ss:StyleID="Percent"><Data ss:Type="Number">-0.0373</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">3779.42</Data></Cell>
+    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.9468</Data></Cell>
+    <Cell ss:StyleID="Percent"><Data ss:Type="Number">-0.0532</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">3787.07</Data></Cell>
    </Row>
 
    <!-- 3. Eva Blush -->
    <Row>
     <Cell><Data ss:Type="String">30201. Eva (Eva Blush)</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1534.37</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">2404.65</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">282.50</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1816.87</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">2687.15</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">3500.00</Data></Cell>
-    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.5191</Data></Cell>
-    <Cell ss:StyleID="Percent"><Data ss:Type="Number">-0.1583</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">2681.95</Data></Cell>
+    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.7678</Data></Cell>
+    <Cell ss:StyleID="Percent"><Data ss:Type="Number">-0.2322</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">2687.15</Data></Cell>
    </Row>
 
    <!-- 4. Lila (angelkiss) -->
    <Row>
     <Cell><Data ss:Type="String">4967. LILA (angelkiss)</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1216.88</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1751.52</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">0.00</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1216.88</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1751.52</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">1500.00</Data></Cell>
-    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.8113</Data></Cell>
-    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.1339</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1796.44</Data></Cell>
+    <Cell ss:StyleID="Percent"><Data ss:Type="Number">1.1677</Data></Cell>
+    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.1677</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1751.52</Data></Cell>
    </Row>
 
    <!-- 5. Grand Total -->
    <Row ss:StyleID="Header">
     <Cell><Data ss:Type="String">ИТОГО ВЫРУЧКА АГЕНТСТВА</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">12431.78</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1423.95</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">13855.73</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">17743.14</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1853.39</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">19596.53</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">19000.00</Data></Cell>
-    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.7292</Data></Cell>
+    <Cell ss:StyleID="Percent"><Data ss:Type="Number">1.0314</Data></Cell>
     <Cell><Data ss:Type="String">—</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">20453.70</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">19596.53</Data></Cell>
    </Row>
 
   </Table>

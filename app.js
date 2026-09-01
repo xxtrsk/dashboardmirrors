@@ -168,7 +168,7 @@ function renderHeaderInfo() {
   }
   const cardSubtextEl = document.getElementById('dash-card-subtext-revenue');
   if (cardSubtextEl) {
-    cardSubtextEl.innerHTML = `Фактическая сумма за ${daysPassed} дн. по всем моделям <br><span style="color: var(--accent-purple); font-weight: 600;">(включая +$1,423.95 PP: Lollysunnery $1,141.45 + Eva $282.50)</span>`;
+    cardSubtextEl.innerHTML = `Фактическая сумма за ${daysPassed} дн. по всем моделям <br><span style="color: var(--accent-purple); font-weight: 600;">(включая +$1,853.39 PayPal: Lolly $1,360.89 + Eva $282.50 + 1lolly $210.00)</span>`;
   }
 }
 
