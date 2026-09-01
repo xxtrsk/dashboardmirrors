@@ -12,9 +12,9 @@ export const availableMonths = [
 
 export const initialConfig = [
   { id: '39856', modelName: 'Lolly (Lollysunnery)', page: 'lollysunnery', chatters: ['paul walkeeer', 'karina @sanesskio'] },
-  { id: '47892', modelName: 'Lolly (1lollyhere)', page: '1lollyhere', chatters: ['hinata hyuga', 'Kirill Chelusti'] },
+  { id: '47892', modelName: 'Lolly (1lollyhere)', page: '1lollyhere', chatters: ['hinata hyuga'] },
   { id: '30201', modelName: 'Eva Blush', page: 'evablush', chatters: ['paul walkeeer', 'karina @sanesskio'] },
-  { id: '4967', modelName: 'Lila (angelkiss)', page: 'angelkiss', chatters: ['hinata hyuga', 'Kirill Chelusti'] }
+  { id: '4967', modelName: 'Lila (angelkiss)', page: 'angelkiss', chatters: ['hinata hyuga'] }
 ];
 
 export const initialModels = [
@@ -67,14 +67,10 @@ export const initialKPISettings = [
 
   // Lolly (1lollyhere)
   { chatter: 'hinata hyuga', model: 'Lolly (1lollyhere)', targetOpenRate: 40, targetAvgPrice: 25, targetTRT: 200, targetPlan: 1800 },
-  { chatter: 'Kirill Chelusti', model: 'Lolly (1lollyhere)', targetOpenRate: 35, targetAvgPrice: 23, targetTRT: 220, targetPlan: 1200 },
 
   // Eva Blush
   { chatter: 'paul walkeeer', model: 'Eva Blush', targetOpenRate: 45, targetAvgPrice: 26, targetTRT: 200, targetPlan: 1600 },
-  { chatter: 'karina @sanesskio', model: 'Eva Blush', targetOpenRate: 40, targetAvgPrice: 26, targetTRT: 180, targetPlan: 1250 },
-
-  // Lila (angelkiss)
-  { chatter: 'Kirill Chelusti', model: 'Lila (angelkiss)', targetOpenRate: 35, targetAvgPrice: 23, targetTRT: 220, targetPlan: 500 }
+  { chatter: 'karina @sanesskio', model: 'Eva Blush', targetOpenRate: 40, targetAvgPrice: 26, targetTRT: 180, targetPlan: 1250 }
 ];
 
 export const initialChatterWeekly = [
@@ -142,26 +138,6 @@ export const initialChatterWeekly = [
   { 
     monthKey: '2026-08', 
     week: '1-31 Авг (Итог)', 
-    chatter: 'Kirill Chelusti', 
-    accountId: '47892', 
-    totalSales: 324.57, 
-    ppvSales: 244.57, 
-    tips: 80.00, 
-    messages: 3507, 
-    freeMedia: 99, 
-    ppvSent: 60, 
-    ppvSold: 26, 
-    chats: 407, 
-    words: 43200, 
-    trt: 291.67, 
-    avgPPV: 22.07, 
-    openRate: 43.33, 
-    avgPriceSent: 28.67, 
-    avgPriceSold: 33.68 
-  },
-  { 
-    monthKey: '2026-08', 
-    week: '1-31 Авг (Итог)', 
     chatter: 'hinata hyuga', 
     accountId: '4967', 
     totalSales: 841.86, 
@@ -178,26 +154,6 @@ export const initialChatterWeekly = [
     openRate: 42.45, 
     avgPriceSent: 20.53, 
     avgPriceSold: 23.27 
-  },
-  { 
-    monthKey: '2026-08', 
-    week: '1-31 Авг (Итог)', 
-    chatter: 'Kirill Chelusti', 
-    accountId: '4967', 
-    totalSales: 291.90, 
-    ppvSales: 211.90, 
-    tips: 80.00, 
-    messages: 1376, 
-    freeMedia: 27, 
-    ppvSent: 29, 
-    ppvSold: 8, 
-    chats: 219, 
-    words: 18333, 
-    trt: 169.70, 
-    avgPPV: 18.75, 
-    openRate: 27.59, 
-    avgPriceSent: 20.26, 
-    avgPriceSold: 18.75 
   },
   { 
     monthKey: '2026-08', 
