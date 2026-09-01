@@ -58,10 +58,10 @@ function getModelSummaries() {
     const runRate = latestRec.runRate ? latestRec.runRate : (daysPassed > 0 ? (factRevenue / daysPassed) * daysInMonth : 0);
     const goalStatusPct = latestRec.goalStatusPct !== undefined ? latestRec.goalStatusPct : (goalProgressPct - ((daysPassed / daysInMonth) * 100));
 
-    // Sum aggregate CRM fields
-    const newFans = weeklyRecords.reduce((acc, r) => acc + (r.newFans || 0), 0);
-    const spenders = weeklyRecords.reduce((acc, r) => acc + (r.spenders || 0), 0);
-    const newSpenders = weeklyRecords.reduce((acc, r) => acc + (r.newSpenders || 0), 0);
+    // Aggregate or cumulative CRM fields
+    const newFans = latestRec.newFans !== undefined ? latestRec.newFans : weeklyRecords.reduce((acc, r) => acc + (r.newFans || 0), 0);
+    const spenders = latestRec.spenders !== undefined ? latestRec.spenders : weeklyRecords.reduce((acc, r) => acc + (r.spenders || 0), 0);
+    const newSpenders = latestRec.newSpenders !== undefined ? latestRec.newSpenders : weeklyRecords.reduce((acc, r) => acc + (r.newSpenders || 0), 0);
     const conversion = latestRec.conversion !== undefined ? latestRec.conversion : (newFans > 0 ? (newSpenders / newFans) * 100 : 0);
     const apc = latestRec.apc || 0;
     const apv = latestRec.apv || 0;
@@ -209,7 +209,7 @@ function renderMainDashboard() {
             <div style="font-weight: 700; font-size: 16px; color: var(--text-main);">${formatCurrency(m.plan)}</div>
           </div>
           <div>
-            <div style="color: var(--text-muted);">Total Revenue (1-7 Авг):</div>
+            <div style="color: var(--text-muted);">Total Revenue (1-${daysPassed} Авг):</div>
             <div style="font-weight: 700; font-size: 16px; color: var(--accent-green);">${formatCurrency(m.totalRevenue)}</div>
           </div>
           <div>
