@@ -168,7 +168,7 @@ function renderHeaderInfo() {
   }
   const cardSubtextEl = document.getElementById('dash-card-subtext-revenue');
   if (cardSubtextEl) {
-    cardSubtextEl.innerHTML = `Фактическая сумма за ${daysPassed} дн. по всем моделям <br><span style="color: var(--accent-purple); font-weight: 600;">(включая +$1,853.39 PayPal: Lolly $1,360.89 + Eva $282.50 + 1lolly $210.00)</span>`;
+    cardSubtextEl.innerHTML = `Фактическая сумма за ${daysPassed} дн. по всем моделям <br><span style="color: var(--accent-purple); font-weight: 600;">(включая +$1,748.72 Внешние источники: PayPal + $30 Крипта + $44.72 Карта УКР)</span>`;
   }
 }
 

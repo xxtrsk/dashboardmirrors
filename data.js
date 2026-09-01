@@ -1,9 +1,9 @@
-// Seed dataset updated with FULL AUGUST (1–31 August) Official CRM Export + PayPal Income:
-// Lollysunnery (39856): OF Net $10,009.90 + PayPal $1,360.89 = $11,370.79 (Goal $10,000 | 113.71%)
-// 1lollyhere (47892): OF Net $3,577.07 + PayPal $210.00 = $3,787.07 (Goal $4,000 | 94.68%)
-// Eva Blush (30201): OF Net $2,404.65 + PayPal $282.50 = $2,687.15 (Goal $3,500 | 76.78%)
-// Lila angelkiss (4967): OF Net $1,751.52 + PayPal $0.00 = $1,751.52 (Goal $1,500 | 116.77%)
-// Grand Total Agency Revenue: $19,596.53 (Goal $19,000 | 103.14% EXCEEDED!)
+// Seed dataset updated with FULL AUGUST (1–31 August) Official CRM Export + External Income Sources ($1,748.72):
+// Lollysunnery (39856): OF Net $10,009.90 + External $1,341.22 = $11,351.12 (Goal $10,000 | 113.51%)
+// 1lollyhere (47892): OF Net $3,577.07 + External $125.00 = $3,702.07 (Goal $4,000 | 92.55%)
+// Eva Blush (30201): OF Net $2,404.65 + External $282.50 = $2,687.15 (Goal $3,500 | 76.78%)
+// Lila angelkiss (4967): OF Net $1,751.52 + External $0.00 = $1,751.52 (Goal $1,500 | 116.77%)
+// Grand Total Agency Revenue: $19,491.86 (Goal $19,000 | 102.59% EXCEEDED!)
 
 export const availableMonths = [
   { key: '2026-08', label: 'Август 2026 (1–31 Итог)', isCurrent: true, totalDays: 31, daysPassed: 31 },
@@ -198,17 +198,17 @@ export const initialChatterWeekly = [
 ];
 
 export const initialModelWeekly = [
-  // FULL AUGUST MODEL CUMULATIVE REVENUE (OF Net + PayPal)
+  // FULL AUGUST MODEL CUMULATIVE REVENUE (OF Net + External Sources $1,748.72)
   { 
     monthKey: '2026-08', 
     week: '1-31 Авг (Итог)', 
     accountId: '39856', 
     modelName: 'Lolly (Lollysunnery)', 
-    totalRevenue: 11370.79, // OF Net $10,009.90 + PayPal $1,360.89
+    totalRevenue: 11351.12, // OF Net $10,009.90 + External $1,341.22
     plan: 10000.00, 
-    goalProgressPct: 113.71, 
-    goalStatusPct: 13.71,
-    runRate: 11370.79, 
+    goalProgressPct: 113.51, 
+    goalStatusPct: 13.51,
+    runRate: 11351.12, 
     newFans: 792, 
     spenders: 119, 
     newSpenders: 37,
@@ -225,11 +225,11 @@ export const initialModelWeekly = [
     week: '1-31 Авг (Итог)', 
     accountId: '47892', 
     modelName: 'Lolly (1lollyhere)', 
-    totalRevenue: 3787.07, // OF Net $3,577.07 + PayPal $210.00
+    totalRevenue: 3702.07, // OF Net $3,577.07 + External $125.00
     plan: 4000.00, 
-    goalProgressPct: 94.68, 
-    goalStatusPct: -5.32,
-    runRate: 3787.07, 
+    goalProgressPct: 92.55, 
+    goalStatusPct: -7.45,
+    runRate: 3702.07, 
     newFans: 865, 
     spenders: 76, 
     newSpenders: 26,
@@ -246,7 +246,7 @@ export const initialModelWeekly = [
     week: '1-31 Авг (Итог)', 
     accountId: '30201', 
     modelName: 'Eva Blush', 
-    totalRevenue: 2687.15, // OF Net $2,404.65 + PayPal $282.50
+    totalRevenue: 2687.15, // OF Net $2,404.65 + External $282.50
     plan: 3500.00, 
     goalProgressPct: 76.78, 
     goalStatusPct: -23.22,
@@ -267,7 +267,7 @@ export const initialModelWeekly = [
     week: '1-31 Авг (Итог)', 
     accountId: '4967', 
     modelName: 'Lila (angelkiss)', 
-    totalRevenue: 1751.52, // OF Net $1,751.52 + PayPal $0.00
+    totalRevenue: 1751.52, // OF Net $1,751.52 + External $0.00
     plan: 1500.00, 
     goalProgressPct: 116.77, 
     goalStatusPct: 16.77,

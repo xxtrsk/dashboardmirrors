@@ -27,12 +27,12 @@
   </Style>
  </Styles>
 
- <!-- SHEET 1: 1–31 Августа Полный Итог (OF + PayPal) -->
+ <!-- SHEET 1: 1–31 Августа Полный Итог (OF + Внешние Источники) -->
  <Worksheet ss:Name="OM Export 1-31 Aug Full Summary">
   <Table>
    <Column ss:Width="180"/>
    <Column ss:Width="110"/>
-   <Column ss:Width="110"/>
+   <Column ss:Width="120"/>
    <Column ss:Width="120"/>
    <Column ss:Width="110"/>
    <Column ss:Width="100"/>
@@ -42,7 +42,7 @@
    <Row ss:StyleID="Header">
     <Cell><Data ss:Type="String">Account / Model</Data></Cell>
     <Cell><Data ss:Type="String">OF Net Rev</Data></Cell>
-    <Cell><Data ss:Type="String">PayPal Income</Data></Cell>
+    <Cell><Data ss:Type="String">External Income</Data></Cell>
     <Cell><Data ss:Type="String">Total Model Rev</Data></Cell>
     <Cell><Data ss:Type="String">Monthly Goal</Data></Cell>
     <Cell><Data ss:Type="String">Goal Progress</Data></Cell>
@@ -54,24 +54,24 @@
    <Row>
     <Cell><Data ss:Type="String">39856. Lolly (Lollysunnery)</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">10009.90</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1360.89</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">11370.79</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1341.22</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">11351.12</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">10000.00</Data></Cell>
-    <Cell ss:StyleID="Percent"><Data ss:Type="Number">1.1371</Data></Cell>
-    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.1371</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">11370.79</Data></Cell>
+    <Cell ss:StyleID="Percent"><Data ss:Type="Number">1.1351</Data></Cell>
+    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.1351</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">11351.12</Data></Cell>
    </Row>
 
    <!-- 2. 1lollyhere -->
    <Row>
     <Cell><Data ss:Type="String">47892. Lolly (1lollyhere)</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">3577.07</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">210.00</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">3787.07</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">125.00</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">3702.07</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">4000.00</Data></Cell>
-    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.9468</Data></Cell>
-    <Cell ss:StyleID="Percent"><Data ss:Type="Number">-0.0532</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">3787.07</Data></Cell>
+    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.9255</Data></Cell>
+    <Cell ss:StyleID="Percent"><Data ss:Type="Number">-0.0745</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">3702.07</Data></Cell>
    </Row>
 
    <!-- 3. Eva Blush -->
@@ -102,12 +102,12 @@
    <Row ss:StyleID="Header">
     <Cell><Data ss:Type="String">ИТОГО ВЫРУЧКА АГЕНТСТВА</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">17743.14</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1853.39</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">19596.53</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1748.72</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">19491.86</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">19000.00</Data></Cell>
-    <Cell ss:StyleID="Percent"><Data ss:Type="Number">1.0314</Data></Cell>
+    <Cell ss:StyleID="Percent"><Data ss:Type="Number">1.0259</Data></Cell>
     <Cell><Data ss:Type="String">—</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">19596.53</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">19491.86</Data></Cell>
    </Row>
 
   </Table>

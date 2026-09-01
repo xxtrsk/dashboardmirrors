@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 """
 Generate Excel Spreadsheet (.xls SpreadsheetML) for Full Month of August (1–31 August):
-- 39856. Lollysunnery: OF Net $10,009.90 + PayPal $1,360.89 = $11,370.79 (Goal $10,000 | 113.71%)
-- 47892. 1lollyhere: OF Net $3,577.07 + PayPal $210.00 = $3,787.07 (Goal $4,000 | 94.68%)
-- 30201. Eva Blush: OF Net $2,404.65 + PayPal $282.50 = $2,687.15 (Goal $3,500 | 76.78%)
-- 4967. Lila (angelkiss): OF Net $1,751.52 + PayPal $0.00 = $1,751.52 (Goal $1,500 | 116.77%)
-- Grand Total Net Revenue: $19,596.53 (Goal $19,000 | 103.14% EXCEEDED!)
+- 39856. Lollysunnery: OF Net $10,009.90 + External $1,341.22 = $11,351.12
+- 47892. 1lollyhere: OF Net $3,577.07 + External $125.00 = $3,702.07
+- 30201. Eva Blush: OF Net $2,404.65 + External $282.50 = $2,687.15
+- 4967. Lila (angelkiss): OF Net $1,751.52 + External $0.00 = $1,751.52
+- Total External Income (PayPal + Crypto + Ukr Card): $1,748.72
+- Grand Total Net Revenue: $19,491.86 (Goal $19,000 | 102.59% EXCEEDED!)
 """
 
 def generate_full_om_screenshot_excel():
@@ -38,12 +39,12 @@ def generate_full_om_screenshot_excel():
   </Style>
  </Styles>
 
- <!-- SHEET 1: 1–31 Августа Полный Итог (OF + PayPal) -->
+ <!-- SHEET 1: 1–31 Августа Полный Итог (OF + Внешние Источники) -->
  <Worksheet ss:Name="OM Export 1-31 Aug Full Summary">
   <Table>
    <Column ss:Width="180"/>
    <Column ss:Width="110"/>
-   <Column ss:Width="110"/>
+   <Column ss:Width="120"/>
    <Column ss:Width="120"/>
    <Column ss:Width="110"/>
    <Column ss:Width="100"/>
@@ -53,7 +54,7 @@ def generate_full_om_screenshot_excel():
    <Row ss:StyleID="Header">
     <Cell><Data ss:Type="String">Account / Model</Data></Cell>
     <Cell><Data ss:Type="String">OF Net Rev</Data></Cell>
-    <Cell><Data ss:Type="String">PayPal Income</Data></Cell>
+    <Cell><Data ss:Type="String">External Income</Data></Cell>
     <Cell><Data ss:Type="String">Total Model Rev</Data></Cell>
     <Cell><Data ss:Type="String">Monthly Goal</Data></Cell>
     <Cell><Data ss:Type="String">Goal Progress</Data></Cell>
@@ -65,24 +66,24 @@ def generate_full_om_screenshot_excel():
    <Row>
     <Cell><Data ss:Type="String">39856. Lolly (Lollysunnery)</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">10009.90</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1360.89</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">11370.79</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1341.22</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">11351.12</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">10000.00</Data></Cell>
-    <Cell ss:StyleID="Percent"><Data ss:Type="Number">1.1371</Data></Cell>
-    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.1371</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">11370.79</Data></Cell>
+    <Cell ss:StyleID="Percent"><Data ss:Type="Number">1.1351</Data></Cell>
+    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.1351</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">11351.12</Data></Cell>
    </Row>
 
    <!-- 2. 1lollyhere -->
    <Row>
     <Cell><Data ss:Type="String">47892. Lolly (1lollyhere)</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">3577.07</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">210.00</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">3787.07</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">125.00</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">3702.07</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">4000.00</Data></Cell>
-    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.9468</Data></Cell>
-    <Cell ss:StyleID="Percent"><Data ss:Type="Number">-0.0532</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">3787.07</Data></Cell>
+    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.9255</Data></Cell>
+    <Cell ss:StyleID="Percent"><Data ss:Type="Number">-0.0745</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">3702.07</Data></Cell>
    </Row>
 
    <!-- 3. Eva Blush -->
@@ -113,12 +114,12 @@ def generate_full_om_screenshot_excel():
    <Row ss:StyleID="Header">
     <Cell><Data ss:Type="String">ИТОГО ВЫРУЧКА АГЕНТСТВА</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">17743.14</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1853.39</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">19596.53</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1748.72</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">19491.86</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">19000.00</Data></Cell>
-    <Cell ss:StyleID="Percent"><Data ss:Type="Number">1.0314</Data></Cell>
+    <Cell ss:StyleID="Percent"><Data ss:Type="Number">1.0259</Data></Cell>
     <Cell><Data ss:Type="String">—</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">19596.53</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">19491.86</Data></Cell>
    </Row>
 
   </Table>
@@ -134,7 +135,7 @@ def generate_full_om_screenshot_excel():
     with open("chatter_analytics_system.xls", "w", encoding="utf-8") as f:
         f.write(xml)
 
-    print(f"✅ Файл Excel обновлен полным итогом за 1-31 Августа: {output_filepath}")
+    print(f"✅ Файл Excel обновлен внешними источниками ($1,748.72): {output_filepath}")
 
 if __name__ == "__main__":
     generate_full_om_screenshot_excel()
