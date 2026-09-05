@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
 """
-Generate Excel Spreadsheet (.xls SpreadsheetML) for Full Month of August (1–31 August):
-- 39856. Lollysunnery: OF Net $10,009.90 + External $1,341.22 = $11,351.12
-- 47892. 1lollyhere: OF Net $3,577.07 + External $125.00 = $3,702.07
-- 30201. Eva Blush: OF Net $2,404.65 + External $282.50 = $2,687.15
-- 4967. Lila (angelkiss): OF Net $1,751.52 + External $0.00 = $1,751.52
-- Total External Income (PayPal + Crypto + Ukr Card): $1,748.72
-- Grand Total Net Revenue: $19,491.86 (Goal $19,000 | 102.59% EXCEEDED!)
+Generate Excel Spreadsheet (.xls SpreadsheetML) for September 2026 (Fresh Active Month):
+- 39856. Lollysunnery: Goal $10,000
+- 47892. 1lollyhere: Goal $4,000
+- 30201. Eva Blush: Goal $3,500
+- 4967. Lila (angelkiss): Goal $1,500
+- Agency Goal: $19,000.00
 """
 
 def generate_full_om_screenshot_excel():
@@ -19,7 +18,7 @@ def generate_full_om_screenshot_excel():
  xmlns:html="http://www.w3.org/TR/REC-html40">
  <DocumentProperties xmlns="urn:schemas-microsoft-com:office:office">
   <Author>OnlyMonster Official Full Export</Author>
-  <Title>Dashboard + KPI (1–31 Августа Полный Итог)</Title>
+  <Title>Dashboard + KPI (Сентябрь 2026)</Title>
  </DocumentProperties>
  <Styles>
   <Style ss:ID="Default" ss:Name="Normal">
@@ -39,8 +38,8 @@ def generate_full_om_screenshot_excel():
   </Style>
  </Styles>
 
- <!-- SHEET 1: 1–31 Августа Полный Итог (OF + Внешние Источники) -->
- <Worksheet ss:Name="OM Export 1-31 Aug Full Summary">
+ <!-- SHEET 1: Сентябрь 2026 (Новый Месяц) -->
+ <Worksheet ss:Name="September 2026 Dashboard">
   <Table>
    <Column ss:Width="180"/>
    <Column ss:Width="110"/>
@@ -65,61 +64,61 @@ def generate_full_om_screenshot_excel():
    <!-- 1. Lollysunnery -->
    <Row>
     <Cell><Data ss:Type="String">39856. Lolly (Lollysunnery)</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">10009.90</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1341.22</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">11351.12</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">0.00</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">0.00</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">0.00</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">10000.00</Data></Cell>
-    <Cell ss:StyleID="Percent"><Data ss:Type="Number">1.1351</Data></Cell>
-    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.1351</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">11351.12</Data></Cell>
+    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.00</Data></Cell>
+    <Cell ss:StyleID="Percent"><Data ss:Type="Number">-0.1667</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">0.00</Data></Cell>
    </Row>
 
    <!-- 2. 1lollyhere -->
    <Row>
     <Cell><Data ss:Type="String">47892. Lolly (1lollyhere)</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">3577.07</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">125.00</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">3702.07</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">0.00</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">0.00</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">0.00</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">4000.00</Data></Cell>
-    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.9255</Data></Cell>
-    <Cell ss:StyleID="Percent"><Data ss:Type="Number">-0.0745</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">3702.07</Data></Cell>
+    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.00</Data></Cell>
+    <Cell ss:StyleID="Percent"><Data ss:Type="Number">-0.1667</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">0.00</Data></Cell>
    </Row>
 
    <!-- 3. Eva Blush -->
    <Row>
     <Cell><Data ss:Type="String">30201. Eva (Eva Blush)</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">2404.65</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">282.50</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">2687.15</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">0.00</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">0.00</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">0.00</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">3500.00</Data></Cell>
-    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.7678</Data></Cell>
-    <Cell ss:StyleID="Percent"><Data ss:Type="Number">-0.2322</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">2687.15</Data></Cell>
+    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.00</Data></Cell>
+    <Cell ss:StyleID="Percent"><Data ss:Type="Number">-0.1667</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">0.00</Data></Cell>
    </Row>
 
    <!-- 4. Lila (angelkiss) -->
    <Row>
     <Cell><Data ss:Type="String">4967. LILA (angelkiss)</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1751.52</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">0.00</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1751.52</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">0.00</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">0.00</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">1500.00</Data></Cell>
-    <Cell ss:StyleID="Percent"><Data ss:Type="Number">1.1677</Data></Cell>
-    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.1677</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1751.52</Data></Cell>
+    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.00</Data></Cell>
+    <Cell ss:StyleID="Percent"><Data ss:Type="Number">-0.1667</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">0.00</Data></Cell>
    </Row>
 
    <!-- 5. Grand Total -->
    <Row ss:StyleID="Header">
     <Cell><Data ss:Type="String">ИТОГО ВЫРУЧКА АГЕНТСТВА</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">17743.14</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1748.72</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">19491.86</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">0.00</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">0.00</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">0.00</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">19000.00</Data></Cell>
-    <Cell ss:StyleID="Percent"><Data ss:Type="Number">1.0259</Data></Cell>
+    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.00</Data></Cell>
     <Cell><Data ss:Type="String">—</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">19491.86</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">0.00</Data></Cell>
    </Row>
 
   </Table>
@@ -135,7 +134,7 @@ def generate_full_om_screenshot_excel():
     with open("chatter_analytics_system.xls", "w", encoding="utf-8") as f:
         f.write(xml)
 
-    print(f"✅ Файл Excel обновлен внешними источниками ($1,748.72): {output_filepath}")
+    print(f"✅ Файл Excel обновлен для Сентября 2026: {output_filepath}")
 
 if __name__ == "__main__":
     generate_full_om_screenshot_excel()

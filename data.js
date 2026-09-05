@@ -1,12 +1,10 @@
-// Seed dataset updated with FULL AUGUST (1–31 August) Official CRM Export + External Income Sources ($1,748.72):
-// Lollysunnery (39856): OF Net $10,009.90 + External $1,341.22 = $11,351.12 (Goal $10,000 | 113.51%)
-// 1lollyhere (47892): OF Net $3,577.07 + External $125.00 = $3,702.07 (Goal $4,000 | 92.55%)
-// Eva Blush (30201): OF Net $2,404.65 + External $282.50 = $2,687.15 (Goal $3,500 | 76.78%)
-// Lila angelkiss (4967): OF Net $1,751.52 + External $0.00 = $1,751.52 (Goal $1,500 | 116.77%)
-// Grand Total Agency Revenue: $19,491.86 (Goal $19,000 | 102.59% EXCEEDED!)
+// Seed dataset updated for September 2026 (Fresh Active Month):
+// August 2026 preserved in history (OF Net $17,743.14 + External $1,748.72 = $19,491.86 Total)
+// September 2026 active month (1–5 September) with clean zeroed baseline ready for fresh entry
 
 export const availableMonths = [
-  { key: '2026-08', label: 'Август 2026 (1–31 Итог)', isCurrent: true, totalDays: 31, daysPassed: 31 },
+  { key: '2026-09', label: 'Сентябрь 2026 (1–5 Сент)', isCurrent: true, totalDays: 30, daysPassed: 5 },
+  { key: '2026-08', label: 'Август 2026 (Завершен Итог $19.5k)', isCurrent: false, totalDays: 31, daysPassed: 31 },
   { key: '2026-07', label: 'Июль 2026 (Завершен)', isCurrent: false, totalDays: 31, daysPassed: 31 }
 ];
 
@@ -74,7 +72,129 @@ export const initialKPISettings = [
 ];
 
 export const initialChatterWeekly = [
-  // FULL AUGUST CUMULATIVE CHATTER RECORDS
+  // SEPTEMBER 2026 RECORDS (Active Baseline 1–5 Сент)
+  { 
+    monthKey: '2026-09', 
+    week: 'Week 1 (1–5 Сент)', 
+    chatter: 'paul walkeeer', 
+    accountId: '39856', 
+    totalSales: 0.00, 
+    ppvSales: 0.00, 
+    tips: 0.00, 
+    messages: 0, 
+    freeMedia: 0, 
+    ppvSent: 0, 
+    ppvSold: 0, 
+    chats: 0, 
+    words: 0, 
+    trt: 0, 
+    avgPPV: 0, 
+    openRate: 0, 
+    avgPriceSent: 0, 
+    avgPriceSold: 0 
+  },
+  { 
+    monthKey: '2026-09', 
+    week: 'Week 1 (1–5 Сент)', 
+    chatter: 'karina @sanesskio', 
+    accountId: '39856', 
+    totalSales: 0.00, 
+    ppvSales: 0.00, 
+    tips: 0.00, 
+    messages: 0, 
+    freeMedia: 0, 
+    ppvSent: 0, 
+    ppvSold: 0, 
+    chats: 0, 
+    words: 0, 
+    trt: 0, 
+    avgPPV: 0, 
+    openRate: 0, 
+    avgPriceSent: 0, 
+    avgPriceSold: 0 
+  },
+  { 
+    monthKey: '2026-09', 
+    week: 'Week 1 (1–5 Сент)', 
+    chatter: 'hinata hyuga', 
+    accountId: '47892', 
+    totalSales: 0.00, 
+    ppvSales: 0.00, 
+    tips: 0.00, 
+    messages: 0, 
+    freeMedia: 0, 
+    ppvSent: 0, 
+    ppvSold: 0, 
+    chats: 0, 
+    words: 0, 
+    trt: 0, 
+    avgPPV: 0, 
+    openRate: 0, 
+    avgPriceSent: 0, 
+    avgPriceSold: 0 
+  },
+  { 
+    monthKey: '2026-09', 
+    week: 'Week 1 (1–5 Сент)', 
+    chatter: 'hinata hyuga', 
+    accountId: '4967', 
+    totalSales: 0.00, 
+    ppvSales: 0.00, 
+    tips: 0.00, 
+    messages: 0, 
+    freeMedia: 0, 
+    ppvSent: 0, 
+    ppvSold: 0, 
+    chats: 0, 
+    words: 0, 
+    trt: 0, 
+    avgPPV: 0, 
+    openRate: 0, 
+    avgPriceSent: 0, 
+    avgPriceSold: 0 
+  },
+  { 
+    monthKey: '2026-09', 
+    week: 'Week 1 (1–5 Сент)', 
+    chatter: 'paul walkeeer', 
+    accountId: '30201', 
+    totalSales: 0.00, 
+    ppvSales: 0.00, 
+    tips: 0.00, 
+    messages: 0, 
+    freeMedia: 0, 
+    ppvSent: 0, 
+    ppvSold: 0, 
+    chats: 0, 
+    words: 0, 
+    trt: 0, 
+    avgPPV: 0, 
+    openRate: 0, 
+    avgPriceSent: 0, 
+    avgPriceSold: 0 
+  },
+  { 
+    monthKey: '2026-09', 
+    week: 'Week 1 (1–5 Сент)', 
+    chatter: 'karina @sanesskio', 
+    accountId: '30201', 
+    totalSales: 0.00, 
+    ppvSales: 0.00, 
+    tips: 0.00, 
+    messages: 0, 
+    freeMedia: 0, 
+    ppvSent: 0, 
+    ppvSold: 0, 
+    chats: 0, 
+    words: 0, 
+    trt: 0, 
+    avgPPV: 0, 
+    openRate: 0, 
+    avgPriceSent: 0, 
+    avgPriceSold: 0 
+  },
+
+  // AUGUST 2026 HISTORICAL RECORDS
   { 
     monthKey: '2026-08', 
     week: '1-31 Авг (Итог)', 
@@ -198,13 +318,99 @@ export const initialChatterWeekly = [
 ];
 
 export const initialModelWeekly = [
-  // FULL AUGUST MODEL CUMULATIVE REVENUE (OF Net + External Sources $1,748.72)
+  // SEPTEMBER 2026 REVENUE (Active Month Baseline)
+  { 
+    monthKey: '2026-09', 
+    week: 'Week 1 (1–5 Сент)', 
+    accountId: '39856', 
+    modelName: 'Lolly (Lollysunnery)', 
+    totalRevenue: 0.00, 
+    plan: 10000.00, 
+    goalProgressPct: 0.00, 
+    goalStatusPct: -16.67,
+    runRate: 0.00, 
+    newFans: 0, 
+    spenders: 0, 
+    newSpenders: 0,
+    conversion: 0.00,
+    ppvRev: 0.00, 
+    tipsRev: 0.00, 
+    transactions: 0, 
+    apc: 0.00, 
+    apv: 0.00, 
+    arppu: 0.00 
+  },
+  { 
+    monthKey: '2026-09', 
+    week: 'Week 1 (1–5 Сент)', 
+    accountId: '47892', 
+    modelName: 'Lolly (1lollyhere)', 
+    totalRevenue: 0.00, 
+    plan: 4000.00, 
+    goalProgressPct: 0.00, 
+    goalStatusPct: -16.67,
+    runRate: 0.00, 
+    newFans: 0, 
+    spenders: 0, 
+    newSpenders: 0,
+    conversion: 0.00,
+    ppvRev: 0.00, 
+    tipsRev: 0.00, 
+    transactions: 0, 
+    apc: 0.00, 
+    apv: 0.00, 
+    arppu: 0.00 
+  },
+  { 
+    monthKey: '2026-09', 
+    week: 'Week 1 (1–5 Сент)', 
+    accountId: '30201', 
+    modelName: 'Eva Blush', 
+    totalRevenue: 0.00, 
+    plan: 3500.00, 
+    goalProgressPct: 0.00, 
+    goalStatusPct: -16.67,
+    runRate: 0.00, 
+    newFans: 0, 
+    spenders: 0, 
+    newSpenders: 0,
+    conversion: 0.00,
+    ppvRev: 0.00, 
+    tipsRev: 0.00, 
+    transactions: 0, 
+    apc: 0.00, 
+    apv: 0.00, 
+    arppu: 0.00 
+  },
+  { 
+    monthKey: '2026-09', 
+    week: 'Week 1 (1–5 Сент)', 
+    accountId: '4967', 
+    modelName: 'Lila (angelkiss)', 
+    totalRevenue: 0.00, 
+    plan: 1500.00, 
+    goalProgressPct: 0.00, 
+    goalStatusPct: -16.67,
+    runRate: 0.00, 
+    newFans: 0, 
+    spenders: 0, 
+    newSpenders: 0,
+    conversion: 0.00,
+    ppvRev: 0.00, 
+    tipsRev: 0.00, 
+    transactions: 0, 
+    apc: 0.00, 
+    apv: 0.00, 
+    arppu: 0.00 
+  },
+
+  // AUGUST 2026 MODEL CUMULATIVE REVENUE (OF Net + External Sources $1,748.72)
   { 
     monthKey: '2026-08', 
     week: '1-31 Авг (Итог)', 
     accountId: '39856', 
     modelName: 'Lolly (Lollysunnery)', 
-    totalRevenue: 11351.12, // OF Net $10,009.90 + External $1,341.22
+    totalRevenue: 11351.12, 
     plan: 10000.00, 
     goalProgressPct: 113.51, 
     goalStatusPct: 13.51,
@@ -225,7 +431,7 @@ export const initialModelWeekly = [
     week: '1-31 Авг (Итог)', 
     accountId: '47892', 
     modelName: 'Lolly (1lollyhere)', 
-    totalRevenue: 3702.07, // OF Net $3,577.07 + External $125.00
+    totalRevenue: 3702.07, 
     plan: 4000.00, 
     goalProgressPct: 92.55, 
     goalStatusPct: -7.45,
@@ -246,7 +452,7 @@ export const initialModelWeekly = [
     week: '1-31 Авг (Итог)', 
     accountId: '30201', 
     modelName: 'Eva Blush', 
-    totalRevenue: 2687.15, // OF Net $2,404.65 + External $282.50
+    totalRevenue: 2687.15, 
     plan: 3500.00, 
     goalProgressPct: 76.78, 
     goalStatusPct: -23.22,
@@ -267,7 +473,7 @@ export const initialModelWeekly = [
     week: '1-31 Авг (Итог)', 
     accountId: '4967', 
     modelName: 'Lila (angelkiss)', 
-    totalRevenue: 1751.52, // OF Net $1,751.52 + External $0.00
+    totalRevenue: 1751.52, 
     plan: 1500.00, 
     goalProgressPct: 116.77, 
     goalStatusPct: 16.77,

@@ -3,7 +3,7 @@ import { availableMonths, initialConfig, initialModels, initialKPISettings, init
 // Application State
 const state = {
   months: [...availableMonths],
-  selectedMonthKey: '2026-08',
+  selectedMonthKey: '2026-09',
   config: [...initialConfig],
   models: [...initialModels],
   kpiSettings: [...initialKPISettings],
@@ -17,12 +17,13 @@ const state = {
 function getDaysInfo(monthKey) {
   const monthObj = state.months.find(m => m.key === monthKey) || state.months[0];
   
-  let daysPassed = monthObj.daysPassed || 12;
-  let daysInMonth = monthObj.totalDays || 31;
+  let daysPassed = monthObj.daysPassed || 5;
+  let daysInMonth = monthObj.totalDays || 30;
   let reportDateStr = monthObj.label;
 
   if (monthObj.isCurrent) {
-    reportDateStr = `1–${daysPassed} Августа 2026 (Факт ${daysPassed} дн.)`;
+    const monthName = monthObj.label.includes('Сентябрь') ? 'Сентября' : (monthObj.label.includes('Август') ? 'Августа' : 'месяца');
+    reportDateStr = `1–${daysPassed} ${monthName} 2026 (Факт ${daysPassed} дн.)`;
   }
 
   return { daysPassed, daysInMonth, reportDateStr, isCurrent: monthObj.isCurrent };
@@ -159,16 +160,24 @@ function renderHeaderInfo() {
   }
 
   document.getElementById('header-report-date').textContent = reportDateStr;
-  document.getElementById('header-days-passed').textContent = `${daysPassed} дн. (1–${daysPassed} Авг)`;
+  const monthName = state.selectedMonthKey === '2026-09' ? 'Сент' : (state.selectedMonthKey === '2026-08' ? 'Авг' : 'Июль');
+  document.getElementById('header-days-passed').textContent = `${daysPassed} дн. (1–${daysPassed} ${monthName})`;
   document.getElementById('header-days-in-month').textContent = `${daysInMonth} дн.`;
 
+  const fullMonthName = state.selectedMonthKey === '2026-09' ? 'Сентября' : (state.selectedMonthKey === '2026-08' ? 'Августа' : 'Июля');
   const cardTitleEl = document.getElementById('dash-card-title-revenue');
   if (cardTitleEl) {
-    cardTitleEl.textContent = `Общая Выручка (1–${daysPassed} Августа)`;
+    cardTitleEl.textContent = `Общая Выручка (1–${daysPassed} ${fullMonthName})`;
   }
   const cardSubtextEl = document.getElementById('dash-card-subtext-revenue');
   if (cardSubtextEl) {
-    cardSubtextEl.innerHTML = `Фактическая сумма за ${daysPassed} дн. по всем моделям <br><span style="color: var(--accent-purple); font-weight: 600;">(включая +$1,748.72 Внешние источники: PayPal + $30 Крипта + $44.72 Карта УКР)</span>`;
+    if (state.selectedMonthKey === '2026-09') {
+      cardSubtextEl.innerHTML = `Фактическая сумма за первые ${daysPassed} дн. Сентября по всем моделям`;
+    } else if (state.selectedMonthKey === '2026-08') {
+      cardSubtextEl.innerHTML = `Фактическая сумма за 31 дн. Августа <br><span style="color: var(--accent-purple); font-weight: 600;">(включая +$1,748.72 Внешние источники: PayPal + $30 Крипта + $44.72 Карта УКР)</span>`;
+    } else {
+      cardSubtextEl.innerHTML = `Фактическая сумма за прошлый отчетный месяц`;
+    }
   }
 }
 
