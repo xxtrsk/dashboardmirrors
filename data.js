@@ -1,48 +1,53 @@
-// Seed dataset updated for September 2026 (Fresh Active Month):
-// August 2026 preserved in history (OF Net $17,743.14 + External $1,748.72 = $19,491.86 Total)
-// September 2026 active month (1–5 September) with clean zeroed baseline ready for fresh entry
+// Seed dataset updated for September 2026 with 5 Models (including new Eva Fansly) and Chatter Plans:
+// 1. Lollysunnery: Goal $7,500.00
+// 2. 1lollyhere: Goal $3,500.00
+// 3. Eva Blush: Goal $3,000.00
+// 4. Lila (angelkiss): Goal $1,500.00
+// 5. Eva Fansly: Goal $1,000.00
+// Total Agency Goal: $16,500.00
 
 export const availableMonths = [
-  { key: '2026-09', label: 'Сентябрь 2026 (1–5 Сент)', isCurrent: true, totalDays: 30, daysPassed: 5 },
+  { key: '2026-09', label: 'Сентябрь 2026 (Планы $16.5k)', isCurrent: true, totalDays: 30, daysPassed: 9 },
   { key: '2026-08', label: 'Август 2026 (Завершен Итог $19.5k)', isCurrent: false, totalDays: 31, daysPassed: 31 },
   { key: '2026-07', label: 'Июль 2026 (Завершен)', isCurrent: false, totalDays: 31, daysPassed: 31 }
 ];
 
 export const initialConfig = [
-  { id: '39856', modelName: 'Lolly (Lollysunnery)', page: 'lollysunnery', chatters: ['paul walkeeer', 'karina @sanesskio'] },
+  { id: '39856', modelName: 'Lolly (Lollysunnery)', page: 'lollysunnery', chatters: ['paul walkeeer', 'karina @sanesskio', 'Новый утренник'] },
   { id: '47892', modelName: 'Lolly (1lollyhere)', page: '1lollyhere', chatters: ['hinata hyuga'] },
-  { id: '30201', modelName: 'Eva Blush', page: 'evablush', chatters: ['paul walkeeer', 'karina @sanesskio'] },
-  { id: '4967', modelName: 'Lila (angelkiss)', page: 'angelkiss', chatters: ['hinata hyuga'] }
+  { id: '30201', modelName: 'Eva Blush', page: 'evablush', chatters: ['paul walkeeer', 'karina @sanesskio', 'Новый утренник'] },
+  { id: '4967', modelName: 'Lila (angelkiss)', page: 'angelkiss', chatters: ['hinata hyuga'] },
+  { id: '50100', modelName: 'Eva Fansly', page: 'evafansly', chatters: ['Команда Fansly'] }
 ];
 
 export const initialModels = [
   { 
     id: '39856', 
     name: 'Lolly (Lollysunnery)', 
-    plan: 10000, 
-    totalBonusPool: 200, 
-    teamBonusPool: 100, 
-    kpiBonusPool: 100, 
+    plan: 7500, 
+    totalBonusPool: 150, 
+    teamBonusPool: 75, 
+    kpiBonusPool: 75, 
     teamPct: '50%',
     accountId: '39856' 
   },
   { 
     id: '47892', 
     name: 'Lolly (1lollyhere)', 
-    plan: 4000, 
-    totalBonusPool: 80, 
-    teamBonusPool: 40, 
-    kpiBonusPool: 40, 
+    plan: 3500, 
+    totalBonusPool: 70, 
+    teamBonusPool: 35, 
+    kpiBonusPool: 35, 
     teamPct: '50%',
     accountId: '47892' 
   },
   { 
     id: '30201', 
     name: 'Eva Blush', 
-    plan: 3500, 
-    totalBonusPool: 80, 
-    teamBonusPool: 40, 
-    kpiBonusPool: 40, 
+    plan: 3000, 
+    totalBonusPool: 60, 
+    teamBonusPool: 30, 
+    kpiBonusPool: 30, 
     teamPct: '50%',
     accountId: '30201' 
   },
@@ -55,27 +60,42 @@ export const initialModels = [
     kpiBonusPool: 0, 
     teamPct: '100%',
     accountId: '4967' 
+  },
+  { 
+    id: '50100', 
+    name: 'Eva Fansly', 
+    plan: 1000, 
+    totalBonusPool: 20, 
+    teamBonusPool: 20, 
+    kpiBonusPool: 0, 
+    teamPct: '100%',
+    accountId: '50100' 
   }
 ];
 
 export const initialKPISettings = [
-  // Lolly (Lollysunnery)
-  { chatter: 'paul walkeeer', model: 'Lolly (Lollysunnery)', targetOpenRate: 50, targetAvgPrice: 27, targetTRT: 200, targetPlan: 4000 },
-  { chatter: 'karina @sanesskio', model: 'Lolly (Lollysunnery)', targetOpenRate: 40, targetAvgPrice: 30, targetTRT: 160, targetPlan: 3500 },
+  // Lolly (Lollysunnery) - Plan $7,500
+  { chatter: 'paul walkeeer', model: 'Lolly (Lollysunnery)', targetOpenRate: 50, targetAvgPrice: 27, targetTRT: 200, targetPlan: 3200 },
+  { chatter: 'karina @sanesskio', model: 'Lolly (Lollysunnery)', targetOpenRate: 40, targetAvgPrice: 30, targetTRT: 160, targetPlan: 2800 },
+  { chatter: 'Новый утренник', model: 'Lolly (Lollysunnery)', targetOpenRate: 35, targetAvgPrice: 22, targetTRT: 220, targetPlan: 1500 },
 
-  // Lolly (1lollyhere)
-  { chatter: 'hinata hyuga', model: 'Lolly (1lollyhere)', targetOpenRate: 40, targetAvgPrice: 25, targetTRT: 200, targetPlan: 1800 },
+  // Lolly (1lollyhere) - Plan $3,500
+  { chatter: 'hinata hyuga', model: 'Lolly (1lollyhere)', targetOpenRate: 40, targetAvgPrice: 25, targetTRT: 200, targetPlan: 3500 },
 
-  // Eva Blush
-  { chatter: 'paul walkeeer', model: 'Eva Blush', targetOpenRate: 45, targetAvgPrice: 26, targetTRT: 200, targetPlan: 1600 },
-  { chatter: 'karina @sanesskio', model: 'Eva Blush', targetOpenRate: 40, targetAvgPrice: 26, targetTRT: 180, targetPlan: 1250 }
+  // Eva Blush - Plan $3,000
+  { chatter: 'paul walkeeer', model: 'Eva Blush', targetOpenRate: 45, targetAvgPrice: 26, targetTRT: 200, targetPlan: 1300 },
+  { chatter: 'karina @sanesskio', model: 'Eva Blush', targetOpenRate: 40, targetAvgPrice: 26, targetTRT: 180, targetPlan: 1100 },
+  { chatter: 'Новый утренник', model: 'Eva Blush', targetOpenRate: 35, targetAvgPrice: 22, targetTRT: 220, targetPlan: 600 },
+
+  // Lila (angelkiss) - Plan $1,500
+  { chatter: 'hinata hyuga', model: 'Lila (angelkiss)', targetOpenRate: 40, targetAvgPrice: 25, targetTRT: 200, targetPlan: 1500 }
 ];
 
 export const initialChatterWeekly = [
-  // SEPTEMBER 2026 RECORDS (Active Baseline 1–5 Сент)
+  // SEPTEMBER 2026 RECORDS (Active Baseline 1–9 Сент)
   { 
     monthKey: '2026-09', 
-    week: 'Week 1 (1–5 Сент)', 
+    week: 'Week 1 (1–9 Сент)', 
     chatter: 'paul walkeeer', 
     accountId: '39856', 
     totalSales: 0.00, 
@@ -95,7 +115,7 @@ export const initialChatterWeekly = [
   },
   { 
     monthKey: '2026-09', 
-    week: 'Week 1 (1–5 Сент)', 
+    week: 'Week 1 (1–9 Сент)', 
     chatter: 'karina @sanesskio', 
     accountId: '39856', 
     totalSales: 0.00, 
@@ -115,7 +135,27 @@ export const initialChatterWeekly = [
   },
   { 
     monthKey: '2026-09', 
-    week: 'Week 1 (1–5 Сент)', 
+    week: 'Week 1 (1–9 Сент)', 
+    chatter: 'Новый утренник', 
+    accountId: '39856', 
+    totalSales: 0.00, 
+    ppvSales: 0.00, 
+    tips: 0.00, 
+    messages: 0, 
+    freeMedia: 0, 
+    ppvSent: 0, 
+    ppvSold: 0, 
+    chats: 0, 
+    words: 0, 
+    trt: 0, 
+    avgPPV: 0, 
+    openRate: 0, 
+    avgPriceSent: 0, 
+    avgPriceSold: 0 
+  },
+  { 
+    monthKey: '2026-09', 
+    week: 'Week 1 (1–9 Сент)', 
     chatter: 'hinata hyuga', 
     accountId: '47892', 
     totalSales: 0.00, 
@@ -135,7 +175,7 @@ export const initialChatterWeekly = [
   },
   { 
     monthKey: '2026-09', 
-    week: 'Week 1 (1–5 Сент)', 
+    week: 'Week 1 (1–9 Сент)', 
     chatter: 'hinata hyuga', 
     accountId: '4967', 
     totalSales: 0.00, 
@@ -155,7 +195,7 @@ export const initialChatterWeekly = [
   },
   { 
     monthKey: '2026-09', 
-    week: 'Week 1 (1–5 Сент)', 
+    week: 'Week 1 (1–9 Сент)', 
     chatter: 'paul walkeeer', 
     accountId: '30201', 
     totalSales: 0.00, 
@@ -175,8 +215,28 @@ export const initialChatterWeekly = [
   },
   { 
     monthKey: '2026-09', 
-    week: 'Week 1 (1–5 Сент)', 
+    week: 'Week 1 (1–9 Сент)', 
     chatter: 'karina @sanesskio', 
+    accountId: '30201', 
+    totalSales: 0.00, 
+    ppvSales: 0.00, 
+    tips: 0.00, 
+    messages: 0, 
+    freeMedia: 0, 
+    ppvSent: 0, 
+    ppvSold: 0, 
+    chats: 0, 
+    words: 0, 
+    trt: 0, 
+    avgPPV: 0, 
+    openRate: 0, 
+    avgPriceSent: 0, 
+    avgPriceSold: 0 
+  },
+  { 
+    monthKey: '2026-09', 
+    week: 'Week 1 (1–9 Сент)', 
+    chatter: 'Новый утренник', 
     accountId: '30201', 
     totalSales: 0.00, 
     ppvSales: 0.00, 
@@ -318,16 +378,16 @@ export const initialChatterWeekly = [
 ];
 
 export const initialModelWeekly = [
-  // SEPTEMBER 2026 REVENUE (Active Month Baseline)
+  // SEPTEMBER 2026 REVENUE (New Model Plans Total $16,500)
   { 
     monthKey: '2026-09', 
-    week: 'Week 1 (1–5 Сент)', 
+    week: 'Week 1 (1–9 Сент)', 
     accountId: '39856', 
     modelName: 'Lolly (Lollysunnery)', 
     totalRevenue: 0.00, 
-    plan: 10000.00, 
+    plan: 7500.00, 
     goalProgressPct: 0.00, 
-    goalStatusPct: -16.67,
+    goalStatusPct: -30.00,
     runRate: 0.00, 
     newFans: 0, 
     spenders: 0, 
@@ -342,13 +402,13 @@ export const initialModelWeekly = [
   },
   { 
     monthKey: '2026-09', 
-    week: 'Week 1 (1–5 Сент)', 
+    week: 'Week 1 (1–9 Сент)', 
     accountId: '47892', 
     modelName: 'Lolly (1lollyhere)', 
     totalRevenue: 0.00, 
-    plan: 4000.00, 
+    plan: 3500.00, 
     goalProgressPct: 0.00, 
-    goalStatusPct: -16.67,
+    goalStatusPct: -30.00,
     runRate: 0.00, 
     newFans: 0, 
     spenders: 0, 
@@ -363,13 +423,13 @@ export const initialModelWeekly = [
   },
   { 
     monthKey: '2026-09', 
-    week: 'Week 1 (1–5 Сент)', 
+    week: 'Week 1 (1–9 Сент)', 
     accountId: '30201', 
     modelName: 'Eva Blush', 
     totalRevenue: 0.00, 
-    plan: 3500.00, 
+    plan: 3000.00, 
     goalProgressPct: 0.00, 
-    goalStatusPct: -16.67,
+    goalStatusPct: -30.00,
     runRate: 0.00, 
     newFans: 0, 
     spenders: 0, 
@@ -384,13 +444,34 @@ export const initialModelWeekly = [
   },
   { 
     monthKey: '2026-09', 
-    week: 'Week 1 (1–5 Сент)', 
+    week: 'Week 1 (1–9 Сент)', 
     accountId: '4967', 
     modelName: 'Lila (angelkiss)', 
     totalRevenue: 0.00, 
     plan: 1500.00, 
     goalProgressPct: 0.00, 
-    goalStatusPct: -16.67,
+    goalStatusPct: -30.00,
+    runRate: 0.00, 
+    newFans: 0, 
+    spenders: 0, 
+    newSpenders: 0,
+    conversion: 0.00,
+    ppvRev: 0.00, 
+    tipsRev: 0.00, 
+    transactions: 0, 
+    apc: 0.00, 
+    apv: 0.00, 
+    arppu: 0.00 
+  },
+  { 
+    monthKey: '2026-09', 
+    week: 'Week 1 (1–9 Сент)', 
+    accountId: '50100', 
+    modelName: 'Eva Fansly', 
+    totalRevenue: 0.00, 
+    plan: 1000.00, 
+    goalProgressPct: 0.00, 
+    goalStatusPct: -30.00,
     runRate: 0.00, 
     newFans: 0, 
     spenders: 0, 
