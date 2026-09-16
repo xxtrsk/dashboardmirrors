@@ -67,11 +67,11 @@ def generate_full_om_screenshot_excel():
    <Row>
     <Cell><Data ss:Type="String">39856. Lolly (Lollysunnery)</Data></Cell>
     <Cell><Data ss:Type="String">OnlyFans</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">5091.15</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">4861.95</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">8500.00</Data></Cell>
-    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.5990</Data></Cell>
-    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.0656</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">9545.91</Data></Cell>
+    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.5720</Data></Cell>
+    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.0387</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">9116.16</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">32.43</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">83.71</Data></Cell>
    </Row>
@@ -132,11 +132,11 @@ def generate_full_om_screenshot_excel():
    <Row ss:StyleID="Header">
     <Cell><Data ss:Type="String">ИТОГО ВЫРУЧКА АГЕНТСТВА</Data></Cell>
     <Cell><Data ss:Type="String">OF + Fansly</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">9854.85</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">9625.65</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">17350.00</Data></Cell>
-    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.5680</Data></Cell>
+    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.5548</Data></Cell>
     <Cell><Data ss:Type="String">—</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">18477.84</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">18048.09</Data></Cell>
     <Cell><Data ss:Type="String">—</Data></Cell>
     <Cell><Data ss:Type="String">—</Data></Cell>
    </Row>
