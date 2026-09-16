@@ -1,10 +1,10 @@
-// Seed dataset updated for September 1–16 with EXACT CRM Chatter Metrics for Lollysunnery (39856):
-// paul walkeeer: $2,652.95 Total ($1,924.75 + $499 + $50 + $179.20) | PPV $1,685.62 | OpenRate 67.69% | AvgPriceSold $47.89 | TRT 177.87s
-// karina @sanesskio: $1,841.26 Total ($1,127.71 + $713.55) | PPV $970.95 | OpenRate 52.78% | AvgPriceSold $63.88 | TRT 93.67s
-// Timur (exy sdof): $323.00 Total | PPV $299.75 | OpenRate 40.00% | AvgPriceSold $46.84 | TRT 180.34s
+// Seed dataset updated for September 1–16 with REVISED CHATTER TARGETS FOR LOLLYSUNNERY ($8,500 Total):
+// Artem (paulwalkeeer): Plan $4,300.00 | Target TRT 220s | Target Open Rate 50% | Target Avg Price $27
+// Karina (@sanesskio): Plan $3,200.00 | Target TRT 180s | Target Open Rate 40% | Target Avg Price $30
+// Timur (Тимур): Plan $1,000.00 | Target TRT 240s | Target Open Rate 35% | Target Avg Price $22
 
 export const availableMonths = [
-  { key: '2026-09', label: 'Сентябрь 2026 (1–16 Сент)', isCurrent: true, totalDays: 30, daysPassed: 16 },
+  { key: '2026-09', label: 'Сентябрь 2026 (Планы $17.35k)', isCurrent: true, totalDays: 30, daysPassed: 16 },
   { key: '2026-08', label: 'Август 2026 (Завершен Итог $19.5k)', isCurrent: false, totalDays: 31, daysPassed: 31 },
   { key: '2026-07', label: 'Июль 2026 (Завершен)', isCurrent: false, totalDays: 31, daysPassed: 31 }
 ];
@@ -72,9 +72,9 @@ export const initialModels = [
 
 export const initialKPISettings = [
   // Lolly (Lollysunnery) - Plan $8,500
-  { chatter: 'paul walkeeer', model: 'Lolly (Lollysunnery)', targetOpenRate: 50, targetAvgPrice: 27, targetTRT: 200, targetPlan: 3600 },
-  { chatter: 'karina @sanesskio', model: 'Lolly (Lollysunnery)', targetOpenRate: 40, targetAvgPrice: 30, targetTRT: 160, targetPlan: 3200 },
-  { chatter: 'Timur (Тимур)', model: 'Lolly (Lollysunnery)', targetOpenRate: 35, targetAvgPrice: 22, targetTRT: 220, targetPlan: 1700 },
+  { chatter: 'paul walkeeer', model: 'Lolly (Lollysunnery)', targetOpenRate: 50, targetAvgPrice: 27, targetTRT: 220, targetPlan: 4300 },
+  { chatter: 'karina @sanesskio', model: 'Lolly (Lollysunnery)', targetOpenRate: 40, targetAvgPrice: 30, targetTRT: 180, targetPlan: 3200 },
+  { chatter: 'Timur (Тимур)', model: 'Lolly (Lollysunnery)', targetOpenRate: 35, targetAvgPrice: 22, targetTRT: 240, targetPlan: 1000 },
 
   // Lolly (1lollyhere) - Plan $3,500
   { chatter: 'hinata hyuga', model: 'Lolly (1lollyhere)', targetOpenRate: 40, targetAvgPrice: 25, targetTRT: 200, targetPlan: 2500 },
@@ -275,13 +275,13 @@ export const initialChatterWeekly = [
 ];
 
 export const initialModelWeekly = [
-  // SEPTEMBER 1–16 REVENUE (EXACT CRM EXPORTS + REALLOCATED PAYPAL $1,742.55)
+  // SEPTEMBER 1–16 REVENUE (NEW FINAL PLANS TOTAL $17,350.00)
   { 
     monthKey: '2026-09', 
     week: '1–16 Сент (Факт)', 
     accountId: '39856', 
     modelName: 'Lolly (Lollysunnery)', 
-    totalRevenue: 4861.95, // OF Net $3,599.40 + PayPal $1,262.55
+    totalRevenue: 4861.95, 
     plan: 8500.00, 
     goalProgressPct: 57.20, 
     goalStatusPct: 3.87,
@@ -302,7 +302,7 @@ export const initialModelWeekly = [
     week: '1–16 Сент (Факт)', 
     accountId: '47892', 
     modelName: 'Lolly (1lollyhere)', 
-    totalRevenue: 1975.14, // OF Net $1,950.14 + PayPal $25.00
+    totalRevenue: 1975.14, 
     plan: 3500.00, 
     goalProgressPct: 56.43, 
     goalStatusPct: 3.10,
@@ -323,7 +323,7 @@ export const initialModelWeekly = [
     week: '1–16 Сент (Факт)', 
     accountId: '30201', 
     modelName: 'Eva Blush', 
-    totalRevenue: 1502.32, // OF Net $1,047.32 + PayPal $455.00
+    totalRevenue: 1502.32, 
     plan: 2800.00, 
     goalProgressPct: 53.65, 
     goalStatusPct: 0.32,
@@ -344,7 +344,7 @@ export const initialModelWeekly = [
     week: '1–16 Сент (Факт)', 
     accountId: '77304', 
     modelName: 'Eva Pinky (Fansly)', 
-    totalRevenue: 717.94, // Fansly Net $717.94 + PayPal $0.00
+    totalRevenue: 717.94, 
     plan: 1300.00, 
     goalProgressPct: 55.23, 
     goalStatusPct: 1.89,
@@ -365,7 +365,7 @@ export const initialModelWeekly = [
     week: '1–16 Сент (Факт)', 
     accountId: '4967', 
     modelName: 'Lila (angelkiss)', 
-    totalRevenue: 526.81, // OF Net $526.81 + PayPal $0.00
+    totalRevenue: 526.81, 
     plan: 1250.00, 
     goalProgressPct: 42.14, 
     goalStatusPct: -11.19,
