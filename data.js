@@ -1,10 +1,10 @@
-// Seed dataset updated for September 1–16 with EXACT CRM Chatter Metrics for 1lollyhere (47892):
-// hinata hyuga: $646.34 Total | PPV $518.34 | Tips $128.00 | OpenRate 41.67% | AvgPriceSold $25.92 | TRT 196.45s
-// Igor (srk 148): $433.46 Total | PPV $333.46 | Tips $100.00 | OpenRate 40.48% | AvgPriceSold $24.52 | TRT 309.86s
-// karina @sanesskio: $645.91 Total | PPV $485.91 | Tips $160.00 | OpenRate 37.50% | AvgPriceSold $28.92 | TRT 91.62s
+// Seed dataset updated for September 1–16 with REVISED CHATTER TARGETS FOR 1LOLLYS HERE ($3,500 Total):
+// hinata hyuga: Plan $1,350.00 | Target TRT 200s | Target Open Rate 40% | Target Avg Price $25
+// Karina (@sanesskio): Plan $1,300.00 | Target TRT 160s | Target Open Rate 40% | Target Avg Price $28
+// Igor (Игорь): Plan $850.00 | Target TRT 280s | Target Open Rate 35% | Target Avg Price $23
 
 export const availableMonths = [
-  { key: '2026-09', label: 'Сентябрь 2026 (1–16 Сент)', isCurrent: true, totalDays: 30, daysPassed: 16 },
+  { key: '2026-09', label: 'Сентябрь 2026 (Планы $17.35k)', isCurrent: true, totalDays: 30, daysPassed: 16 },
   { key: '2026-08', label: 'Август 2026 (Завершен Итог $19.5k)', isCurrent: false, totalDays: 31, daysPassed: 31 },
   { key: '2026-07', label: 'Июль 2026 (Завершен)', isCurrent: false, totalDays: 31, daysPassed: 31 }
 ];
@@ -77,9 +77,9 @@ export const initialKPISettings = [
   { chatter: 'Timur (Тимур)', model: 'Lolly (Lollysunnery)', targetOpenRate: 35, targetAvgPrice: 22, targetTRT: 240, targetPlan: 1000 },
 
   // Lolly (1lollyhere) - Plan $3,500
-  { chatter: 'hinata hyuga', model: 'Lolly (1lollyhere)', targetOpenRate: 40, targetAvgPrice: 25, targetTRT: 200, targetPlan: 1500 },
-  { chatter: 'karina @sanesskio', model: 'Lolly (1lollyhere)', targetOpenRate: 40, targetAvgPrice: 28, targetTRT: 160, targetPlan: 1200 },
-  { chatter: 'Igor (Игорь)', model: 'Lolly (1lollyhere)', targetOpenRate: 35, targetAvgPrice: 23, targetTRT: 280, targetPlan: 800 },
+  { chatter: 'hinata hyuga', model: 'Lolly (1lollyhere)', targetOpenRate: 40, targetAvgPrice: 25, targetTRT: 200, targetPlan: 1350 },
+  { chatter: 'karina @sanesskio', model: 'Lolly (1lollyhere)', targetOpenRate: 40, targetAvgPrice: 28, targetTRT: 160, targetPlan: 1300 },
+  { chatter: 'Igor (Игорь)', model: 'Lolly (1lollyhere)', targetOpenRate: 35, targetAvgPrice: 23, targetTRT: 280, targetPlan: 850 },
 
   // Eva Blush - Plan $2,800
   { chatter: 'paul walkeeer', model: 'Eva Blush', targetOpenRate: 45, targetAvgPrice: 26, targetTRT: 200, targetPlan: 1200 },
