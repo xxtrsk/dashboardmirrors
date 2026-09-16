@@ -172,7 +172,7 @@ function renderHeaderInfo() {
   const cardSubtextEl = document.getElementById('dash-card-subtext-revenue');
   if (cardSubtextEl) {
     if (state.selectedMonthKey === '2026-09') {
-      cardSubtextEl.innerHTML = `Фактическая сумма за первые ${daysPassed} дн. Сентября по всем моделям <br><span style="color: var(--accent-purple); font-weight: 600;">(включая +$1,742.55 PayPal: Lolly $1,262.55 + Eva $455.00 + 1lolly $25.00)</span>`;
+      cardSubtextEl.innerHTML = `Фактическая сумма за первые ${daysPassed} дн. Сентября по всем моделям <br><span style="color: var(--accent-purple); font-weight: 600;">(включая +$2,013.24 PayPal: Lolly $1,491.75 + Eva $496.49 + 1lolly $25.00)</span>`;
     } else if (state.selectedMonthKey === '2026-08') {
       cardSubtextEl.innerHTML = `Фактическая сумма за 31 дн. Августа <br><span style="color: var(--accent-purple); font-weight: 600;">(включая +$1,748.72 Внешние источники: PayPal + $30 Крипта + $44.72 Карта УКР)</span>`;
     } else {
@@ -208,27 +208,26 @@ function renderMainDashboard() {
             👑 ${m.name}
           </div>
           <span class="badge ${m.goalStatusPct >= 0 ? 'badge-on-schedule' : 'badge-behind'}">
-            ${m.goalStatusPct >= 0 ? '🟢 В графике (+' + m.goalStatusPct.toFixed(1) + '%)' : '🔴 Отстаём (' + m.goalStatusPct.toFixed(1) + '%)'}
+            ${m.goalStatusPct >= 0 ? '🟢 На графике' : '🔴 Отстает'} (${m.goalStatusPct >= 0 ? '+' : ''}${m.goalStatusPct.toFixed(1)}%)
           </span>
         </div>
+        
+        <div class="card-value" style="font-size: 28px; margin: 12px 0 6px; color: var(--accent-green);">
+          ${formatCurrency(m.totalRevenue)}
+        </div>
+        
+        <div style="display: flex; justify-content: space-between; font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">
+          <span>План: <strong style="color: var(--text-main);">${formatCurrency(m.plan)}</strong></span>
+          <span>Прогноз: <strong style="color: var(--primary);">${formatCurrency(m.runRate)}</strong></span>
+        </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px; font-size: 13px;">
-          <div>
-            <div style="color: var(--text-muted);">Model Plan ($):</div>
-            <div style="font-weight: 700; font-size: 16px; color: var(--text-main);">${formatCurrency(m.plan)}</div>
-          </div>
-          <div>
-            <div style="color: var(--text-muted);">Total Revenue (1-${daysPassed} Авг):</div>
-            <div style="font-weight: 700; font-size: 16px; color: var(--accent-green);">${formatCurrency(m.totalRevenue)}</div>
-          </div>
-          <div>
-            <div style="color: var(--text-muted);">Run Rate ($/месяц):</div>
-            <div style="font-weight: 600; color: var(--primary);">${formatCurrency(m.runRate)}</div>
-          </div>
-          <div>
-            <div style="color: var(--text-muted);">Goal Progress (%):</div>
-            <div style="font-weight: 600; color: var(--accent-amber);">${formatPercent(m.goalProgressPct)}</div>
-          </div>
+        <!-- Progress Bar -->
+        <div class="progress-bar-bg" style="height: 8px;">
+          <div class="progress-bar-fill" style="width: ${Math.min(m.goalProgressPct, 100)}%;"></div>
+        </div>
+        <div style="display: flex; justify-content: space-between; font-size: 11px; margin-top: 6px;">
+          <span style="color: var(--text-muted);">Выполнение</span>
+          <div style="font-weight: 600; color: var(--accent-amber);">${formatPercent(m.goalProgressPct)}</div>
         </div>
 
         <div style="margin-top: 14px; padding-top: 10px; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted);">
@@ -270,9 +269,14 @@ function renderMainDashboard() {
   // Chatter Performance Table
   const chatterTableBody = document.getElementById('tbody-chatter-summary') || document.getElementById('chatter-perf-table-body');
   if (chatterTableBody) {
-    chatterTableBody.innerHTML = chatters.map(c => `
+    chatterTableBody.innerHTML = chatters.map(c => {
+      const is16Days = c.chatter.toLowerCase().includes('paul') || c.chatter.toLowerCase().includes('hinata');
+      const shiftsBadge = is16Days 
+        ? `<div style="font-size: 11px; color: var(--accent-green); font-weight: 600;">16 смен</div>` 
+        : `<div style="font-size: 11px; color: var(--accent-amber); font-weight: 600;">15 смен</div>`;
+      return `
       <tr>
-        <td style="font-weight: 700; color: var(--text-main);">${c.chatter}</td>
+        <td style="font-weight: 700; color: var(--text-main);">${c.chatter}${shiftsBadge}</td>
         <td><span style="background: rgba(192, 132, 252, 0.15); border: 1px solid rgba(192, 132, 252, 0.3); color: var(--accent-purple); padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 600;">${c.model}</span></td>
         <td style="font-family: var(--font-mono);">${formatCurrency(c.targetPlan)}</td>
         <td style="font-family: var(--font-mono); font-weight: 700; color: var(--accent-green);">${formatCurrency(c.factSales)}</td>
@@ -291,7 +295,8 @@ function renderMainDashboard() {
           </span>
         </td>
       </tr>
-    `).join('');
+      `;
+    }).join('');
   }
 }
 
