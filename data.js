@@ -1,10 +1,10 @@
-// Seed dataset updated for September 1–16 with Official CRM Net + PayPal Income ($1,742.55):
-// 1. Lollysunnery (39856): OF Net $3,599.40 + PayPal $1,212.55 = $4,811.95 (Goal $7,500 | 64.16%)
-// 2. 1lollyhere (47892): OF Net $1,950.14 + PayPal $25.00 = $1,975.14 (Goal $3,500 | 56.43%)
-// 3. Eva Blush (30201): OF Net $1,047.32 + PayPal $505.00 = $1,552.32 (Goal $3,000 | 51.74%)
-// 4. Eva Pinky (Fansly 77304): Net $717.94 + PayPal $0.00 = $717.94 (Goal $1,000 | 71.79%)
-// 5. Lila angelkiss (4967): OF Net $526.81 + PayPal $0.00 = $526.81 (Goal $1,500 | 35.12%)
-// Grand Total Agency Revenue 1–16 Sept: $9,584.16 (Goal $16,500 | 58.09%)
+// Seed dataset updated for September 1–16 with reallocated PayPal ($50 shifted from Eva Blush to Lollysunnery):
+// 1. Lollysunnery (39856): OF Net $3,599.40 + PayPal $1,262.55 = $4,861.95 (Goal $7,500 | 64.83% | RunRate $9,116.16)
+// 2. 1lollyhere (47892): OF Net $1,950.14 + PayPal $25.00 = $1,975.14 (Goal $3,500 | 56.43% | RunRate $3,703.39)
+// 3. Eva Blush (30201): OF Net $1,047.32 + PayPal $455.00 = $1,502.32 (Goal $3,000 | 50.08% | RunRate $2,816.85)
+// 4. Eva Pinky (Fansly 77304): Net $717.94 + PayPal $0.00 = $717.94 (Goal $1,000 | 71.79% | RunRate $1,346.14)
+// 5. Lila angelkiss (4967): OF Net $526.81 + PayPal $0.00 = $526.81 (Goal $1,500 | 35.12% | RunRate $987.77)
+// Grand Total Agency Revenue 1–16 Sept: $9,584.16 (Goal $16,500 | 58.09% | Projected RunRate $17,970.31)
 
 export const availableMonths = [
   { key: '2026-09', label: 'Сентябрь 2026 (1–16 Сент)', isCurrent: true, totalDays: 30, daysPassed: 16 },
@@ -100,8 +100,8 @@ export const initialChatterWeekly = [
     week: '1–16 Сент (Факт)', 
     chatter: 'paul walkeeer', 
     accountId: '39856', 
-    totalSales: 2887.17, 
-    ppvSales: 2547.33, 
+    totalSales: 2917.17, 
+    ppvSales: 2577.33, 
     tips: 339.84, 
     messages: 7480, 
     freeMedia: 204, 
@@ -120,8 +120,8 @@ export const initialChatterWeekly = [
     week: '1–16 Сент (Факт)', 
     chatter: 'karina @sanesskio', 
     accountId: '39856', 
-    totalSales: 1924.78, 
-    ppvSales: 1698.22, 
+    totalSales: 1944.78, 
+    ppvSales: 1718.22, 
     tips: 226.56, 
     messages: 4458, 
     freeMedia: 193, 
@@ -220,8 +220,8 @@ export const initialChatterWeekly = [
     week: '1–16 Сент (Факт)', 
     chatter: 'paul walkeeer', 
     accountId: '30201', 
-    totalSales: 931.39, 
-    ppvSales: 644.83, 
+    totalSales: 901.39, 
+    ppvSales: 614.83, 
     tips: 286.56, 
     messages: 4434, 
     freeMedia: 120, 
@@ -240,8 +240,8 @@ export const initialChatterWeekly = [
     week: '1–16 Сент (Факт)', 
     chatter: 'karina @sanesskio', 
     accountId: '30201', 
-    totalSales: 620.93, 
-    ppvSales: 429.89, 
+    totalSales: 600.93, 
+    ppvSales: 409.89, 
     tips: 191.04, 
     messages: 2956, 
     freeMedia: 81, 
@@ -258,17 +258,17 @@ export const initialChatterWeekly = [
 ];
 
 export const initialModelWeekly = [
-  // SEPTEMBER 1–16 REVENUE (EXACT CRM EXPORTS + PAYPAL $1,742.55)
+  // SEPTEMBER 1–16 REVENUE (EXACT CRM EXPORTS + REALLOCATED PAYPAL $1,742.55)
   { 
     monthKey: '2026-09', 
     week: '1–16 Сент (Факт)', 
     accountId: '39856', 
     modelName: 'Lolly (Lollysunnery)', 
-    totalRevenue: 4811.95, // OF Net $3,599.40 + PayPal $1,212.55
+    totalRevenue: 4861.95, // OF Net $3,599.40 + PayPal $1,262.55
     plan: 7500.00, 
-    goalProgressPct: 64.16, 
-    goalStatusPct: 10.83,
-    runRate: 9022.41, 
+    goalProgressPct: 64.83, 
+    goalStatusPct: 11.50,
+    runRate: 9116.16, 
     newFans: 38, 
     spenders: 43, 
     newSpenders: 6,
@@ -306,11 +306,11 @@ export const initialModelWeekly = [
     week: '1–16 Сент (Факт)', 
     accountId: '30201', 
     modelName: 'Eva Blush', 
-    totalRevenue: 1552.32, // OF Net $1,047.32 + PayPal $505.00
+    totalRevenue: 1502.32, // OF Net $1,047.32 + PayPal $455.00
     plan: 3000.00, 
-    goalProgressPct: 51.74, 
-    goalStatusPct: -1.59,
-    runRate: 2910.60, 
+    goalProgressPct: 50.08, 
+    goalStatusPct: -3.25,
+    runRate: 2816.85, 
     newFans: 289, 
     spenders: 34, 
     newSpenders: 9,
