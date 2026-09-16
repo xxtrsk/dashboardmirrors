@@ -1,13 +1,10 @@
-// Seed dataset updated for September 1–16 with NEW FINAL MODEL PLANS ($17,350.00 Total):
-// 1. Lollysunnery (39856): Goal $8,500.00 | Net $3,599.40 + PP $1,262.55 = $4,861.95 (57.20% | RunRate $9,116.16)
-// 2. 1lollyhere (47892): Goal $3,500.00 | Net $1,950.14 + PP $25.00 = $1,975.14 (56.43% | RunRate $3,703.39)
-// 3. Eva Blush (30201): Goal $2,800.00 | Net $1,047.32 + PP $455.00 = $1,502.32 (53.65% | RunRate $2,816.85)
-// 4. Eva Pinky (Fansly 77304): Goal $1,300.00 | Net $717.94 + PP $0.00 = $717.94 (55.23% | RunRate $1,346.14)
-// 5. Lila angelkiss (4967): Goal $1,250.00 | Net $526.81 + PP $0.00 = $526.81 (42.14% | RunRate $987.77)
-// Grand Total Agency Revenue 1–16 Sept: $9,584.16 (New Goal $17,350.00 | 55.24% | Projected RunRate $17,970.31)
+// Seed dataset updated for September 1–16 with EXACT CRM Chatter Metrics for Lollysunnery (39856):
+// paul walkeeer: $2,652.95 Total ($1,924.75 + $499 + $50 + $179.20) | PPV $1,685.62 | OpenRate 67.69% | AvgPriceSold $47.89 | TRT 177.87s
+// karina @sanesskio: $1,841.26 Total ($1,127.71 + $713.55) | PPV $970.95 | OpenRate 52.78% | AvgPriceSold $63.88 | TRT 93.67s
+// Timur (exy sdof): $323.00 Total | PPV $299.75 | OpenRate 40.00% | AvgPriceSold $46.84 | TRT 180.34s
 
 export const availableMonths = [
-  { key: '2026-09', label: 'Сентябрь 2026 (Планы $17.35k)', isCurrent: true, totalDays: 30, daysPassed: 16 },
+  { key: '2026-09', label: 'Сентябрь 2026 (1–16 Сент)', isCurrent: true, totalDays: 30, daysPassed: 16 },
   { key: '2026-08', label: 'Август 2026 (Завершен Итог $19.5k)', isCurrent: false, totalDays: 31, daysPassed: 31 },
   { key: '2026-07', label: 'Июль 2026 (Завершен)', isCurrent: false, totalDays: 31, daysPassed: 31 }
 ];
@@ -94,46 +91,66 @@ export const initialKPISettings = [
 ];
 
 export const initialChatterWeekly = [
-  // SEPTEMBER 2026 RECORDS (1–16 Сент)
+  // SEPTEMBER 2026 RECORDS (1–16 Сент - EXACT CRM METRICS FOR LOLLYSUNNERY)
   { 
     monthKey: '2026-09', 
     week: '1–16 Сент (Факт)', 
     chatter: 'paul walkeeer', 
     accountId: '39856', 
-    totalSales: 2917.17, 
-    ppvSales: 2577.33, 
-    tips: 339.84, 
-    messages: 7480, 
-    freeMedia: 204, 
-    ppvSent: 121, 
-    ppvSold: 76, 
-    chats: 288, 
-    words: 96420, 
-    trt: 216.20, 
-    avgPPV: 32.43, 
-    openRate: 62.55, 
-    avgPriceSent: 28.68, 
-    avgPriceSold: 32.43 
+    totalSales: 2652.95, 
+    ppvSales: 1685.62, 
+    tips: 312.00, 
+    messages: 4994, 
+    freeMedia: 125, 
+    ppvSent: 65, 
+    ppvSold: 44, 
+    chats: 172, 
+    words: 70997, 
+    trt: 177.87, 
+    avgPPV: 47.89, 
+    openRate: 67.69, 
+    avgPriceSent: 44.10, 
+    avgPriceSold: 47.89 
   },
   { 
     monthKey: '2026-09', 
     week: '1–16 Сент (Факт)', 
     chatter: 'karina @sanesskio', 
     accountId: '39856', 
-    totalSales: 1944.78, 
-    ppvSales: 1718.22, 
-    tips: 226.56, 
-    messages: 4458, 
-    freeMedia: 193, 
-    ppvSent: 82, 
-    ppvSold: 35, 
-    chats: 239, 
-    words: 39300, 
-    trt: 126.27, 
-    avgPPV: 32.43, 
-    openRate: 49.39, 
-    avgPriceSent: 38.60, 
-    avgPriceSold: 32.43 
+    totalSales: 1841.26, 
+    ppvSales: 970.95, 
+    tips: 106.40, 
+    messages: 2714, 
+    freeMedia: 81, 
+    ppvSent: 36, 
+    ppvSold: 19, 
+    chats: 129, 
+    words: 17759, 
+    trt: 93.67, 
+    avgPPV: 63.88, 
+    openRate: 52.78, 
+    avgPriceSent: 53.13, 
+    avgPriceSold: 63.88 
+  },
+  { 
+    monthKey: '2026-09', 
+    week: '1–16 Сент (Факт)', 
+    chatter: 'Timur (Тимур)', 
+    accountId: '39856', 
+    totalSales: 323.00, 
+    ppvSales: 299.75, 
+    tips: 100.00, 
+    messages: 1023, 
+    freeMedia: 20, 
+    ppvSent: 20, 
+    ppvSold: 8, 
+    chats: 100, 
+    words: 8788, 
+    trt: 180.34, 
+    avgPPV: 46.84, 
+    openRate: 40.00, 
+    avgPriceSent: 35.35, 
+    avgPriceSold: 46.84 
   },
   { 
     monthKey: '2026-09', 
@@ -258,13 +275,13 @@ export const initialChatterWeekly = [
 ];
 
 export const initialModelWeekly = [
-  // SEPTEMBER 1–16 REVENUE (NEW FINAL PLANS TOTAL $17,350.00)
+  // SEPTEMBER 1–16 REVENUE (EXACT CRM EXPORTS + REALLOCATED PAYPAL $1,742.55)
   { 
     monthKey: '2026-09', 
     week: '1–16 Сент (Факт)', 
     accountId: '39856', 
     modelName: 'Lolly (Lollysunnery)', 
-    totalRevenue: 4861.95, 
+    totalRevenue: 4861.95, // OF Net $3,599.40 + PayPal $1,262.55
     plan: 8500.00, 
     goalProgressPct: 57.20, 
     goalStatusPct: 3.87,
@@ -285,7 +302,7 @@ export const initialModelWeekly = [
     week: '1–16 Сент (Факт)', 
     accountId: '47892', 
     modelName: 'Lolly (1lollyhere)', 
-    totalRevenue: 1975.14, 
+    totalRevenue: 1975.14, // OF Net $1,950.14 + PayPal $25.00
     plan: 3500.00, 
     goalProgressPct: 56.43, 
     goalStatusPct: 3.10,
@@ -306,7 +323,7 @@ export const initialModelWeekly = [
     week: '1–16 Сент (Факт)', 
     accountId: '30201', 
     modelName: 'Eva Blush', 
-    totalRevenue: 1502.32, 
+    totalRevenue: 1502.32, // OF Net $1,047.32 + PayPal $455.00
     plan: 2800.00, 
     goalProgressPct: 53.65, 
     goalStatusPct: 0.32,
@@ -327,7 +344,7 @@ export const initialModelWeekly = [
     week: '1–16 Сент (Факт)', 
     accountId: '77304', 
     modelName: 'Eva Pinky (Fansly)', 
-    totalRevenue: 717.94, 
+    totalRevenue: 717.94, // Fansly Net $717.94 + PayPal $0.00
     plan: 1300.00, 
     goalProgressPct: 55.23, 
     goalStatusPct: 1.89,
@@ -348,7 +365,7 @@ export const initialModelWeekly = [
     week: '1–16 Сент (Факт)', 
     accountId: '4967', 
     modelName: 'Lila (angelkiss)', 
-    totalRevenue: 526.81, 
+    totalRevenue: 526.81, // OF Net $526.81 + PayPal $0.00
     plan: 1250.00, 
     goalProgressPct: 42.14, 
     goalStatusPct: -11.19,
