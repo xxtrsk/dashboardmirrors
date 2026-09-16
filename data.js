@@ -1,17 +1,17 @@
-// Seed dataset updated for September 1–16 with REVISED CHATTER TARGETS FOR LOLLYSUNNERY ($8,500 Total):
-// Artem (paulwalkeeer): Plan $4,300.00 | Target TRT 220s | Target Open Rate 50% | Target Avg Price $27
-// Karina (@sanesskio): Plan $3,200.00 | Target TRT 180s | Target Open Rate 40% | Target Avg Price $30
-// Timur (Тимур): Plan $1,000.00 | Target TRT 240s | Target Open Rate 35% | Target Avg Price $22
+// Seed dataset updated for September 1–16 with EXACT CRM Chatter Metrics for 1lollyhere (47892):
+// hinata hyuga: $646.34 Total | PPV $518.34 | Tips $128.00 | OpenRate 41.67% | AvgPriceSold $25.92 | TRT 196.45s
+// Igor (srk 148): $433.46 Total | PPV $333.46 | Tips $100.00 | OpenRate 40.48% | AvgPriceSold $24.52 | TRT 309.86s
+// karina @sanesskio: $645.91 Total | PPV $485.91 | Tips $160.00 | OpenRate 37.50% | AvgPriceSold $28.92 | TRT 91.62s
 
 export const availableMonths = [
-  { key: '2026-09', label: 'Сентябрь 2026 (Планы $17.35k)', isCurrent: true, totalDays: 30, daysPassed: 16 },
+  { key: '2026-09', label: 'Сентябрь 2026 (1–16 Сент)', isCurrent: true, totalDays: 30, daysPassed: 16 },
   { key: '2026-08', label: 'Август 2026 (Завершен Итог $19.5k)', isCurrent: false, totalDays: 31, daysPassed: 31 },
   { key: '2026-07', label: 'Июль 2026 (Завершен)', isCurrent: false, totalDays: 31, daysPassed: 31 }
 ];
 
 export const initialConfig = [
   { id: '39856', modelName: 'Lolly (Lollysunnery)', page: 'lollysunnery', chatters: ['paul walkeeer', 'karina @sanesskio', 'Timur (Тимур)'] },
-  { id: '47892', modelName: 'Lolly (1lollyhere)', page: '1lollyhere', chatters: ['hinata hyuga', 'Igor (Игорь)'] },
+  { id: '47892', modelName: 'Lolly (1lollyhere)', page: '1lollyhere', chatters: ['hinata hyuga', 'karina @sanesskio', 'Igor (Игорь)'] },
   { id: '30201', modelName: 'Eva Blush', page: 'evablush', chatters: ['paul walkeeer', 'karina @sanesskio', 'Timur (Тимур)'] },
   { id: '4967', modelName: 'Lila (angelkiss)', page: 'angelkiss', chatters: ['hinata hyuga', 'Igor (Игорь)'] },
   { id: '77304', modelName: 'Eva Pinky (Fansly)', page: 'evapinky', chatters: ['Команда Fansly'] }
@@ -77,8 +77,9 @@ export const initialKPISettings = [
   { chatter: 'Timur (Тимур)', model: 'Lolly (Lollysunnery)', targetOpenRate: 35, targetAvgPrice: 22, targetTRT: 240, targetPlan: 1000 },
 
   // Lolly (1lollyhere) - Plan $3,500
-  { chatter: 'hinata hyuga', model: 'Lolly (1lollyhere)', targetOpenRate: 40, targetAvgPrice: 25, targetTRT: 200, targetPlan: 2500 },
-  { chatter: 'Igor (Игорь)', model: 'Lolly (1lollyhere)', targetOpenRate: 35, targetAvgPrice: 23, targetTRT: 220, targetPlan: 1000 },
+  { chatter: 'hinata hyuga', model: 'Lolly (1lollyhere)', targetOpenRate: 40, targetAvgPrice: 25, targetTRT: 200, targetPlan: 1500 },
+  { chatter: 'karina @sanesskio', model: 'Lolly (1lollyhere)', targetOpenRate: 40, targetAvgPrice: 28, targetTRT: 160, targetPlan: 1200 },
+  { chatter: 'Igor (Игорь)', model: 'Lolly (1lollyhere)', targetOpenRate: 35, targetAvgPrice: 23, targetTRT: 280, targetPlan: 800 },
 
   // Eva Blush - Plan $2,800
   { chatter: 'paul walkeeer', model: 'Eva Blush', targetOpenRate: 45, targetAvgPrice: 26, targetTRT: 200, targetPlan: 1200 },
@@ -91,7 +92,7 @@ export const initialKPISettings = [
 ];
 
 export const initialChatterWeekly = [
-  // SEPTEMBER 2026 RECORDS (1–16 Сент - EXACT CRM METRICS FOR LOLLYSUNNERY)
+  // SEPTEMBER 2026 RECORDS (1–16 Сент - EXACT CRM METRICS FOR LOLLYSUNNERY & 1LOLLYS HERE)
   { 
     monthKey: '2026-09', 
     week: '1–16 Сент (Факт)', 
@@ -157,40 +158,60 @@ export const initialChatterWeekly = [
     week: '1–16 Сент (Факт)', 
     chatter: 'hinata hyuga', 
     accountId: '47892', 
-    totalSales: 1382.60, 
-    ppvSales: 1008.20, 
-    tips: 374.40, 
-    messages: 2300, 
-    freeMedia: 93, 
-    ppvSent: 88, 
-    ppvSold: 42, 
-    chats: 268, 
-    words: 32500, 
-    trt: 226.51, 
-    avgPPV: 20.31, 
-    openRate: 47.62, 
-    avgPriceSent: 21.77, 
-    avgPriceSold: 20.31 
+    totalSales: 646.34, 
+    ppvSales: 518.34, 
+    tips: 128.00, 
+    messages: 1325, 
+    freeMedia: 40, 
+    ppvSent: 60, 
+    ppvSold: 25, 
+    chats: 167, 
+    words: 18479, 
+    trt: 196.45, 
+    avgPPV: 25.92, 
+    openRate: 41.67, 
+    avgPriceSent: 21.99, 
+    avgPriceSold: 25.92 
+  },
+  { 
+    monthKey: '2026-09', 
+    week: '1–16 Сент (Факт)', 
+    chatter: 'karina @sanesskio', 
+    accountId: '47892', 
+    totalSales: 645.91, 
+    ppvSales: 485.91, 
+    tips: 160.00, 
+    messages: 1955, 
+    freeMedia: 66, 
+    ppvSent: 56, 
+    ppvSold: 21, 
+    chats: 260, 
+    words: 14892, 
+    trt: 91.62, 
+    avgPPV: 28.92, 
+    openRate: 37.50, 
+    avgPriceSent: 25.71, 
+    avgPriceSold: 28.92 
   },
   { 
     monthKey: '2026-09', 
     week: '1–16 Сент (Факт)', 
     chatter: 'Igor (Игорь)', 
     accountId: '47892', 
-    totalSales: 592.54, 
-    ppvSales: 432.10, 
-    tips: 160.44, 
-    messages: 991, 
-    freeMedia: 40, 
-    ppvSent: 38, 
-    ppvSold: 18, 
-    chats: 116, 
-    words: 13938, 
-    trt: 291.67, 
-    avgPPV: 20.31, 
-    openRate: 43.33, 
-    avgPriceSent: 28.67, 
-    avgPriceSold: 20.31 
+    totalSales: 433.46, 
+    ppvSales: 333.46, 
+    tips: 100.00, 
+    messages: 1203, 
+    freeMedia: 58, 
+    ppvSent: 42, 
+    ppvSold: 17, 
+    chats: 146, 
+    words: 21287, 
+    trt: 309.86, 
+    avgPPV: 24.52, 
+    openRate: 40.48, 
+    avgPriceSent: 21.52, 
+    avgPriceSold: 24.52 
   },
   { 
     monthKey: '2026-09', 
