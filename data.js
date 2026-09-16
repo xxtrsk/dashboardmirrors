@@ -1,13 +1,13 @@
-// Seed dataset updated for September 1–16 with reallocated PayPal ($50 shifted from Eva Blush to Lollysunnery):
-// 1. Lollysunnery (39856): OF Net $3,599.40 + PayPal $1,262.55 = $4,861.95 (Goal $7,500 | 64.83% | RunRate $9,116.16)
-// 2. 1lollyhere (47892): OF Net $1,950.14 + PayPal $25.00 = $1,975.14 (Goal $3,500 | 56.43% | RunRate $3,703.39)
-// 3. Eva Blush (30201): OF Net $1,047.32 + PayPal $455.00 = $1,502.32 (Goal $3,000 | 50.08% | RunRate $2,816.85)
-// 4. Eva Pinky (Fansly 77304): Net $717.94 + PayPal $0.00 = $717.94 (Goal $1,000 | 71.79% | RunRate $1,346.14)
-// 5. Lila angelkiss (4967): OF Net $526.81 + PayPal $0.00 = $526.81 (Goal $1,500 | 35.12% | RunRate $987.77)
-// Grand Total Agency Revenue 1–16 Sept: $9,584.16 (Goal $16,500 | 58.09% | Projected RunRate $17,970.31)
+// Seed dataset updated for September 1–16 with NEW FINAL MODEL PLANS ($17,350.00 Total):
+// 1. Lollysunnery (39856): Goal $8,500.00 | Net $3,599.40 + PP $1,262.55 = $4,861.95 (57.20% | RunRate $9,116.16)
+// 2. 1lollyhere (47892): Goal $3,500.00 | Net $1,950.14 + PP $25.00 = $1,975.14 (56.43% | RunRate $3,703.39)
+// 3. Eva Blush (30201): Goal $2,800.00 | Net $1,047.32 + PP $455.00 = $1,502.32 (53.65% | RunRate $2,816.85)
+// 4. Eva Pinky (Fansly 77304): Goal $1,300.00 | Net $717.94 + PP $0.00 = $717.94 (55.23% | RunRate $1,346.14)
+// 5. Lila angelkiss (4967): Goal $1,250.00 | Net $526.81 + PP $0.00 = $526.81 (42.14% | RunRate $987.77)
+// Grand Total Agency Revenue 1–16 Sept: $9,584.16 (New Goal $17,350.00 | 55.24% | Projected RunRate $17,970.31)
 
 export const availableMonths = [
-  { key: '2026-09', label: 'Сентябрь 2026 (1–16 Сент)', isCurrent: true, totalDays: 30, daysPassed: 16 },
+  { key: '2026-09', label: 'Сентябрь 2026 (Планы $17.35k)', isCurrent: true, totalDays: 30, daysPassed: 16 },
   { key: '2026-08', label: 'Август 2026 (Завершен Итог $19.5k)', isCurrent: false, totalDays: 31, daysPassed: 31 },
   { key: '2026-07', label: 'Июль 2026 (Завершен)', isCurrent: false, totalDays: 31, daysPassed: 31 }
 ];
@@ -24,10 +24,10 @@ export const initialModels = [
   { 
     id: '39856', 
     name: 'Lolly (Lollysunnery)', 
-    plan: 7500, 
-    totalBonusPool: 150, 
-    teamBonusPool: 75, 
-    kpiBonusPool: 75, 
+    plan: 8500, 
+    totalBonusPool: 170, 
+    teamBonusPool: 85, 
+    kpiBonusPool: 85, 
     teamPct: '50%',
     accountId: '39856' 
   },
@@ -44,19 +44,19 @@ export const initialModels = [
   { 
     id: '30201', 
     name: 'Eva Blush', 
-    plan: 3000, 
-    totalBonusPool: 60, 
-    teamBonusPool: 30, 
-    kpiBonusPool: 30, 
+    plan: 2800, 
+    totalBonusPool: 56, 
+    teamBonusPool: 28, 
+    kpiBonusPool: 28, 
     teamPct: '50%',
     accountId: '30201' 
   },
   { 
     id: '4967', 
     name: 'Lila (angelkiss)', 
-    plan: 1500, 
-    totalBonusPool: 30, 
-    teamBonusPool: 30, 
+    plan: 1250, 
+    totalBonusPool: 25, 
+    teamBonusPool: 25, 
     kpiBonusPool: 0, 
     teamPct: '100%',
     accountId: '4967' 
@@ -64,9 +64,9 @@ export const initialModels = [
   { 
     id: '77304', 
     name: 'Eva Pinky (Fansly)', 
-    plan: 1000, 
-    totalBonusPool: 20, 
-    teamBonusPool: 20, 
+    plan: 1300, 
+    totalBonusPool: 26, 
+    teamBonusPool: 26, 
     kpiBonusPool: 0, 
     teamPct: '100%',
     accountId: '77304' 
@@ -74,23 +74,23 @@ export const initialModels = [
 ];
 
 export const initialKPISettings = [
-  // Lolly (Lollysunnery) - Plan $7,500
-  { chatter: 'paul walkeeer', model: 'Lolly (Lollysunnery)', targetOpenRate: 50, targetAvgPrice: 27, targetTRT: 200, targetPlan: 3200 },
-  { chatter: 'karina @sanesskio', model: 'Lolly (Lollysunnery)', targetOpenRate: 40, targetAvgPrice: 30, targetTRT: 160, targetPlan: 2800 },
-  { chatter: 'Timur (Тимур)', model: 'Lolly (Lollysunnery)', targetOpenRate: 35, targetAvgPrice: 22, targetTRT: 220, targetPlan: 1500 },
+  // Lolly (Lollysunnery) - Plan $8,500
+  { chatter: 'paul walkeeer', model: 'Lolly (Lollysunnery)', targetOpenRate: 50, targetAvgPrice: 27, targetTRT: 200, targetPlan: 3600 },
+  { chatter: 'karina @sanesskio', model: 'Lolly (Lollysunnery)', targetOpenRate: 40, targetAvgPrice: 30, targetTRT: 160, targetPlan: 3200 },
+  { chatter: 'Timur (Тимур)', model: 'Lolly (Lollysunnery)', targetOpenRate: 35, targetAvgPrice: 22, targetTRT: 220, targetPlan: 1700 },
 
   // Lolly (1lollyhere) - Plan $3,500
   { chatter: 'hinata hyuga', model: 'Lolly (1lollyhere)', targetOpenRate: 40, targetAvgPrice: 25, targetTRT: 200, targetPlan: 2500 },
   { chatter: 'Igor (Игорь)', model: 'Lolly (1lollyhere)', targetOpenRate: 35, targetAvgPrice: 23, targetTRT: 220, targetPlan: 1000 },
 
-  // Eva Blush - Plan $3,000
-  { chatter: 'paul walkeeer', model: 'Eva Blush', targetOpenRate: 45, targetAvgPrice: 26, targetTRT: 200, targetPlan: 1300 },
-  { chatter: 'karina @sanesskio', model: 'Eva Blush', targetOpenRate: 40, targetAvgPrice: 26, targetTRT: 180, targetPlan: 1100 },
+  // Eva Blush - Plan $2,800
+  { chatter: 'paul walkeeer', model: 'Eva Blush', targetOpenRate: 45, targetAvgPrice: 26, targetTRT: 200, targetPlan: 1200 },
+  { chatter: 'karina @sanesskio', model: 'Eva Blush', targetOpenRate: 40, targetAvgPrice: 26, targetTRT: 180, targetPlan: 1000 },
   { chatter: 'Timur (Тимур)', model: 'Eva Blush', targetOpenRate: 35, targetAvgPrice: 22, targetTRT: 220, targetPlan: 600 },
 
-  // Lila (angelkiss) - Plan $1,500
-  { chatter: 'hinata hyuga', model: 'Lila (angelkiss)', targetOpenRate: 40, targetAvgPrice: 25, targetTRT: 200, targetPlan: 1000 },
-  { chatter: 'Igor (Игорь)', model: 'Lila (angelkiss)', targetOpenRate: 35, targetAvgPrice: 23, targetTRT: 220, targetPlan: 500 }
+  // Lila (angelkiss) - Plan $1,250
+  { chatter: 'hinata hyuga', model: 'Lila (angelkiss)', targetOpenRate: 40, targetAvgPrice: 25, targetTRT: 200, targetPlan: 850 },
+  { chatter: 'Igor (Игорь)', model: 'Lila (angelkiss)', targetOpenRate: 35, targetAvgPrice: 23, targetTRT: 220, targetPlan: 400 }
 ];
 
 export const initialChatterWeekly = [
@@ -258,16 +258,16 @@ export const initialChatterWeekly = [
 ];
 
 export const initialModelWeekly = [
-  // SEPTEMBER 1–16 REVENUE (EXACT CRM EXPORTS + REALLOCATED PAYPAL $1,742.55)
+  // SEPTEMBER 1–16 REVENUE (NEW FINAL PLANS TOTAL $17,350.00)
   { 
     monthKey: '2026-09', 
     week: '1–16 Сент (Факт)', 
     accountId: '39856', 
     modelName: 'Lolly (Lollysunnery)', 
-    totalRevenue: 4861.95, // OF Net $3,599.40 + PayPal $1,262.55
-    plan: 7500.00, 
-    goalProgressPct: 64.83, 
-    goalStatusPct: 11.50,
+    totalRevenue: 4861.95, 
+    plan: 8500.00, 
+    goalProgressPct: 57.20, 
+    goalStatusPct: 3.87,
     runRate: 9116.16, 
     newFans: 38, 
     spenders: 43, 
@@ -285,7 +285,7 @@ export const initialModelWeekly = [
     week: '1–16 Сент (Факт)', 
     accountId: '47892', 
     modelName: 'Lolly (1lollyhere)', 
-    totalRevenue: 1975.14, // OF Net $1,950.14 + PayPal $25.00
+    totalRevenue: 1975.14, 
     plan: 3500.00, 
     goalProgressPct: 56.43, 
     goalStatusPct: 3.10,
@@ -306,10 +306,10 @@ export const initialModelWeekly = [
     week: '1–16 Сент (Факт)', 
     accountId: '30201', 
     modelName: 'Eva Blush', 
-    totalRevenue: 1502.32, // OF Net $1,047.32 + PayPal $455.00
-    plan: 3000.00, 
-    goalProgressPct: 50.08, 
-    goalStatusPct: -3.25,
+    totalRevenue: 1502.32, 
+    plan: 2800.00, 
+    goalProgressPct: 53.65, 
+    goalStatusPct: 0.32,
     runRate: 2816.85, 
     newFans: 289, 
     spenders: 34, 
@@ -327,10 +327,10 @@ export const initialModelWeekly = [
     week: '1–16 Сент (Факт)', 
     accountId: '77304', 
     modelName: 'Eva Pinky (Fansly)', 
-    totalRevenue: 717.94, // Fansly Net $717.94 + PayPal $0.00
-    plan: 1000.00, 
-    goalProgressPct: 71.79, 
-    goalStatusPct: 18.46,
+    totalRevenue: 717.94, 
+    plan: 1300.00, 
+    goalProgressPct: 55.23, 
+    goalStatusPct: 1.89,
     runRate: 1346.14, 
     newFans: 120, 
     spenders: 21, 
@@ -348,10 +348,10 @@ export const initialModelWeekly = [
     week: '1–16 Сент (Факт)', 
     accountId: '4967', 
     modelName: 'Lila (angelkiss)', 
-    totalRevenue: 526.81, // OF Net $526.81 + PayPal $0.00
-    plan: 1500.00, 
-    goalProgressPct: 35.12, 
-    goalStatusPct: -18.21,
+    totalRevenue: 526.81, 
+    plan: 1250.00, 
+    goalProgressPct: 42.14, 
+    goalStatusPct: -11.19,
     runRate: 987.77, 
     newFans: 368, 
     spenders: 25, 
