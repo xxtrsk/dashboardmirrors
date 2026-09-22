@@ -98,7 +98,7 @@ export const initialChatterWeekly = [
     week: '1–21 Сент (Факт)', 
     chatter: 'paul walkeeer', 
     accountId: '39856', 
-    totalSales: 3448.80, 
+    totalSales: 3572.08, 
     ppvSales: 2200.00, 
     tips: 450.00, 
     messages: 6500, 
@@ -118,7 +118,7 @@ export const initialChatterWeekly = [
     week: '1–21 Сент (Факт)', 
     chatter: 'karina @sanesskio', 
     accountId: '39856', 
-    totalSales: 2393.64, 
+    totalSales: 2495.94, 
     ppvSales: 1350.00, 
     tips: 380.00, 
     messages: 3600, 
@@ -316,17 +316,17 @@ export const initialChatterWeekly = [
 ];
 
 export const initialModelWeekly = [
-  // SEPTEMBER 1–21 REVENUE (FINAL CRM SCREENSHOT + PAYPAL $1,742.55 TOTAL)
+  // SEPTEMBER 1–21 REVENUE (FINAL CRM SCREENSHOT + PAYPAL $1,968.13 TOTAL)
   { 
     monthKey: '2026-09', 
     week: '1–21 Сент (Факт)', 
     accountId: '39856', 
     modelName: 'Lolly (Lollysunnery)', 
-    totalRevenue: 6317.71, 
+    totalRevenue: 6543.29, 
     plan: 8500.00, 
-    goalProgressPct: 74.33, 
-    goalStatusPct: 4.33,
-    runRate: 9025.30, 
+    goalProgressPct: 76.98, 
+    goalStatusPct: 6.98,
+    runRate: 9347.56, 
     newFans: 51, 
     spenders: 57, 
     newSpenders: 6,
