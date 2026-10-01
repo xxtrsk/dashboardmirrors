@@ -270,18 +270,23 @@ function renderMainDashboard() {
   const chatterTableBody = document.getElementById('tbody-chatter-summary') || document.getElementById('chatter-perf-table-body');
   if (chatterTableBody) {
     chatterTableBody.innerHTML = chatters.map(c => {
-      const is16Days = c.chatter.toLowerCase().includes('paul') || c.chatter.toLowerCase().includes('hinata');
-      const shiftsBadge = is16Days 
-        ? `<div style="font-size: 11px; color: var(--accent-green); font-weight: 600;">16 смен</div>` 
-        : `<div style="font-size: 11px; color: var(--accent-amber); font-weight: 600;">15 смен</div>`;
+      let statusMarkup = '';
+      if (c.completionPct >= 98 || c.isGoalAchieved) {
+        statusMarkup = `<span class="badge-status badge-green">🟢 Выполнен</span>`;
+      } else if (c.completionPct >= 80) {
+        statusMarkup = `<span class="badge-status badge-amber">🟠 Очень близко</span>`;
+      } else {
+        statusMarkup = `<span class="badge-status" style="background: rgba(244, 63, 94, 0.15); border: 1px solid rgba(244, 63, 94, 0.3); color: #f43f5e; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 600;">🔴 Не выполнен</span>`;
+      }
+
       return `
       <tr>
-        <td style="font-weight: 700; color: var(--text-main);">${c.chatter}${shiftsBadge}</td>
+        <td style="font-weight: 700; color: var(--text-main);">${c.chatter}</td>
         <td><span style="background: rgba(192, 132, 252, 0.15); border: 1px solid rgba(192, 132, 252, 0.3); color: var(--accent-purple); padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 600;">${c.model}</span></td>
         <td style="font-family: var(--font-mono);">${formatCurrency(c.targetPlan)}</td>
         <td style="font-family: var(--font-mono); font-weight: 700; color: var(--accent-green);">${formatCurrency(c.factSales)}</td>
         <td>
-          <span class="badge-status ${c.completionPct >= 35 ? 'badge-green' : 'badge-amber'}">
+          <span class="badge-status ${c.completionPct >= 80 ? 'badge-green' : 'badge-amber'}">
             ${formatPercent(c.completionPct)}
           </span>
         </td>
@@ -289,11 +294,7 @@ function renderMainDashboard() {
         <td style="font-family: var(--font-mono);">${Math.round(c.trt)}s (Цель ${c.targetTRT}s)</td>
         <td>${formatPercent(c.openRate)} (Цель ${formatPercent(c.targetOpenRate)})</td>
         <td>$${c.avgPriceSold.toFixed(2)} (Цель $${c.targetAvgPrice})</td>
-        <td>
-          <span class="badge-status ${c.isGoalAchieved ? 'badge-green' : 'badge-amber'}">
-            ${c.isGoalAchieved ? '🟢 Выполнен' : '🟡 В процессе'}
-          </span>
-        </td>
+        <td>${statusMarkup}</td>
       </tr>
       `;
     }).join('');
