@@ -172,7 +172,7 @@ function renderHeaderInfo() {
   const cardSubtextEl = document.getElementById('dash-card-subtext-revenue');
   if (cardSubtextEl) {
     if (state.selectedMonthKey === '2026-09') {
-      cardSubtextEl.innerHTML = `Фактическая сумма за первые ${daysPassed} дн. Сентября по всем моделям <br><span style="color: var(--accent-purple); font-weight: 600;">(включая +$1,968.13 PayPal: Lolly $1,488.13 + Eva $455.00 + 1lolly $25.00)</span>`;
+      cardSubtextEl.innerHTML = `Итоговая чистая выручка за 30 дн. Сентября по всем моделям <br><span style="color: var(--accent-purple); font-weight: 600;">(Чистый CRM без учета PayPal)</span>`;
     } else if (state.selectedMonthKey === '2026-08') {
       cardSubtextEl.innerHTML = `Фактическая сумма за 31 дн. Августа <br><span style="color: var(--accent-purple); font-weight: 600;">(включая +$1,748.72 Внешние источники: PayPal + $30 Крипта + $44.72 Карта УКР)</span>`;
     } else {

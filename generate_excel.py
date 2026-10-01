@@ -67,76 +67,76 @@ def generate_full_om_screenshot_excel():
    <Row>
     <Cell><Data ss:Type="String">39856. Lolly (Lollysunnery)</Data></Cell>
     <Cell><Data ss:Type="String">OnlyFans</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">6543.29</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">6631.06</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">8500.00</Data></Cell>
-    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.7698</Data></Cell>
-    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.0698</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">9347.56</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">30.64</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">88.69</Data></Cell>
+    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.7801</Data></Cell>
+    <Cell ss:StyleID="Percent"><Data ss:Type="Number">-0.2199</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">6631.06</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">29.47</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">83.94</Data></Cell>
    </Row>
 
    <!-- 2. 1lollyhere -->
    <Row>
     <Cell><Data ss:Type="String">47892. Lolly (1lollyhere)</Data></Cell>
     <Cell><Data ss:Type="String">OnlyFans</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">2501.99</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">2881.68</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">3500.00</Data></Cell>
-    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.7149</Data></Cell>
-    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.0149</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">3574.27</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">19.05</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">42.71</Data></Cell>
+    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.8233</Data></Cell>
+    <Cell ss:StyleID="Percent"><Data ss:Type="Number">-0.1767</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">2881.68</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">18.12</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">41.17</Data></Cell>
    </Row>
 
    <!-- 3. Eva Blush -->
    <Row>
     <Cell><Data ss:Type="String">30201. Eva (Eva Blush)</Data></Cell>
     <Cell><Data ss:Type="String">OnlyFans</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">2079.28</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">2737.85</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">2800.00</Data></Cell>
-    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.7426</Data></Cell>
-    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.0426</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">2970.40</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">18.89</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">29.53</Data></Cell>
+    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.9778</Data></Cell>
+    <Cell ss:StyleID="Percent"><Data ss:Type="Number">-0.0222</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">2737.85</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">18.88</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">35.56</Data></Cell>
    </Row>
 
    <!-- 4. Eva Pinky (Fansly) -->
    <Row>
     <Cell><Data ss:Type="String">77304. Eva Pinky (Fansly)</Data></Cell>
     <Cell><Data ss:Type="String">Fansly</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">966.68</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1350.36</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">1300.00</Data></Cell>
-    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.7436</Data></Cell>
-    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.0436</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1380.97</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">22.48</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">33.33</Data></Cell>
+    <Cell ss:StyleID="Percent"><Data ss:Type="Number">1.0387</Data></Cell>
+    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.0387</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1350.36</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">19.57</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">32.15</Data></Cell>
    </Row>
 
    <!-- 5. Lila (angelkiss) -->
    <Row>
     <Cell><Data ss:Type="String">4967. LILA (angelkiss)</Data></Cell>
     <Cell><Data ss:Type="String">OnlyFans</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">936.00</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1463.26</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">1250.00</Data></Cell>
-    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.7488</Data></Cell>
-    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.0488</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1337.14</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">14.18</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">22.83</Data></Cell>
+    <Cell ss:StyleID="Percent"><Data ss:Type="Number">1.1706</Data></Cell>
+    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.1706</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">1463.26</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">12.72</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">24.39</Data></Cell>
    </Row>
 
    <!-- 6. Grand Total -->
    <Row ss:StyleID="Header">
     <Cell><Data ss:Type="String">ИТОГО ВЫРУЧКА АГЕНТСТВА</Data></Cell>
     <Cell><Data ss:Type="String">OF + Fansly</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">13027.24</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">15064.21</Data></Cell>
     <Cell ss:StyleID="Currency"><Data ss:Type="Number">17350.00</Data></Cell>
-    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.7509</Data></Cell>
+    <Cell ss:StyleID="Percent"><Data ss:Type="Number">0.8683</Data></Cell>
     <Cell><Data ss:Type="String">—</Data></Cell>
-    <Cell ss:StyleID="Currency"><Data ss:Type="Number">18610.34</Data></Cell>
+    <Cell ss:StyleID="Currency"><Data ss:Type="Number">15064.21</Data></Cell>
     <Cell><Data ss:Type="String">—</Data></Cell>
     <Cell><Data ss:Type="String">—</Data></Cell>
    </Row>
