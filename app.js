@@ -194,7 +194,7 @@ function renderMainDashboard() {
   const grandPlan = models.reduce((acc, m) => acc + m.plan, 0);
   const grandFact = models.reduce((acc, m) => acc + m.totalRevenue, 0);
   
-  const { daysPassed, daysInMonth } = getDaysInfo(state.selectedMonthKey);
+  const { daysPassed, daysInMonth, isCurrent } = getDaysInfo(state.selectedMonthKey);
   const grandRunRate = daysPassed > 0 ? (grandFact / daysPassed) * daysInMonth : 0;
 
   document.getElementById('dash-grand-fact').textContent = formatCurrency(grandFact);
@@ -277,6 +277,8 @@ function renderMainDashboard() {
       let statusMarkup = '';
       if (c.completionPct >= 98 || c.isGoalAchieved) {
         statusMarkup = `<span class="badge-status badge-green">🟢 Выполнен</span>`;
+      } else if (isCurrent) {
+        statusMarkup = `<span class="badge-status badge-amber">🟡 В процессе</span>`;
       } else if (c.completionPct >= 80) {
         statusMarkup = `<span class="badge-status badge-amber">🟠 Очень близко</span>`;
       } else {

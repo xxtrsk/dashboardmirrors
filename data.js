@@ -11,11 +11,11 @@ export const availableMonths = [
 ];
 
 export const initialConfig = [
-  { id: '39856', modelName: 'Lolly (Lollysunnery)', page: 'lollysunnery', chatters: ['paul walkeeer', 'karina @sanesskio', 'Timur (Тимур)'] },
+  { id: '39856', modelName: 'Lolly (Lollysunnery)', page: 'lollysunnery', chatters: ['karina @sanesskio', 'Timur (Тимур)', 'paul walkeeer'] },
   { id: '47892', modelName: 'Lolly (1lollyhere)', page: '1lollyhere', chatters: ['hinata hyuga', 'karina @sanesskio', 'Igor (Игорь)'] },
-  { id: '30201', modelName: 'Eva Blush', page: 'evablush', chatters: ['paul walkeeer', 'karina @sanesskio', 'Timur (Тимур)'] },
+  { id: '30201', modelName: 'Eva Blush', page: 'evablush', chatters: ['karina @sanesskio', 'paul walkeeer', 'Timur (Тимур)'] },
   { id: '4967', modelName: 'Lila (angelkiss)', page: 'angelkiss', chatters: ['hinata hyuga', 'Igor (Игорь)'] },
-  { id: '77304', modelName: 'Eva Pinky (Fansly)', page: 'evapinky', chatters: ['Команда Fansly'] }
+  { id: '77304', modelName: 'Eva Pinky (Fansly)', page: 'evapinky', chatters: ['karina @sanesskio', 'hinata hyuga', 'Timur (Тимур)'] }
 ];
 
 export const modelPlansByMonth = {
@@ -44,24 +44,29 @@ export const modelPlansByMonth = {
 
 export const kpiSettingsByMonth = {
   '2026-10': [
-    // Lolly (Lollysunnery) - Plan $10,000
-    { chatter: 'paul walkeeer', model: 'Lolly (Lollysunnery)', targetOpenRate: 55, targetAvgPrice: 45, targetTRT: 180, targetPlan: 5000 },
+    // Lolly (Lollysunnery) - Plan $10,000 (посадка: karina, timur, artem)
     { chatter: 'karina @sanesskio', model: 'Lolly (Lollysunnery)', targetOpenRate: 42, targetAvgPrice: 42, targetTRT: 120, targetPlan: 3700 },
     { chatter: 'Timur (Тимур)', model: 'Lolly (Lollysunnery)', targetOpenRate: 40, targetAvgPrice: 45, targetTRT: 180, targetPlan: 1300 },
+    { chatter: 'paul walkeeer', model: 'Lolly (Lollysunnery)', targetOpenRate: 55, targetAvgPrice: 45, targetTRT: 180, targetPlan: 5000 },
 
-    // Lolly (1lollyhere) - Plan $3,200
+    // Lolly (1lollyhere) - Plan $3,200 (посадка: vlada, karina, igor)
     { chatter: 'hinata hyuga', model: 'Lolly (1lollyhere)', targetOpenRate: 40, targetAvgPrice: 24, targetTRT: 190, targetPlan: 1300 },
     { chatter: 'karina @sanesskio', model: 'Lolly (1lollyhere)', targetOpenRate: 35, targetAvgPrice: 28, targetTRT: 120, targetPlan: 1100 },
     { chatter: 'Igor (Игорь)', model: 'Lolly (1lollyhere)', targetOpenRate: 38, targetAvgPrice: 24, targetTRT: 240, targetPlan: 800 },
 
-    // Eva Blush - Plan $3,200
-    { chatter: 'paul walkeeer', model: 'Eva Blush', targetOpenRate: 42, targetAvgPrice: 25, targetTRT: 180, targetPlan: 1900 },
+    // Eva Blush - Plan $3,200 (посадка: karina, artem, timur)
     { chatter: 'karina @sanesskio', model: 'Eva Blush', targetOpenRate: 35, targetAvgPrice: 30, targetTRT: 120, targetPlan: 900 },
+    { chatter: 'paul walkeeer', model: 'Eva Blush', targetOpenRate: 42, targetAvgPrice: 25, targetTRT: 180, targetPlan: 1900 },
     { chatter: 'Timur (Тимур)', model: 'Eva Blush', targetOpenRate: 35, targetAvgPrice: 50, targetTRT: 180, targetPlan: 400 },
 
-    // Lila (angelkiss) - Plan $1,650
+    // Lila (angelkiss) - Plan $1,650 (посадка: vlada, igor)
     { chatter: 'hinata hyuga', model: 'Lila (angelkiss)', targetOpenRate: 38, targetAvgPrice: 21, targetTRT: 190, targetPlan: 1100 },
-    { chatter: 'Igor (Игорь)', model: 'Lila (angelkiss)', targetOpenRate: 35, targetAvgPrice: 19, targetTRT: 240, targetPlan: 550 }
+    { chatter: 'Igor (Игорь)', model: 'Lila (angelkiss)', targetOpenRate: 35, targetAvgPrice: 19, targetTRT: 240, targetPlan: 550 },
+
+    // Eva Pinky (Fansly) - Plan $1,500 (посадка: karina, vlada, timur)
+    { chatter: 'karina @sanesskio', model: 'Eva Pinky (Fansly)', targetOpenRate: 35, targetAvgPrice: 20, targetTRT: 120, targetPlan: 550 },
+    { chatter: 'hinata hyuga', model: 'Eva Pinky (Fansly)', targetOpenRate: 35, targetAvgPrice: 20, targetTRT: 180, targetPlan: 550 },
+    { chatter: 'Timur (Тимур)', model: 'Eva Pinky (Fansly)', targetOpenRate: 30, targetAvgPrice: 20, targetTRT: 180, targetPlan: 400 }
   ],
   '2026-09': [
     // Lolly (Lollysunnery) - Plan $8,500
@@ -309,6 +314,66 @@ export const initialChatterWeekly = [
     openRate: 33.33, 
     avgPriceSent: 45.00, 
     avgPriceSold: 40.00 
+  },
+  { 
+    monthKey: '2026-10', 
+    week: '1–4 Окт', 
+    chatter: 'karina @sanesskio', 
+    accountId: '77304', 
+    totalSales: 16.78, 
+    ppvSales: 16.78, 
+    tips: 0.00, 
+    messages: 120, 
+    freeMedia: 1, 
+    ppvSent: 3, 
+    ppvSold: 1, 
+    chats: 15, 
+    words: 850, 
+    trt: 95.00, 
+    avgPPV: 16.78, 
+    openRate: 33.33, 
+    avgPriceSent: 20.00, 
+    avgPriceSold: 16.78 
+  },
+  { 
+    monthKey: '2026-10', 
+    week: '1–4 Окт', 
+    chatter: 'hinata hyuga', 
+    accountId: '77304', 
+    totalSales: 12.00, 
+    ppvSales: 12.00, 
+    tips: 0.00, 
+    messages: 95, 
+    freeMedia: 1, 
+    ppvSent: 2, 
+    ppvSold: 1, 
+    chats: 12, 
+    words: 620, 
+    trt: 140.00, 
+    avgPPV: 12.00, 
+    openRate: 50.00, 
+    avgPriceSent: 20.00, 
+    avgPriceSold: 12.00 
+  },
+  { 
+    monthKey: '2026-10', 
+    week: '1–4 Окт', 
+    chatter: 'Timur (Тимур)', 
+    accountId: '77304', 
+    totalSales: 8.00, 
+    ppvSales: 8.00, 
+    tips: 0.00, 
+    messages: 70, 
+    freeMedia: 0, 
+    ppvSent: 2, 
+    ppvSold: 1, 
+    chats: 10, 
+    words: 450, 
+    trt: 160.00, 
+    avgPPV: 8.00, 
+    openRate: 50.00, 
+    avgPriceSent: 20.00, 
+    avgPriceSold: 8.00 
   },
 
   // SEPTEMBER 2026 RECORDS (1–30 Сент - EXACT TRUE TOTAL REVENUE FOR ALL CHATTERS & MODELS)
