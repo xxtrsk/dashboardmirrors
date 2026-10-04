@@ -107,7 +107,7 @@ function getChatterBreakdown() {
     const records = state.chatterWeekly.filter(cw => 
       cw.chatter.trim().toLowerCase() === kpi.chatter.trim().toLowerCase() && 
       (!accountId || cw.accountId === accountId) &&
-      (cw.monthKey === state.selectedMonthKey || !cw.monthKey)
+      cw.monthKey === state.selectedMonthKey
     );
 
     const factSales = records.reduce((acc, r) => acc + (r.totalSales || 0), 0);
@@ -174,7 +174,7 @@ function renderHeaderInfo() {
   const cardSubtextEl = document.getElementById('dash-card-subtext-revenue');
   if (cardSubtextEl) {
     if (state.selectedMonthKey === '2026-10') {
-      cardSubtextEl.innerHTML = `Текущая выручка за Октябрь по всем моделям <br><span style="color: var(--accent-purple); font-weight: 600;">(План Агентства: $20,500.00 | Трафик Lollysunnery ВОССТАНОВЛЕН 🚀)</span>`;
+      cardSubtextEl.innerHTML = `Текущая выручка за Октябрь по всем моделям`;
     } else if (state.selectedMonthKey === '2026-09') {
       cardSubtextEl.innerHTML = `Итоговая выручка за 30 дн. Сентября по всем моделям <br><span style="color: var(--accent-purple); font-weight: 600;">(включая +$2,515.13 PayPal: Lolly $1,813.13 + Eva $652.00 + 1lolly $50.00)</span>`;
     } else if (state.selectedMonthKey === '2026-08') {
@@ -296,10 +296,10 @@ function renderMainDashboard() {
             ${formatPercent(c.completionPct)}
           </span>
         </td>
-        <td style="font-family: var(--font-mono); color: var(--primary); font-weight: 600;">${formatCurrency(c.forecast)}</td>
-        <td style="font-family: var(--font-mono);">${Math.round(c.trt)}s (Цель ${c.targetTRT}s)</td>
-        <td>${formatPercent(c.openRate)} (Цель ${formatPercent(c.targetOpenRate)})</td>
-        <td>$${c.avgPriceSold.toFixed(2)} (Цель $${c.targetAvgPrice})</td>
+        <td style="font-family: var(--font-mono); color: var(--primary); font-weight: 600;">${c.forecast > 0 ? formatCurrency(c.forecast) : '—'}</td>
+        <td style="font-family: var(--font-mono);">${c.trt > 0 ? `${Math.round(c.trt)}s` : '—'} (Цель ${c.targetTRT}s)</td>
+        <td>${c.openRate > 0 ? formatPercent(c.openRate) : '—'} (Цель ${formatPercent(c.targetOpenRate)})</td>
+        <td>${c.avgPriceSold > 0 ? `$${c.avgPriceSold.toFixed(2)}` : '—'} (Цель $${c.targetAvgPrice})</td>
         <td>${statusMarkup}</td>
       </tr>
       `;
