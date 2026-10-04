@@ -220,9 +220,9 @@ function renderMainDashboard() {
           ${formatCurrency(m.totalRevenue)}
         </div>
         
-        <div style="display: flex; justify-content: space-between; font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">
-          <span>План: <strong style="color: var(--text-main);">${formatCurrency(m.plan)}</strong></span>
-          <span>Прогноз: <strong style="color: var(--primary);">${formatCurrency(m.runRate)}</strong></span>
+        <div style="display: flex; justify-content: space-between; font-size: 13px; color: var(--text-muted); margin-bottom: 12px; align-items: center;">
+          <span>План: <strong class="plan-pill-sm">${formatCurrency(m.plan)}</strong></span>
+          <span>Прогноз: <strong style="color: var(--primary); font-family: var(--font-mono); font-size: 13px; font-weight: 600;">${formatCurrency(m.runRate)}</strong></span>
         </div>
 
         <!-- Progress Bar -->
@@ -249,7 +249,7 @@ function renderMainDashboard() {
     modelTableBody.innerHTML = models.map(m => `
       <tr>
         <td style="font-weight: 700; color: var(--text-main);">${m.name}</td>
-        <td style="font-family: var(--font-mono); font-weight: 600;">${formatCurrency(m.plan)}</td>
+        <td><span class="plan-pill">${formatCurrency(m.plan)}</span></td>
         <td style="font-family: var(--font-mono); font-weight: 700; color: var(--accent-green);">${formatCurrency(m.totalRevenue)}</td>
         <td style="font-family: var(--font-mono); font-weight: 600; color: var(--primary);">${formatCurrency(m.runRate)}</td>
         <td>
@@ -289,7 +289,7 @@ function renderMainDashboard() {
       <tr>
         <td style="font-weight: 700; color: var(--text-main);">${c.chatter}</td>
         <td><span style="background: rgba(192, 132, 252, 0.15); border: 1px solid rgba(192, 132, 252, 0.3); color: var(--accent-purple); padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 600;">${c.model}</span></td>
-        <td style="font-family: var(--font-mono);">${formatCurrency(c.targetPlan)}</td>
+        <td><span class="plan-pill-sm">${formatCurrency(c.targetPlan)}</span></td>
         <td style="font-family: var(--font-mono); font-weight: 700; color: var(--accent-green);">${formatCurrency(c.factSales)}</td>
         <td>
           <span class="badge-status ${c.completionPct >= 80 ? 'badge-green' : 'badge-amber'}">
@@ -445,11 +445,11 @@ function renderModelWeeklyDynamics() {
     return `
       <tr>
         <td style="font-weight: 600; color: var(--text-main);">${m.label}</td>
-        <td style="font-family: var(--font-mono);">${fmt(w1)}</td>
-        <td style="font-family: var(--font-mono);">${w2 ? fmt(w2) : '—'}</td>
-        <td style="font-family: var(--font-mono);">${w3 ? fmt(w3) : '—'}</td>
-        <td style="font-family: var(--font-mono);">${w4 ? fmt(w4) : '—'}</td>
-        <td style="font-family: var(--font-mono); font-weight: 700; color: var(--primary);">${fmt(totAvg)}</td>
+        <td style="font-family: var(--font-mono);">${m.key === 'plan' && w1 ? `<span class="plan-pill-sm">${fmt(w1)}</span>` : fmt(w1)}</td>
+        <td style="font-family: var(--font-mono);">${w2 ? (m.key === 'plan' ? `<span class="plan-pill-sm">${fmt(w2)}</span>` : fmt(w2)) : '—'}</td>
+        <td style="font-family: var(--font-mono);">${w3 ? (m.key === 'plan' ? `<span class="plan-pill-sm">${fmt(w3)}</span>` : fmt(w3)) : '—'}</td>
+        <td style="font-family: var(--font-mono);">${w4 ? (m.key === 'plan' ? `<span class="plan-pill-sm">${fmt(w4)}</span>` : fmt(w4)) : '—'}</td>
+        <td style="font-family: var(--font-mono); font-weight: 700; color: var(--primary);">${m.key === 'plan' ? `<span class="plan-pill">${fmt(totAvg)}</span>` : fmt(totAvg)}</td>
       </tr>
     `;
   }).join('');
