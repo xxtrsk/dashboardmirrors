@@ -4,7 +4,7 @@
 // Timur (exy sdof): $48.44 Total | PPV $0.00 | Tips $24.00 | OpenRate 0.00% | AvgPriceSold $0.00 | TRT 187.03s | Chats 125
 
 export const availableMonths = [
-  { key: '2026-10', label: 'Октябрь 2026 (Текущий — План $20.5k)', isCurrent: true, totalDays: 31, daysPassed: 4 },
+  { key: '2026-10', label: 'Октябрь 2026 (Текущий — План $18.7k)', isCurrent: true, totalDays: 31, daysPassed: 4 },
   { key: '2026-09', label: 'Сентябрь 2026 (Завершен Итог $17.6k с PP)', isCurrent: false, totalDays: 30, daysPassed: 30 },
   { key: '2026-08', label: 'Август 2026 (Завершен Итог $19.5k)', isCurrent: false, totalDays: 31, daysPassed: 31 },
   { key: '2026-07', label: 'Июль 2026 (Завершен)', isCurrent: false, totalDays: 31, daysPassed: 31 }
@@ -20,11 +20,11 @@ export const initialConfig = [
 
 export const modelPlansByMonth = {
   '2026-10': [
-    { id: '39856', name: 'Lolly (Lollysunnery)', plan: 11000, totalBonusPool: 220, teamBonusPool: 110, kpiBonusPool: 110, teamPct: '50%', accountId: '39856' },
+    { id: '39856', name: 'Lolly (Lollysunnery)', plan: 9500, totalBonusPool: 190, teamBonusPool: 95, kpiBonusPool: 95, teamPct: '50%', accountId: '39856' },
     { id: '47892', name: 'Lolly (1lollyhere)', plan: 3200, totalBonusPool: 64, teamBonusPool: 32, kpiBonusPool: 32, teamPct: '50%', accountId: '47892' },
-    { id: '30201', name: 'Eva Blush', plan: 3400, totalBonusPool: 68, teamBonusPool: 34, kpiBonusPool: 34, teamPct: '50%', accountId: '30201' },
-    { id: '4967', name: 'Lila (angelkiss)', plan: 1500, totalBonusPool: 30, teamBonusPool: 30, kpiBonusPool: 0, teamPct: '100%', accountId: '4967' },
-    { id: '77304', name: 'Eva Pinky (Fansly)', plan: 1400, totalBonusPool: 28, teamBonusPool: 28, kpiBonusPool: 0, teamPct: '100%', accountId: '77304' }
+    { id: '30201', name: 'Eva Blush', plan: 3200, totalBonusPool: 64, teamBonusPool: 32, kpiBonusPool: 32, teamPct: '50%', accountId: '30201' },
+    { id: '4967', name: 'Lila (angelkiss)', plan: 1450, totalBonusPool: 29, teamBonusPool: 29, kpiBonusPool: 0, teamPct: '100%', accountId: '4967' },
+    { id: '77304', name: 'Eva Pinky (Fansly)', plan: 1350, totalBonusPool: 27, teamBonusPool: 27, kpiBonusPool: 0, teamPct: '100%', accountId: '77304' }
   ],
   '2026-09': [
     { id: '39856', name: 'Lolly (Lollysunnery)', plan: 8500, totalBonusPool: 170, teamBonusPool: 85, kpiBonusPool: 85, teamPct: '50%', accountId: '39856' },
@@ -44,24 +44,24 @@ export const modelPlansByMonth = {
 
 export const kpiSettingsByMonth = {
   '2026-10': [
-    // Lolly (Lollysunnery) - Plan $11,000 (Трафик Восстановлен)
-    { chatter: 'paul walkeeer', model: 'Lolly (Lollysunnery)', targetOpenRate: 50, targetAvgPrice: 27, targetTRT: 200, targetPlan: 5500 },
-    { chatter: 'karina @sanesskio', model: 'Lolly (Lollysunnery)', targetOpenRate: 40, targetAvgPrice: 30, targetTRT: 180, targetPlan: 4000 },
-    { chatter: 'Timur (Тимур)', model: 'Lolly (Lollysunnery)', targetOpenRate: 35, targetAvgPrice: 22, targetTRT: 240, targetPlan: 1500 },
+    // Lolly (Lollysunnery) - Plan $9,500
+    { chatter: 'paul walkeeer', model: 'Lolly (Lollysunnery)', targetOpenRate: 55, targetAvgPrice: 45, targetTRT: 180, targetPlan: 4800 },
+    { chatter: 'karina @sanesskio', model: 'Lolly (Lollysunnery)', targetOpenRate: 42, targetAvgPrice: 42, targetTRT: 120, targetPlan: 3500 },
+    { chatter: 'Timur (Тимур)', model: 'Lolly (Lollysunnery)', targetOpenRate: 40, targetAvgPrice: 45, targetTRT: 180, targetPlan: 1200 },
 
-    // Lolly (1lollyhere) - Plan $3,200 (Скорректирован из-за SFS)
-    { chatter: 'hinata hyuga', model: 'Lolly (1lollyhere)', targetOpenRate: 40, targetAvgPrice: 25, targetTRT: 200, targetPlan: 1350 },
-    { chatter: 'karina @sanesskio', model: 'Lolly (1lollyhere)', targetOpenRate: 40, targetAvgPrice: 28, targetTRT: 160, targetPlan: 1150 },
-    { chatter: 'Igor (Игорь)', model: 'Lolly (1lollyhere)', targetOpenRate: 35, targetAvgPrice: 23, targetTRT: 280, targetPlan: 700 },
+    // Lolly (1lollyhere) - Plan $3,200
+    { chatter: 'hinata hyuga', model: 'Lolly (1lollyhere)', targetOpenRate: 40, targetAvgPrice: 24, targetTRT: 190, targetPlan: 1300 },
+    { chatter: 'karina @sanesskio', model: 'Lolly (1lollyhere)', targetOpenRate: 35, targetAvgPrice: 28, targetTRT: 120, targetPlan: 1100 },
+    { chatter: 'Igor (Игорь)', model: 'Lolly (1lollyhere)', targetOpenRate: 38, targetAvgPrice: 24, targetTRT: 240, targetPlan: 800 },
 
-    // Eva Blush - Plan $3,400
-    { chatter: 'paul walkeeer', model: 'Eva Blush', targetOpenRate: 45, targetAvgPrice: 26, targetTRT: 200, targetPlan: 2100 },
-    { chatter: 'karina @sanesskio', model: 'Eva Blush', targetOpenRate: 40, targetAvgPrice: 26, targetTRT: 180, targetPlan: 900 },
-    { chatter: 'Timur (Тимур)', model: 'Eva Blush', targetOpenRate: 35, targetAvgPrice: 22, targetTRT: 220, targetPlan: 400 },
+    // Eva Blush - Plan $3,200
+    { chatter: 'paul walkeeer', model: 'Eva Blush', targetOpenRate: 42, targetAvgPrice: 25, targetTRT: 180, targetPlan: 1900 },
+    { chatter: 'karina @sanesskio', model: 'Eva Blush', targetOpenRate: 35, targetAvgPrice: 30, targetTRT: 120, targetPlan: 900 },
+    { chatter: 'Timur (Тимур)', model: 'Eva Blush', targetOpenRate: 35, targetAvgPrice: 50, targetTRT: 180, targetPlan: 400 },
 
-    // Lila (angelkiss) - Plan $1,500
-    { chatter: 'hinata hyuga', model: 'Lila (angelkiss)', targetOpenRate: 40, targetAvgPrice: 25, targetTRT: 200, targetPlan: 1000 },
-    { chatter: 'Igor (Игорь)', model: 'Lila (angelkiss)', targetOpenRate: 35, targetAvgPrice: 23, targetTRT: 220, targetPlan: 500 }
+    // Lila (angelkiss) - Plan $1,450
+    { chatter: 'hinata hyuga', model: 'Lila (angelkiss)', targetOpenRate: 38, targetAvgPrice: 21, targetTRT: 190, targetPlan: 950 },
+    { chatter: 'Igor (Игорь)', model: 'Lila (angelkiss)', targetOpenRate: 35, targetAvgPrice: 19, targetTRT: 240, targetPlan: 500 }
   ],
   '2026-09': [
     // Lolly (Lollysunnery) - Plan $8,500
