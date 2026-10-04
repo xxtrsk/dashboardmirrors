@@ -4,7 +4,7 @@
 // Timur (exy sdof): $48.44 Total | PPV $0.00 | Tips $24.00 | OpenRate 0.00% | AvgPriceSold $0.00 | TRT 187.03s | Chats 125
 
 export const availableMonths = [
-  { key: '2026-10', label: 'Октябрь 2026 (Текущий — План $18.7k)', isCurrent: true, totalDays: 31, daysPassed: 4 },
+  { key: '2026-10', label: 'Октябрь 2026 (Текущий — План $19.55k)', isCurrent: true, totalDays: 31, daysPassed: 4 },
   { key: '2026-09', label: 'Сентябрь 2026 (Завершен Итог $17.6k с PP)', isCurrent: false, totalDays: 30, daysPassed: 30 },
   { key: '2026-08', label: 'Август 2026 (Завершен Итог $19.5k)', isCurrent: false, totalDays: 31, daysPassed: 31 },
   { key: '2026-07', label: 'Июль 2026 (Завершен)', isCurrent: false, totalDays: 31, daysPassed: 31 }
@@ -20,11 +20,11 @@ export const initialConfig = [
 
 export const modelPlansByMonth = {
   '2026-10': [
-    { id: '39856', name: 'Lolly (Lollysunnery)', plan: 9500, totalBonusPool: 190, teamBonusPool: 95, kpiBonusPool: 95, teamPct: '50%', accountId: '39856' },
+    { id: '39856', name: 'Lolly (Lollysunnery)', plan: 10000, totalBonusPool: 200, teamBonusPool: 100, kpiBonusPool: 100, teamPct: '50%', accountId: '39856' },
     { id: '47892', name: 'Lolly (1lollyhere)', plan: 3200, totalBonusPool: 64, teamBonusPool: 32, kpiBonusPool: 32, teamPct: '50%', accountId: '47892' },
     { id: '30201', name: 'Eva Blush', plan: 3200, totalBonusPool: 64, teamBonusPool: 32, kpiBonusPool: 32, teamPct: '50%', accountId: '30201' },
-    { id: '4967', name: 'Lila (angelkiss)', plan: 1450, totalBonusPool: 29, teamBonusPool: 29, kpiBonusPool: 0, teamPct: '100%', accountId: '4967' },
-    { id: '77304', name: 'Eva Pinky (Fansly)', plan: 1350, totalBonusPool: 27, teamBonusPool: 27, kpiBonusPool: 0, teamPct: '100%', accountId: '77304' }
+    { id: '4967', name: 'Lila (angelkiss)', plan: 1650, totalBonusPool: 33, teamBonusPool: 33, kpiBonusPool: 0, teamPct: '100%', accountId: '4967' },
+    { id: '77304', name: 'Eva Pinky (Fansly)', plan: 1500, totalBonusPool: 30, teamBonusPool: 30, kpiBonusPool: 0, teamPct: '100%', accountId: '77304' }
   ],
   '2026-09': [
     { id: '39856', name: 'Lolly (Lollysunnery)', plan: 8500, totalBonusPool: 170, teamBonusPool: 85, kpiBonusPool: 85, teamPct: '50%', accountId: '39856' },
@@ -44,10 +44,10 @@ export const modelPlansByMonth = {
 
 export const kpiSettingsByMonth = {
   '2026-10': [
-    // Lolly (Lollysunnery) - Plan $9,500
-    { chatter: 'paul walkeeer', model: 'Lolly (Lollysunnery)', targetOpenRate: 55, targetAvgPrice: 45, targetTRT: 180, targetPlan: 4800 },
-    { chatter: 'karina @sanesskio', model: 'Lolly (Lollysunnery)', targetOpenRate: 42, targetAvgPrice: 42, targetTRT: 120, targetPlan: 3500 },
-    { chatter: 'Timur (Тимур)', model: 'Lolly (Lollysunnery)', targetOpenRate: 40, targetAvgPrice: 45, targetTRT: 180, targetPlan: 1200 },
+    // Lolly (Lollysunnery) - Plan $10,000
+    { chatter: 'paul walkeeer', model: 'Lolly (Lollysunnery)', targetOpenRate: 55, targetAvgPrice: 45, targetTRT: 180, targetPlan: 5000 },
+    { chatter: 'karina @sanesskio', model: 'Lolly (Lollysunnery)', targetOpenRate: 42, targetAvgPrice: 42, targetTRT: 120, targetPlan: 3700 },
+    { chatter: 'Timur (Тимур)', model: 'Lolly (Lollysunnery)', targetOpenRate: 40, targetAvgPrice: 45, targetTRT: 180, targetPlan: 1300 },
 
     // Lolly (1lollyhere) - Plan $3,200
     { chatter: 'hinata hyuga', model: 'Lolly (1lollyhere)', targetOpenRate: 40, targetAvgPrice: 24, targetTRT: 190, targetPlan: 1300 },
@@ -59,9 +59,9 @@ export const kpiSettingsByMonth = {
     { chatter: 'karina @sanesskio', model: 'Eva Blush', targetOpenRate: 35, targetAvgPrice: 30, targetTRT: 120, targetPlan: 900 },
     { chatter: 'Timur (Тимур)', model: 'Eva Blush', targetOpenRate: 35, targetAvgPrice: 50, targetTRT: 180, targetPlan: 400 },
 
-    // Lila (angelkiss) - Plan $1,450
-    { chatter: 'hinata hyuga', model: 'Lila (angelkiss)', targetOpenRate: 38, targetAvgPrice: 21, targetTRT: 190, targetPlan: 950 },
-    { chatter: 'Igor (Игорь)', model: 'Lila (angelkiss)', targetOpenRate: 35, targetAvgPrice: 19, targetTRT: 240, targetPlan: 500 }
+    // Lila (angelkiss) - Plan $1,650
+    { chatter: 'hinata hyuga', model: 'Lila (angelkiss)', targetOpenRate: 38, targetAvgPrice: 21, targetTRT: 190, targetPlan: 1100 },
+    { chatter: 'Igor (Игорь)', model: 'Lila (angelkiss)', targetOpenRate: 35, targetAvgPrice: 19, targetTRT: 240, targetPlan: 550 }
   ],
   '2026-09': [
     // Lolly (Lollysunnery) - Plan $8,500
@@ -535,24 +535,24 @@ export const initialChatterWeekly = [
 ];
 
 export const initialModelWeekly = [
-  // OCTOBER 1–4 LIVE REVENUE TRACKING
+  // OCTOBER 1–4 LIVE REVENUE TRACKING (EXACT SCREENSHOT DATA)
   { 
     monthKey: '2026-10', 
     week: '1–4 Окт', 
     accountId: '39856', 
     modelName: 'Lolly (Lollysunnery)', 
-    totalRevenue: 1450.00, 
-    plan: 11000.00, 
-    goalProgressPct: 13.18, 
-    goalStatusPct: 0.28,
-    runRate: 11237.50, 
+    totalRevenue: 1096.73, 
+    plan: 10000.00, 
+    goalProgressPct: 10.97, 
+    goalStatusPct: -1.93,
+    runRate: 8500.00, 
     newFans: 35, 
     spenders: 14, 
     newSpenders: 4,
     conversion: 11.43,
-    ppvRev: 1110.00, 
-    tipsRev: 340.00, 
-    transactions: 38, 
+    ppvRev: 850.00, 
+    tipsRev: 246.73, 
+    transactions: 32, 
     apc: 2.71, 
     apv: 29.21, 
     arppu: 79.29 
@@ -562,18 +562,18 @@ export const initialModelWeekly = [
     week: '1–4 Окт', 
     accountId: '47892', 
     modelName: 'Lolly (1lollyhere)', 
-    totalRevenue: 390.00, 
+    totalRevenue: 222.65, 
     plan: 3200.00, 
-    goalProgressPct: 12.19, 
-    goalStatusPct: -0.71,
-    runRate: 3022.50, 
+    goalProgressPct: 6.96, 
+    goalStatusPct: -5.94,
+    runRate: 1725.54, 
     newFans: 140, 
     spenders: 12, 
     newSpenders: 4,
     conversion: 2.86,
-    ppvRev: 290.00, 
-    tipsRev: 100.00, 
-    transactions: 20, 
+    ppvRev: 170.00, 
+    tipsRev: 52.65, 
+    transactions: 15, 
     apc: 1.67, 
     apv: 19.50, 
     arppu: 32.50 
@@ -583,18 +583,18 @@ export const initialModelWeekly = [
     week: '1–4 Окт', 
     accountId: '30201', 
     modelName: 'Eva Blush', 
-    totalRevenue: 450.00, 
-    plan: 3400.00, 
-    goalProgressPct: 13.24, 
-    goalStatusPct: 0.33,
-    runRate: 3487.50, 
+    totalRevenue: 428.75, 
+    plan: 3200.00, 
+    goalProgressPct: 13.40, 
+    goalStatusPct: 0.49,
+    runRate: 3322.81, 
     newFans: 80, 
     spenders: 12, 
     newSpenders: 4,
     conversion: 5.00,
-    ppvRev: 340.00, 
-    tipsRev: 110.00, 
-    transactions: 21, 
+    ppvRev: 320.00, 
+    tipsRev: 108.75, 
+    transactions: 19, 
     apc: 1.75, 
     apv: 21.43, 
     arppu: 37.50 
@@ -604,42 +604,42 @@ export const initialModelWeekly = [
     week: '1–4 Окт', 
     accountId: '77304', 
     modelName: 'Eva Pinky (Fansly)', 
-    totalRevenue: 185.00, 
-    plan: 1400.00, 
-    goalProgressPct: 13.21, 
-    goalStatusPct: 0.31,
-    runRate: 1433.75, 
+    totalRevenue: 36.78, 
+    plan: 1500.00, 
+    goalProgressPct: 2.45, 
+    goalStatusPct: -10.45,
+    runRate: 285.05, 
     newFans: 8, 
-    spenders: 7, 
-    newSpenders: 2,
-    conversion: 25.00,
-    ppvRev: 115.00, 
-    tipsRev: 70.00, 
-    transactions: 10, 
-    apc: 1.43, 
-    apv: 18.50, 
-    arppu: 26.43 
+    spenders: 3, 
+    newSpenders: 1,
+    conversion: 12.50,
+    ppvRev: 25.00, 
+    tipsRev: 11.78, 
+    transactions: 4, 
+    apc: 1.33, 
+    apv: 12.26, 
+    arppu: 12.26 
   },
   { 
     monthKey: '2026-10', 
     week: '1–4 Окт', 
     accountId: '4967', 
     modelName: 'Lila (angelkiss)', 
-    totalRevenue: 195.00, 
-    plan: 1500.00, 
-    goalProgressPct: 13.00, 
-    goalStatusPct: 0.10,
-    runRate: 1511.25, 
+    totalRevenue: 243.10, 
+    plan: 1650.00, 
+    goalProgressPct: 14.73, 
+    goalStatusPct: 1.83,
+    runRate: 1884.03, 
     newFans: 95, 
     spenders: 9, 
     newSpenders: 3,
     conversion: 3.16,
-    ppvRev: 165.00, 
-    tipsRev: 30.00, 
-    transactions: 14, 
+    ppvRev: 200.00, 
+    tipsRev: 43.10, 
+    transactions: 15, 
     apc: 1.56, 
-    apv: 13.93, 
-    arppu: 21.67 
+    apv: 16.21, 
+    arppu: 27.01 
   },
 
   // SEPTEMBER 1–30 REVENUE (FULL MONTH CRM SCREENSHOT + PAYPAL)
