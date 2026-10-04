@@ -1,4 +1,4 @@
-import { availableMonths, initialConfig, initialModels, initialKPISettings, initialChatterWeekly, initialModelWeekly } from './data.js';
+import { availableMonths, initialConfig, initialModels, initialKPISettings, initialChatterWeekly, initialModelWeekly, modelPlansByMonth, kpiSettingsByMonth } from './data.js';
 
 // Application State
 const state = {
@@ -45,8 +45,9 @@ function formatNumber(val) {
 // Calculate Model Summaries for selected month
 function getModelSummaries() {
   const { daysPassed, daysInMonth } = getDaysInfo(state.selectedMonthKey);
+  const modelsForMonth = modelPlansByMonth[state.selectedMonthKey] || state.models;
 
-  return state.models.map(m => {
+  return modelsForMonth.map(m => {
     const weeklyRecords = state.modelWeekly.filter(mw => 
       mw.accountId === m.accountId && 
       (mw.monthKey === state.selectedMonthKey || !mw.monthKey)
@@ -97,8 +98,9 @@ function getModelSummaries() {
 // Calculate Chatter Breakdown for selected month
 function getChatterBreakdown() {
   const { daysPassed, daysInMonth } = getDaysInfo(state.selectedMonthKey);
+  const kpiSettingsForMonth = kpiSettingsByMonth[state.selectedMonthKey] || state.kpiSettings;
 
-  return state.kpiSettings.map(kpi => {
+  return kpiSettingsForMonth.map(kpi => {
     const cfg = state.config.find(c => c.modelName === kpi.model);
     const accountId = cfg ? cfg.id : null;
 
