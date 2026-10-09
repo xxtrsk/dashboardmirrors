@@ -178,7 +178,7 @@ function renderHeaderInfo() {
   const cardSubtextEl = document.getElementById('dash-card-subtext-revenue');
   if (cardSubtextEl) {
     if (state.selectedMonthKey === '2026-10') {
-      cardSubtextEl.innerHTML = `Текущая выручка за 8.5 дн. Октября по всем 5 моделям <br><span style="color: var(--accent-purple); font-weight: 600;">(включая +$208.63 PayPal: Sunnery Karina $178.63 + Artem $30.00)</span>`;
+      cardSubtextEl.innerHTML = `Текущая выручка за 8.5 дн. Октября по всем 5 моделям <br><span style="color: var(--accent-purple); font-weight: 600;">(включая +$208.63 PayPal)</span>`;
     } else if (state.selectedMonthKey === '2026-09') {
       cardSubtextEl.innerHTML = `Итоговая выручка за 30 дн. Сентября по всем моделям <br><span style="color: var(--accent-purple); font-weight: 600;">(включая +$2,515.13 PayPal: Lolly $1,813.13 + Eva $652.00 + 1lolly $50.00)</span>`;
     } else if (state.selectedMonthKey === '2026-08') {
