@@ -4,7 +4,7 @@
 // Timur (exy sdof): $48.44 Total | PPV $0.00 | Tips $24.00 | OpenRate 0.00% | AvgPriceSold $0.00 | TRT 187.03s | Chats 125
 
 export const availableMonths = [
-  { key: '2026-10', label: 'Октябрь 2026 (Текущий — План $19.05k)', isCurrent: true, totalDays: 31, daysPassed: 4 },
+  { key: '2026-10', label: 'Октябрь 2026 (Текущий — План $19.05k)', isCurrent: true, totalDays: 31, daysPassed: 9 },
   { key: '2026-09', label: 'Сентябрь 2026 (Завершен Итог $17.6k с PP)', isCurrent: false, totalDays: 30, daysPassed: 30 },
   { key: '2026-08', label: 'Август 2026 (Завершен Итог $19.5k)', isCurrent: false, totalDays: 31, daysPassed: 31 },
   { key: '2026-07', label: 'Июль 2026 (Завершен)', isCurrent: false, totalDays: 31, daysPassed: 31 }
@@ -94,6 +94,68 @@ export const initialModels = modelPlansByMonth['2026-10'];
 export const initialKPISettings = kpiSettingsByMonth['2026-10'];
 
 export const initialChatterWeekly = [
+  // OCTOBER 2026 RECORDS (1–9 Окт - LIVE TRACKING)
+  { 
+    monthKey: '2026-10', 
+    week: '1–9 Окт', 
+    chatter: 'paul walkeeer', 
+    accountId: '39856', 
+    totalSales: 1391.32, 
+    ppvSales: 1234.52, 
+    tips: 156.80, 
+    messages: 3239, 
+    freeMedia: 85, 
+    ppvSent: 59, 
+    ppvSold: 37, 
+    chats: 171, 
+    words: 38612, 
+    trt: 171.00, 
+    avgPPV: 41.71, 
+    openRate: 63.00, 
+    avgPriceSent: 35.60, 
+    avgPriceSold: 41.71 
+  },
+  { 
+    monthKey: '2026-10', 
+    week: '1–9 Окт', 
+    chatter: 'karina @sanesskio', 
+    accountId: '39856', 
+    totalSales: 456.39, 
+    ppvSales: 312.39, 
+    tips: 144.00, 
+    messages: 1744, 
+    freeMedia: 84, 
+    ppvSent: 36, 
+    ppvSold: 11, 
+    chats: 126, 
+    words: 13408, 
+    trt: 98.00, 
+    avgPPV: 35.50, 
+    openRate: 31.00, 
+    avgPriceSent: 32.27, 
+    avgPriceSold: 35.50 
+  },
+  { 
+    monthKey: '2026-10', 
+    week: '1–9 Окт', 
+    chatter: 'Timur (Тимур)', 
+    accountId: '39856', 
+    totalSales: 915.20, 
+    ppvSales: 887.20, 
+    tips: 28.00, 
+    messages: 555, 
+    freeMedia: 13, 
+    ppvSent: 15, 
+    ppvSold: 15, 
+    chats: 97, 
+    words: 4323, 
+    trt: 151.00, 
+    avgPPV: 73.93, 
+    openRate: 100.00, 
+    avgPriceSent: 67.33, 
+    avgPriceSold: 73.93 
+  },
+
   // SEPTEMBER 2026 RECORDS (1–30 Сент - EXACT TRUE TOTAL REVENUE FOR ALL CHATTERS & MODELS)
   { 
     monthKey: '2026-09', 
@@ -321,24 +383,24 @@ export const initialModelWeekly = [
   // OCTOBER 1–4 LIVE REVENUE TRACKING (EXACT SCREENSHOT DATA)
   { 
     monthKey: '2026-10', 
-    week: '1–4 Окт', 
+    week: '1–9 Окт', 
     accountId: '39856', 
     modelName: 'Lolly (Lollysunnery)', 
-    totalRevenue: 1096.73, 
+    totalRevenue: 2762.91, 
     plan: 9500.00, 
-    goalProgressPct: 11.54, 
-    goalStatusPct: -1.36,
-    runRate: 8500.00, 
-    newFans: 35, 
-    spenders: 14, 
-    newSpenders: 4,
-    conversion: 11.43,
-    ppvRev: 850.00, 
-    tipsRev: 246.73, 
-    transactions: 32, 
-    apc: 2.71, 
-    apv: 29.21, 
-    arppu: 79.29 
+    goalProgressPct: 29.08, 
+    goalStatusPct: 0.05,
+    runRate: 9516.69, 
+    newFans: 78, 
+    spenders: 32, 
+    newSpenders: 12,
+    conversion: 15.38,
+    ppvRev: 2434.11, 
+    tipsRev: 328.80, 
+    transactions: 74, 
+    apc: 2.31, 
+    apv: 37.34, 
+    arppu: 86.34 
   },
   { 
     monthKey: '2026-10', 
