@@ -4,7 +4,7 @@
 // Timur (exy sdof): $48.44 Total | PPV $0.00 | Tips $24.00 | OpenRate 0.00% | AvgPriceSold $0.00 | TRT 187.03s | Chats 125
 
 export const availableMonths = [
-  { key: '2026-10', label: 'Октябрь 2026 (1–8 Окт + ночь 8/9)', isCurrent: true, totalDays: 31, daysPassed: 8.5 },
+  { key: '2026-10', label: 'Октябрь 2026 (1–8 Окт + ночь 8/9 с PP)', isCurrent: true, totalDays: 31, daysPassed: 8.5 },
   { key: '2026-09', label: 'Сентябрь 2026 (Завершен Итог $17.6k с PP)', isCurrent: false, totalDays: 30, daysPassed: 30 },
   { key: '2026-08', label: 'Август 2026 (Завершен Итог $19.5k)', isCurrent: false, totalDays: 31, daysPassed: 31 },
   { key: '2026-07', label: 'Июль 2026 (Завершен)', isCurrent: false, totalDays: 31, daysPassed: 31 }
