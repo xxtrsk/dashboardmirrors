@@ -94,10 +94,10 @@ export const initialModels = modelPlansByMonth['2026-10'];
 export const initialKPISettings = kpiSettingsByMonth['2026-10'];
 
 export const initialChatterWeekly = [
-  // OCTOBER 2026 RECORDS (1–9 Окт - LIVE TRACKING)
+  // OCTOBER 2026 RECORDS (1–8 Окт + ночь 8/9 - LIVE TRACKING)
   { 
     monthKey: '2026-10', 
-    week: '1–9 Окт', 
+    week: '1–8 Окт (+ ночь 8/9)', 
     chatter: 'paul walkeeer', 
     accountId: '39856', 
     totalSales: 1391.32, 
@@ -117,7 +117,7 @@ export const initialChatterWeekly = [
   },
   { 
     monthKey: '2026-10', 
-    week: '1–9 Окт', 
+    week: '1–8 Окт (+ ночь 8/9)', 
     chatter: 'karina @sanesskio', 
     accountId: '39856', 
     totalSales: 456.39, 
@@ -137,7 +137,7 @@ export const initialChatterWeekly = [
   },
   { 
     monthKey: '2026-10', 
-    week: '1–9 Окт', 
+    week: '1–8 Окт (+ ночь 8/9)', 
     chatter: 'Timur (Тимур)', 
     accountId: '39856', 
     totalSales: 915.20, 
@@ -154,6 +154,66 @@ export const initialChatterWeekly = [
     openRate: 100.00, 
     avgPriceSent: 67.33, 
     avgPriceSold: 73.93 
+  },
+  { 
+    monthKey: '2026-10', 
+    week: '1–8 Окт (+ ночь 8/9)', 
+    chatter: 'paul walkeeer', 
+    accountId: '30201', 
+    totalSales: 105.56, 
+    ppvSales: 105.56, 
+    tips: 0.00, 
+    messages: 1516, 
+    freeMedia: 27, 
+    ppvSent: 18, 
+    ppvSold: 6, 
+    chats: 154, 
+    words: 16399, 
+    trt: 176.00, 
+    avgPPV: 21.99, 
+    openRate: 33.33, 
+    avgPriceSent: 18.46, 
+    avgPriceSold: 21.99 
+  },
+  { 
+    monthKey: '2026-10', 
+    week: '1–8 Окт (+ ночь 8/9)', 
+    chatter: 'karina @sanesskio', 
+    accountId: '30201', 
+    totalSales: 109.59, 
+    ppvSales: 109.59, 
+    tips: 0.00, 
+    messages: 583, 
+    freeMedia: 35, 
+    ppvSent: 15, 
+    ppvSold: 3, 
+    chats: 88, 
+    words: 3498, 
+    trt: 107.00, 
+    avgPPV: 45.66, 
+    openRate: 20.00, 
+    avgPriceSent: 31.36, 
+    avgPriceSold: 45.66 
+  },
+  { 
+    monthKey: '2026-10', 
+    week: '1–8 Окт (+ ночь 8/9)', 
+    chatter: 'Timur (Тимур)', 
+    accountId: '30201', 
+    totalSales: 476.00, 
+    ppvSales: 264.00, 
+    tips: 212.00, 
+    messages: 291, 
+    freeMedia: 11, 
+    ppvSent: 10, 
+    ppvSold: 7, 
+    chats: 63, 
+    words: 2538, 
+    trt: 158.00, 
+    avgPPV: 47.14, 
+    openRate: 70.00, 
+    avgPriceSent: 43.50, 
+    avgPriceSold: 47.14 
   },
 
   // SEPTEMBER 2026 RECORDS (1–30 Сент - EXACT TRUE TOTAL REVENUE FOR ALL CHATTERS & MODELS)
