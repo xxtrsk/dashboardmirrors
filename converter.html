@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Excel (XLSX) to Text Tables Converter — MIRRORS</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .converter-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 30px 20px;
+    }
+    .dropzone {
+      border: 2px dashed rgba(56, 189, 248, 0.4);
+      background: rgba(15, 23, 42, 0.6);
+      border-radius: var(--radius-lg);
+      padding: 40px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+    .dropzone:hover, .dropzone.dragover {
+      border-color: var(--primary);
+      background: rgba(56, 189, 248, 0.08);
+      box-shadow: 0 0 25px rgba(56, 189, 248, 0.2);
+      transform: translateY(-2px);
+    }
+    .dropzone input[type="file"] {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      opacity: 0;
+      cursor: pointer;
+    }
+    .format-btn-group {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .format-btn {
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .format-btn:hover {
+      color: var(--text-main);
+      border-color: var(--primary);
+    }
+    .format-btn.active {
+      background: var(--primary);
+      color: #07090e;
+      border-color: var(--primary);
+      box-shadow: 0 0 14px rgba(56, 189, 248, 0.35);
+    }
+    .sheet-tabs-container {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+    }
+    .sheet-pill {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+    .sheet-pill:hover {
+      color: var(--text-main);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+    .sheet-pill.active {
+      background: rgba(129, 140, 248, 0.2);
+      border-color: var(--secondary);
+      color: #a5b4fc;
+      box-shadow: 0 0 12px rgba(129, 140, 248, 0.2);
+    }
+    .output-area {
+      width: 100%;
+      min-height: 380px;
+      background: #080d1a;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      color: #38bdf8;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      line-height: 1.6;
+      white-space: pre;
+      overflow: auto;
+      resize: vertical;
+      box-sizing: border-box;
+    }
+    .output-area:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 15px rgba(56, 189, 248, 0.2);
+    }
+    .btn-action {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s ease;
+    }
+    .btn-primary {
+      background: var(--accent-green);
+      color: #07090e;
+      box-shadow: 0 0 15px rgba(52, 211, 153, 0.3);
+    }
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 0 20px rgba(52, 211, 153, 0.45);
+    }
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+    }
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: var(--accent-green);
+      color: #07090e;
+      font-weight: 700;
+      padding: 12px 24px;
+      border-radius: var(--radius-md);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 9999;
+    }
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Header Bar -->
+  <header>
+    <div class="header-container">
+      <div class="logo-group">
+        <a href="index.html" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 16px;">
+          <div class="logo-brand">MIRRORS</div>
+          <div class="logo-divider"></div>
+          <div class="logo-title">
+            <h1>Excel (XLSX) ➔ Text Table Converter</h1>
+            <p>Мгновенная безошибочная конвертация Excel в Markdown, TSV и текстовые таблицы</p>
+          </div>
+        </a>
+      </div>
+      <div style="display: flex; gap: 10px;">
+        <a href="index.html" class="btn-action btn-secondary" style="text-decoration: none; font-size: 13px;">
+          ← Назад в Дашборд
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <div class="converter-container">
+
+    <!-- Upload Dropzone -->
+    <div id="dropzone" class="dropzone" style="margin-bottom: 24px;">
+      <input type="file" id="file-input" accept=".xlsx, .xls, .csv, .tsv" />
+      <div style="font-size: 44px; margin-bottom: 12px;">📑</div>
+      <h2 style="font-size: 20px; font-weight: 700; margin-bottom: 6px; font-family: var(--font-heading);">
+        Перетащите сюда Excel (.xlsx, .xls) или нажмите для выбора
+      </h2>
+      <p style="color: var(--text-muted); font-size: 14px;">
+        100% локальная обработка в браузере: данные не отправляются на сервер, формулы и даты сохраняются идеально
+      </p>
+      <div id="file-info" style="display: none; margin-top: 14px; font-size: 13px; color: var(--primary); font-family: var(--font-mono); font-weight: 600;">
+        <!-- Filled on upload -->
+      </div>
+    </div>
+
+    <!-- Controls Bar -->
+    <div id="controls-bar" class="glass-card" style="display: none; margin-bottom: 24px; padding: 20px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 16px;">
+        <div>
+          <label style="font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 6px;">
+            Формат вывода:
+          </label>
+          <div class="format-btn-group">
+            <button class="format-btn active" data-format="markdown">📋 Markdown Table</button>
+            <button class="format-btn" data-format="tsv">📑 TSV (Excel / Sheets)</button>
+            <button class="format-btn" data-format="ascii">🔲 ASCII / Aligned Plain Text</button>
+            <button class="format-btn" data-format="csv">📊 CSV</button>
+            <button class="format-btn" data-format="json">⚙️ JSON</button>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 10px; align-items: center;">
+          <button id="btn-copy" class="btn-action btn-primary">
+            📋 Скопировать Таблицу
+          </button>
+          <button id="btn-download" class="btn-action btn-secondary">
+            💾 Скачать .txt
+          </button>
+        </div>
+      </div>
+
+      <!-- Sheet Tabs Selector -->
+      <div style="margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border-color);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <span style="font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;">
+            Листы книги (Sheets):
+          </span>
+          <div style="display: flex; gap: 16px; font-size: 12px; color: var(--text-muted);">
+            <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+              <input type="checkbox" id="chk-trim-empty" checked /> Удалять пустые строки и колонки
+            </label>
+            <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+              <input type="checkbox" id="chk-preserve-format" checked /> Сохранять форматирование (валюты, %)
+            </label>
+          </div>
+        </div>
+        <div id="sheet-tabs" class="sheet-tabs-container">
+          <!-- Filled dynamically -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Text Output & Stats -->
+    <div id="output-wrapper" class="glass-card" style="display: none; padding: 20px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <div style="display: flex; gap: 16px; font-size: 12px; font-family: var(--font-mono); color: var(--text-muted);">
+          <span>Строк: <strong id="stat-rows" style="color: var(--text-main);">0</strong></span>
+          <span>Колонок: <strong id="stat-cols" style="color: var(--text-main);">0</strong></span>
+          <span>Символов: <strong id="stat-chars" style="color: var(--primary);">0</strong></span>
+        </div>
+        <div style="font-size: 12px; color: var(--accent-green); font-weight: 600;">
+          Готово к вставке в ChatGPT, Claude, Notion или Sheets
+        </div>
+      </div>
+
+      <textarea id="output-text" class="output-area" spellcheck="false"></textarea>
+    </div>
+
+    <!-- Visual Table Preview -->
+    <div id="preview-wrapper" class="table-container scrollable-slider" style="display: none; margin-top: 24px;">
+      <div style="padding: 16px 20px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+        <h3 style="font-size: 16px; font-weight: 700; font-family: var(--font-heading);">
+          👁 Визуальный предпросмотр таблицы
+        </h3>
+        <span style="font-size: 12px; color: var(--text-muted);">Проверьте правильность колонок перед копированием</span>
+      </div>
+      <table id="preview-table" class="data-table">
+        <!-- Rendered dynamically -->
+      </table>
+    </div>
+
+  </div>
+
+  <div id="toast" class="toast">✅ Скопировано в буфер обмена!</div>
+
+  <!-- Local xlsx script with CDN fallback -->
+  <script src="xlsx.full.min.js"></script>
+  <script>
+    if (typeof XLSX === 'undefined') {
+      const cdnScript = document.createElement('script');
+      cdnScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+      document.head.appendChild(cdnScript);
+    }
+  </script>
+
+  <script>
+    // State
+    let currentWorkbook = null;
+    let currentFileName = '';
+    let selectedSheetName = '';
+    let activeFormat = 'markdown';
+
+    // Elements
+    const dropzone = document.getElementById('dropzone');
+    const fileInput = document.getElementById('file-input');
+    const fileInfo = document.getElementById('file-info');
+    const controlsBar = document.getElementById('controls-bar');
+    const sheetTabs = document.getElementById('sheet-tabs');
+    const outputWrapper = document.getElementById('output-wrapper');
+    const outputText = document.getElementById('output-text');
+    const previewWrapper = document.getElementById('preview-wrapper');
+    const previewTable = document.getElementById('preview-table');
+    const btnCopy = document.getElementById('btn-copy');
+    const btnDownload = document.getElementById('btn-download');
+    const toast = document.getElementById('toast');
+    const chkTrimEmpty = document.getElementById('chk-trim-empty');
+    const chkPreserveFormat = document.getElementById('chk-preserve-format');
+    const statRows = document.getElementById('stat-rows');
+    const statCols = document.getElementById('stat-cols');
+    const statChars = document.getElementById('stat-chars');
+
+    // Drag and Drop
+    ['dragenter', 'dragover'].forEach(name => {
+      dropzone.addEventListener(name, (e) => {
+        e.preventDefault();
+        dropzone.classList.add('dragover');
+      });
+    });
+
+    ['dragleave', 'drop'].forEach(name => {
+      dropzone.addEventListener(name, (e) => {
+        e.preventDefault();
+        dropzone.classList.remove('dragover');
+      });
+    });
+
+    dropzone.addEventListener('drop', (e) => {
+      const files = e.dataTransfer.files;
+      if (files.length > 0) processFile(files[0]);
+    });
+
+    fileInput.addEventListener('change', (e) => {
+      if (e.target.files.length > 0) processFile(e.target.files[0]);
+    });
+
+    // Process uploaded file
+    function processFile(file) {
+      currentFileName = file.name;
+      fileInfo.style.display = 'block';
+      fileInfo.textContent = `⏳ Чтение: ${file.name} (${(file.size / 1024).toFixed(1)} KB)...`;
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const data = new Uint8Array(e.target.result);
+          currentWorkbook = XLSX.read(data, { 
+            type: 'array', 
+            cellDates: true, 
+            cellNF: true, 
+            cellText: true 
+          });
+
+          fileInfo.textContent = `✅ Загружено: ${file.name} | Листов: ${currentWorkbook.SheetNames.length}`;
+          controlsBar.style.display = 'block';
+          outputWrapper.style.display = 'block';
+          previewWrapper.style.display = 'block';
+
+          renderSheetTabs();
+          selectedSheetName = currentWorkbook.SheetNames[0] || '';
+          renderActiveSheet();
+        } catch (err) {
+          fileInfo.textContent = `❌ Ошибка чтения файла: ${err.message}`;
+        }
+      };
+      reader.readAsArrayBuffer(file);
+    }
+
+    // Render sheet tabs
+    function renderSheetTabs() {
+      if (!currentWorkbook) return;
+      sheetTabs.innerHTML = '';
+
+      currentWorkbook.SheetNames.forEach((name, idx) => {
+        const pill = document.createElement('button');
+        pill.className = `sheet-pill ${idx === 0 ? 'active' : ''}`;
+        pill.textContent = name;
+        pill.addEventListener('click', () => {
+          document.querySelectorAll('.sheet-pill').forEach(p => p.classList.remove('active'));
+          pill.classList.add('active');
+          selectedSheetName = name;
+          renderActiveSheet();
+        });
+        sheetTabs.appendChild(pill);
+      });
+
+      // All Sheets tab
+      if (currentWorkbook.SheetNames.length > 1) {
+        const allPill = document.createElement('button');
+        allPill.className = 'sheet-pill';
+        allPill.textContent = '📑 Все листы разом';
+        allPill.addEventListener('click', () => {
+          document.querySelectorAll('.sheet-pill').forEach(p => p.classList.remove('active'));
+          allPill.classList.add('active');
+          selectedSheetName = '__ALL__';
+          renderActiveSheet();
+        });
+        sheetTabs.appendChild(allPill);
+      }
+    }
+
+    // Extract 2D array of rows from a worksheet
+    function getSheetRows(sheet) {
+      if (!sheet) return [];
+      const preserveFormat = chkPreserveFormat.checked;
+      
+      const rawRows = XLSX.utils.sheet_to_json(sheet, {
+        header: 1,
+        raw: !preserveFormat,
+        dateNF: 'YYYY-MM-DD',
+        defval: ''
+      });
+
+      if (!chkTrimEmpty.checked) return rawRows;
+
+      // 1. Remove completely empty rows
+      const nonEmptyRows = rawRows.filter(row => 
+        row && row.some(cell => cell !== '' && cell !== null && cell !== undefined)
+      );
+
+      if (nonEmptyRows.length === 0) return [];
+
+      // 2. Determine non-empty column boundaries
+      const maxCol = Math.max(...nonEmptyRows.map(r => r.length));
+      const colHasContent = Array(maxCol).fill(false);
+
+      nonEmptyRows.forEach(row => {
+        row.forEach((cell, colIdx) => {
+          if (cell !== '' && cell !== null && cell !== undefined) {
+            colHasContent[colIdx] = true;
+          }
+        });
+      });
+
+      // Find first and last column with content
+      const firstCol = colHasContent.indexOf(true);
+      const lastCol = colHasContent.lastIndexOf(true);
+
+      if (firstCol === -1) return [];
+
+      // 3. Slice each row to only relevant columns
+      return nonEmptyRows.map(row => {
+        const trimmed = [];
+        for (let c = firstCol; c <= lastCol; c++) {
+          trimmed.push(row[c] !== undefined && row[c] !== null ? String(row[c]).trim() : '');
+        }
+        return trimmed;
+      });
+    }
+
+    // Formatters
+    function toMarkdown(rows) {
+      if (!rows || rows.length === 0) return '';
+      const maxCols = Math.max(...rows.map(r => r.length));
+      const normalized = rows.map(r => {
+        const row = [...r];
+        while (row.length < maxCols) row.push('');
+        return row.map(cell => String(cell || '').replace(/\|/g, '\\|'));
+      });
+
+      const colWidths = Array(maxCols).fill(3);
+      normalized.forEach(r => {
+        r.forEach((cell, i) => {
+          if (cell.length > colWidths[i]) colWidths[i] = cell.length;
+        });
+      });
+
+      const header = normalized[0];
+      const headerLine = '| ' + header.map((h, i) => h.padEnd(colWidths[i], ' ')).join(' | ') + ' |';
+      const sepLine = '| ' + colWidths.map(w => '-'.repeat(w)).join(' | ') + ' |';
+      const bodyLines = normalized.slice(1).map(r => {
+        return '| ' + r.map((cell, i) => cell.padEnd(colWidths[i], ' ')).join(' | ') + ' |';
+      });
+
+      return [headerLine, sepLine, ...bodyLines].join('\n');
+    }
+
+    function toTSV(rows) {
+      return rows.map(r => r.map(c => String(c || '').replace(/\t/g, ' ')).join('\t')).join('\n');
+    }
+
+    function toCSV(rows) {
+      return rows.map(r => r.map(c => {
+        const str = String(c || '');
+        if (str.includes(',') || str.includes('"') || str.includes('\n')) {
+          return '"' + str.replace(/"/g, '""') + '"';
+        }
+        return str;
+      }).join(',')).join('\n');
+    }
+
+    function toASCII(rows) {
+      if (!rows || rows.length === 0) return '';
+      const maxCols = Math.max(...rows.map(r => r.length));
+      const normalized = rows.map(r => {
+        const row = [...r];
+        while (row.length < maxCols) row.push('');
+        return row.map(cell => String(cell || ''));
+      });
+
+      const colWidths = Array(maxCols).fill(1);
+      normalized.forEach(r => {
+        r.forEach((cell, i) => {
+          if (cell.length > colWidths[i]) colWidths[i] = cell.length;
+        });
+      });
+
+      const border = '+' + colWidths.map(w => '-'.repeat(w + 2)).join('+') + '+';
+      const lines = [border];
+
+      normalized.forEach((r, rowIdx) => {
+        const line = '| ' + r.map((c, i) => c.padEnd(colWidths[i], ' ')).join(' | ') + ' |';
+        lines.push(line);
+        if (rowIdx === 0) {
+          lines.push('+' + colWidths.map(w => '='.repeat(w + 2)).join('+') + '+');
+        }
+      });
+
+      lines.push(border);
+      return lines.join('\n');
+    }
+
+    function toJSON(rows) {
+      if (!rows || rows.length === 0) return '[]';
+      const headers = rows[0].map((h, i) => h ? String(h).trim() : `col_${i+1}`);
+      const data = rows.slice(1).map(r => {
+        const obj = {};
+        headers.forEach((h, i) => {
+          obj[h] = r[i] !== undefined ? r[i] : '';
+        });
+        return obj;
+      });
+      return JSON.stringify(data, null, 2);
+    }
+
+    // Render active sheet or all sheets
+    function renderActiveSheet() {
+      if (!currentWorkbook) return;
+      let output = '';
+      let previewRows = [];
+
+      if (selectedSheetName === '__ALL__') {
+        const sheetOutputs = [];
+        currentWorkbook.SheetNames.forEach(sheetName => {
+          const sheet = currentWorkbook.Sheets[sheetName];
+          const rows = getSheetRows(sheet);
+          if (rows.length > 0) {
+            let formatted = '';
+            if (activeFormat === 'markdown') formatted = `### Лист: ${sheetName}\n\n` + toMarkdown(rows);
+            else if (activeFormat === 'tsv') formatted = `--- ${sheetName} ---\n` + toTSV(rows);
+            else if (activeFormat === 'ascii') formatted = `--- ${sheetName} ---\n` + toASCII(rows);
+            else if (activeFormat === 'csv') formatted = `--- ${sheetName} ---\n` + toCSV(rows);
+            else if (activeFormat === 'json') formatted = `/* ${sheetName} */\n` + toJSON(rows);
+            sheetOutputs.push(formatted);
+          }
+        });
+        output = sheetOutputs.join('\n\n');
+        previewRows = getSheetRows(currentWorkbook.Sheets[currentWorkbook.SheetNames[0]]);
+      } else {
+        const sheet = currentWorkbook.Sheets[selectedSheetName];
+        const rows = getSheetRows(sheet);
+        previewRows = rows;
+
+        if (activeFormat === 'markdown') output = toMarkdown(rows);
+        else if (activeFormat === 'tsv') output = toTSV(rows);
+        else if (activeFormat === 'ascii') output = toASCII(rows);
+        else if (activeFormat === 'csv') output = toCSV(rows);
+        else if (activeFormat === 'json') output = toJSON(rows);
+      }
+
+      outputText.value = output;
+
+      // Stats
+      statRows.textContent = previewRows.length;
+      statCols.textContent = previewRows.length > 0 ? previewRows[0].length : 0;
+      statChars.textContent = output.length.toLocaleString('en-US');
+
+      // Visual Table Preview
+      renderPreviewTable(previewRows);
+    }
+
+    // Render HTML table preview
+    function renderPreviewTable(rows) {
+      if (!rows || rows.length === 0) {
+        previewTable.innerHTML = '<tbody><tr><td style="text-align: center; color: var(--text-muted); padding: 30px;">Таблица пуста</td></tr></tbody>';
+        return;
+      }
+
+      const headers = rows[0];
+      const dataRows = rows.slice(1);
+
+      let html = '<thead><tr>';
+      headers.forEach(h => {
+        html += `<th>${escapeHtml(h)}</th>`;
+      });
+      html += '</tr></thead><tbody>';
+
+      // Limit preview to first 50 rows for snappy performance
+      const previewSlice = dataRows.slice(0, 50);
+      previewSlice.forEach(r => {
+        html += '<tr>';
+        headers.forEach((_, colIdx) => {
+          html += `<td>${escapeHtml(r[colIdx] || '')}</td>`;
+        });
+        html += '</tr>';
+      });
+
+      if (dataRows.length > 50) {
+        html += `<tr><td colspan="${headers.length}" style="text-align: center; color: var(--text-muted); font-style: italic; padding: 12px;">... показаны первые 50 строк из ${dataRows.length} (полный текст доступен в поле выше)</td></tr>`;
+      }
+
+      html += '</tbody>';
+      previewTable.innerHTML = html;
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+    }
+
+    // Format selection buttons
+    document.querySelectorAll('.format-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.format-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        activeFormat = btn.dataset.format;
+        renderActiveSheet();
+      });
+    });
+
+    // Checkboxes change
+    [chkTrimEmpty, chkPreserveFormat].forEach(chk => {
+      chk.addEventListener('change', renderActiveSheet);
+    });
+
+    // Copy to clipboard
+    btnCopy.addEventListener('click', () => {
+      if (!outputText.value) return;
+      navigator.clipboard.writeText(outputText.value).then(() => {
+        showToast('✅ Скопировано в буфер обмена!');
+      }).catch(() => {
+        outputText.select();
+        document.execCommand('copy');
+        showToast('✅ Скопировано в буфер обмена!');
+      });
+    });
+
+    // Download as .txt file
+    btnDownload.addEventListener('click', () => {
+      if (!outputText.value) return;
+      const baseName = currentFileName ? currentFileName.replace(/\.[^/.]+$/, '') : 'excel_table';
+      const ext = activeFormat === 'json' ? 'json' : (activeFormat === 'csv' ? 'csv' : 'txt');
+      const blob = new Blob([outputText.value], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${baseName}_${selectedSheetName}_${activeFormat}.${ext}`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    });
+
+    function showToast(msg) {
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2500);
+    }
+  </script>
+</body>
+</html>

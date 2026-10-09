@@ -1,4 +1,5 @@
 import { availableMonths, initialConfig, initialModels, initialKPISettings, initialChatterWeekly, initialModelWeekly, modelPlansByMonth, kpiSettingsByMonth } from './data.js';
+import { setupExcelConverter } from './converter.js';
 
 // Application State
 const state = {
@@ -525,4 +526,5 @@ document.addEventListener('DOMContentLoaded', () => {
   renderModelWeeklyDynamics();
   setupNavigation();
   setupEvents();
+  setupExcelConverter();
 });

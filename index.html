@@ -42,6 +42,7 @@
     <button class="tab-btn" data-tab="tab-chatter-weekly">👤 Chatter Weekly Dynamics</button>
     <button class="tab-btn" data-tab="tab-model-weekly">👑 Model Weekly Dynamics</button>
     <button class="tab-btn" data-tab="tab-crm-imports">📑 CRM Imports & Config (⚙️)</button>
+    <button class="tab-btn" data-tab="tab-excel-converter">📊 Excel ➔ Text Converter</button>
   </nav>
 
   <!-- Main Application Container -->
@@ -215,8 +216,114 @@
       </div>
     </section>
 
+    <!-- TAB 5: EXCEL TO TEXT CONVERTER -->
+    <section id="tab-excel-converter" class="tab-content">
+      <div style="margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+        <div>
+          <h2 style="font-size: 20px; font-weight: 700; margin-bottom: 6px; font-family: var(--font-heading);">
+            📊 Конвертер Excel (XLSX) в Текстовые Таблицы
+          </h2>
+          <p style="color: var(--text-muted); font-size: 13px;">
+            Загрузите любой Excel файл выгрузки — моментальная безошибочная конвертация в Markdown, TSV и таблицы текста.
+          </p>
+        </div>
+        <div>
+          <a href="converter.html" target="_blank" class="btn-action btn-secondary" style="text-decoration: none; font-size: 13px;">
+            ↗️ Открыть в отдельной вкладке
+          </a>
+        </div>
+      </div>
+
+      <!-- Dropzone -->
+      <div id="dropzone" class="dropzone" style="margin-bottom: 24px;">
+        <input type="file" id="file-input" accept=".xlsx, .xls, .csv, .tsv" />
+        <div style="font-size: 40px; margin-bottom: 10px;">📑</div>
+        <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 6px; font-family: var(--font-heading);">
+          Перетащите сюда Excel (.xlsx, .xls) или нажмите для выбора
+        </h3>
+        <p style="color: var(--text-muted); font-size: 13px;">
+          100% клиентская обработка в браузере: формулы, валюты, % и даты сохраняются без искажений
+        </p>
+        <div id="file-info" style="display: none; margin-top: 12px; font-size: 13px; color: var(--primary); font-family: var(--font-mono); font-weight: 600;"></div>
+      </div>
+
+      <!-- Controls Bar -->
+      <div id="controls-bar" class="glass-card" style="display: none; margin-bottom: 24px; padding: 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 16px;">
+          <div>
+            <label style="font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 6px;">
+              Формат вывода таблицы:
+            </label>
+            <div class="format-btn-group">
+              <button class="format-btn active" data-format="markdown">📋 Markdown Table</button>
+              <button class="format-btn" data-format="tsv">📑 TSV (Excel / Sheets)</button>
+              <button class="format-btn" data-format="ascii">🔲 ASCII / Aligned Plain Text</button>
+              <button class="format-btn" data-format="csv">📊 CSV</button>
+              <button class="format-btn" data-format="json">⚙️ JSON</button>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 10px; align-items: center;">
+            <button id="btn-copy" class="btn-action btn-primary">
+              📋 Скопировать Таблицу
+            </button>
+            <button id="btn-download" class="btn-action btn-secondary">
+              💾 Скачать .txt
+            </button>
+          </div>
+        </div>
+
+        <!-- Sheet Tabs Selector -->
+        <div style="margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border-color);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <span style="font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;">
+              Листы книги (Sheets):
+            </span>
+            <div style="display: flex; gap: 16px; font-size: 12px; color: var(--text-muted);">
+              <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                <input type="checkbox" id="chk-trim-empty" checked /> Удалять пустые строки и колонки
+              </label>
+              <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                <input type="checkbox" id="chk-preserve-format" checked /> Сохранять форматирование (валюты, %)
+              </label>
+            </div>
+          </div>
+          <div id="sheet-tabs" class="sheet-tabs-container"></div>
+        </div>
+      </div>
+
+      <!-- Text Output Area -->
+      <div id="output-wrapper" class="glass-card" style="display: none; padding: 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <div style="display: flex; gap: 16px; font-size: 12px; font-family: var(--font-mono); color: var(--text-muted);">
+            <span>Строк: <strong id="stat-rows" style="color: var(--text-main);">0</strong></span>
+            <span>Колонок: <strong id="stat-cols" style="color: var(--text-main);">0</strong></span>
+            <span>Символов: <strong id="stat-chars" style="color: var(--primary);">0</strong></span>
+          </div>
+          <div style="font-size: 12px; color: var(--accent-green); font-weight: 600;">
+            Готово к вставке в AI или Google Sheets
+          </div>
+        </div>
+        <textarea id="output-text" class="output-area" spellcheck="false"></textarea>
+      </div>
+
+      <!-- Visual Table Preview -->
+      <div id="preview-wrapper" class="table-container scrollable-slider" style="display: none; margin-top: 24px;">
+        <div style="padding: 16px 20px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+          <h3 style="font-size: 16px; font-weight: 700; font-family: var(--font-heading);">
+            👁 Предпросмотр распознанной таблицы
+          </h3>
+          <span style="font-size: 12px; color: var(--text-muted);">Первые строки для проверки структуры колонок</span>
+        </div>
+        <table id="preview-table" class="data-table"></table>
+      </div>
+    </section>
+
   </main>
 
+  <div id="toast" class="toast">✅ Скопировано в буфер обмена!</div>
+
+  <script src="xlsx.full.min.js"></script>
   <script type="module" src="app.js"></script>
 </body>
 </html>
