@@ -215,6 +215,46 @@ export const initialChatterWeekly = [
     avgPriceSent: 43.50, 
     avgPriceSold: 47.14 
   },
+  { 
+    monthKey: '2026-10', 
+    week: '1–8 Окт (+ ночь 8/9)', 
+    chatter: 'hinata hyuga', 
+    accountId: '4967', 
+    totalSales: 253.59, 
+    ppvSales: 225.59, 
+    tips: 28.00, 
+    messages: 609, 
+    freeMedia: 15, 
+    ppvSent: 41, 
+    ppvSold: 18, 
+    chats: 108, 
+    words: 8244, 
+    trt: 247.00, 
+    avgPPV: 15.67, 
+    openRate: 43.90, 
+    avgPriceSent: 16.62, 
+    avgPriceSold: 15.67 
+  },
+  { 
+    monthKey: '2026-10', 
+    week: '1–8 Окт (+ ночь 8/9)', 
+    chatter: 'Igor (Игорь)', 
+    accountId: '4967', 
+    totalSales: 129.33, 
+    ppvSales: 108.00, 
+    tips: 21.33, 
+    messages: 736, 
+    freeMedia: 6, 
+    ppvSent: 19, 
+    ppvSold: 7, 
+    chats: 89, 
+    words: 8707, 
+    trt: 229.00, 
+    avgPPV: 19.29, 
+    openRate: 36.84, 
+    avgPriceSent: 15.58, 
+    avgPriceSold: 19.29 
+  },
 
   // SEPTEMBER 2026 RECORDS (1–30 Сент - EXACT TRUE TOTAL REVENUE FOR ALL CHATTERS & MODELS)
   { 
