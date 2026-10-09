@@ -23,8 +23,7 @@ function getDaysInfo(monthKey) {
   let reportDateStr = monthObj.label;
 
   if (monthObj.isCurrent) {
-    const monthName = monthObj.label.includes('Октябрь') ? 'Октября' : (monthObj.label.includes('Сентябрь') ? 'Сентября' : 'месяца');
-    reportDateStr = `1–${daysPassed} ${monthName} 2026 (Факт ${daysPassed} дн.)`;
+    reportDateStr = `1–8 Октября (+ ночь 8/9)`;
   }
 
   return { daysPassed, daysInMonth, reportDateStr, isCurrent: monthObj.isCurrent };
@@ -170,12 +169,16 @@ function renderHeaderInfo() {
   const fullMonthName = state.selectedMonthKey === '2026-10' ? 'Октября' : (state.selectedMonthKey === '2026-09' ? 'Сентября' : (state.selectedMonthKey === '2026-08' ? 'Августа' : 'Июля'));
   const cardTitleEl = document.getElementById('dash-card-title-revenue');
   if (cardTitleEl) {
-    cardTitleEl.textContent = `Общая Выручка (1–${daysPassed} ${fullMonthName})`;
+    if (state.selectedMonthKey === '2026-10') {
+      cardTitleEl.textContent = `Общая Выручка (1–8 Окт + ночь 8/9)`;
+    } else {
+      cardTitleEl.textContent = `Общая Выручка (1–${daysPassed} ${fullMonthName})`;
+    }
   }
   const cardSubtextEl = document.getElementById('dash-card-subtext-revenue');
   if (cardSubtextEl) {
     if (state.selectedMonthKey === '2026-10') {
-      cardSubtextEl.innerHTML = `Текущая выручка за Октябрь по всем моделям`;
+      cardSubtextEl.innerHTML = `Текущая выручка за 8.5 дн. Октября по всем 5 моделям`;
     } else if (state.selectedMonthKey === '2026-09') {
       cardSubtextEl.innerHTML = `Итоговая выручка за 30 дн. Сентября по всем моделям <br><span style="color: var(--accent-purple); font-weight: 600;">(включая +$2,515.13 PayPal: Lolly $1,813.13 + Eva $652.00 + 1lolly $50.00)</span>`;
     } else if (state.selectedMonthKey === '2026-08') {
