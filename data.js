@@ -100,9 +100,9 @@ export const initialChatterWeekly = [
     week: '1–22 Окт', 
     chatter: 'paul walkeeer', 
     accountId: '39856', 
-    totalSales: 2159.28, // CRM $2,099.28 + $60 PP
+    totalSales: 2129.28, // CRM $2,099.28 + $30.00 PP
     ppvSales: 1862.48, 
-    tips: 296.80, // CRM $236.80 + $60 PP
+    tips: 266.80, // CRM $236.80 + $30.00 PP
     messages: 8166, 
     freeMedia: 190, 
     ppvSent: 112, 
@@ -120,9 +120,9 @@ export const initialChatterWeekly = [
     week: '1–22 Окт', 
     chatter: 'karina @sanesskio', 
     accountId: '39856', 
-    totalSales: 2186.52, // CRM $1,679.89 + $506.63 PP
+    totalSales: 2233.52, // CRM $1,679.89 + $553.63 PP ($328.63 + $225.00)
     ppvSales: 1271.89, 
-    tips: 914.63, // CRM $408.00 + $506.63 PP
+    tips: 961.63, // CRM $408.00 + $553.63 PP
     messages: 5297, 
     freeMedia: 198, 
     ppvSent: 101, 
@@ -546,21 +546,21 @@ export const initialModelWeekly = [
     week: '1–22 Окт', 
     accountId: '39856', 
     modelName: 'Lolly (Lollysunnery)', 
-    totalRevenue: 5884.31, // $5,317.68 CRM + $566.63 Total PP
+    totalRevenue: 5901.31, // $5,317.68 CRM + $583.63 Total PP ($328.63 + $225.00 + $30.00)
     plan: 9500.00, 
-    goalProgressPct: 61.94, 
-    goalStatusPct: -9.03, // pace norm for 22 days is 70.97%
-    runRate: 8291.53, 
+    goalProgressPct: 62.12, 
+    goalStatusPct: -8.85, // pace norm for 22 days is 70.97%
+    runRate: 8315.48, 
     newFans: 554, 
     spenders: 71, 
     newSpenders: 26,
     conversion: 4.69,
     ppvRev: 4159.84, 
-    tipsRev: 1724.47, // $1,157.84 CRM + $566.63 PP
+    tipsRev: 1741.47, // $1,157.84 CRM + $583.63 PP
     transactions: 259, 
     apc: 3.65, 
     apv: 20.53, 
-    arppu: 74.90 
+    arppu: 75.14 
   },
   { 
     monthKey: '2026-10', 
