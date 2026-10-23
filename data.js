@@ -4,7 +4,7 @@
 // Timur (exy sdof): $48.44 Total | PPV $0.00 | Tips $24.00 | OpenRate 0.00% | AvgPriceSold $0.00 | TRT 187.03s | Chats 125
 
 export const availableMonths = [
-  { key: '2026-10', label: 'Октябрь 2026 (1–23 Окт с PP)', isCurrent: true, totalDays: 31, daysPassed: 23 },
+  { key: '2026-10', label: 'Октябрь 2026 (1–22 Окт с PP)', isCurrent: true, totalDays: 31, daysPassed: 22 },
   { key: '2026-09', label: 'Сентябрь 2026 (Завершен Итог $17.6k с PP)', isCurrent: false, totalDays: 30, daysPassed: 30 },
   { key: '2026-08', label: 'Август 2026 (Завершен Итог $19.5k)', isCurrent: false, totalDays: 31, daysPassed: 31 },
   { key: '2026-07', label: 'Июль 2026 (Завершен)', isCurrent: false, totalDays: 31, daysPassed: 31 }
@@ -540,17 +540,17 @@ export const initialChatterWeekly = [
 ];
 
 export const initialModelWeekly = [
-  // OCTOBER 1–23 LIVE REVENUE TRACKING (EXACT CRM REPORT + PAYPAL)
+  // OCTOBER 1–22 LIVE REVENUE TRACKING (EXACT CRM REPORT + PAYPAL)
   { 
     monthKey: '2026-10', 
-    week: '1–23 Окт', 
+    week: '1–22 Окт', 
     accountId: '39856', 
     modelName: 'Lolly (Lollysunnery)', 
     totalRevenue: 5884.31, // $5,317.68 CRM + $566.63 Total PP
     plan: 9500.00, 
     goalProgressPct: 61.94, 
-    goalStatusPct: -12.25, // pace norm for 23 days is 74.19%
-    runRate: 7930.59, 
+    goalStatusPct: -9.03, // pace norm for 22 days is 70.97%
+    runRate: 8291.53, 
     newFans: 554, 
     spenders: 71, 
     newSpenders: 26,
@@ -564,14 +564,14 @@ export const initialModelWeekly = [
   },
   { 
     monthKey: '2026-10', 
-    week: '1–23 Окт', 
+    week: '1–22 Окт', 
     accountId: '47892', 
     modelName: 'Lolly (1lollyhere)', 
     totalRevenue: 1889.45, // $1,797.84 CRM + $91.61 PP
     plan: 3200.00, 
     goalProgressPct: 59.05, 
-    goalStatusPct: -15.14,
-    runRate: 2546.65, 
+    goalStatusPct: -11.92,
+    runRate: 2662.41, 
     newFans: 610, 
     spenders: 59, 
     newSpenders: 20,
@@ -585,14 +585,14 @@ export const initialModelWeekly = [
   },
   { 
     monthKey: '2026-10', 
-    week: '1–23 Окт', 
+    week: '1–22 Окт', 
     accountId: '30201', 
     modelName: 'Eva Blush', 
     totalRevenue: 2241.57, 
     plan: 3200.00, 
     goalProgressPct: 70.05, 
-    goalStatusPct: -4.14,
-    runRate: 3021.25, 
+    goalStatusPct: -0.92, // practically on exact pace
+    runRate: 3158.58, 
     newFans: 359, 
     spenders: 55, 
     newSpenders: 27,
@@ -606,14 +606,14 @@ export const initialModelWeekly = [
   },
   { 
     monthKey: '2026-10', 
-    week: '1–23 Окт', 
+    week: '1–22 Окт', 
     accountId: '77304', 
     modelName: 'Eva Pinky (Fansly)', 
     totalRevenue: 1106.94, 
     plan: 1500.00, 
     goalProgressPct: 73.80, 
-    goalStatusPct: -0.39, // almost on perfect pace
-    runRate: 1491.91, 
+    goalStatusPct: 2.83, // ahead of schedule!
+    runRate: 1559.72, 
     newFans: 348, 
     spenders: 28, 
     newSpenders: 8,
@@ -627,14 +627,14 @@ export const initialModelWeekly = [
   },
   { 
     monthKey: '2026-10', 
-    week: '1–23 Окт', 
+    week: '1–22 Окт', 
     accountId: '4967', 
     modelName: 'Lila (angelkiss)', 
     totalRevenue: 934.24, 
     plan: 1650.00, 
     goalProgressPct: 56.62, 
-    goalStatusPct: -17.57,
-    runRate: 1259.67, 
+    goalStatusPct: -14.35,
+    runRate: 1316.43, 
     newFans: 496, 
     spenders: 51, 
     newSpenders: 13,

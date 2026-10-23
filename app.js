@@ -23,7 +23,7 @@ function getDaysInfo(monthKey) {
   let reportDateStr = monthObj.label;
 
   if (monthObj.isCurrent) {
-    reportDateStr = `1–23 Октября`;
+    reportDateStr = `1–22 Октября`;
   }
 
   return { daysPassed, daysInMonth, reportDateStr, isCurrent: monthObj.isCurrent };
@@ -170,7 +170,7 @@ function renderHeaderInfo() {
   const cardTitleEl = document.getElementById('dash-card-title-revenue');
   if (cardTitleEl) {
     if (state.selectedMonthKey === '2026-10') {
-      cardTitleEl.textContent = `Общая Выручка (1–23 Окт)`;
+      cardTitleEl.textContent = `Общая Выручка (1–22 Окт)`;
     } else {
       cardTitleEl.textContent = `Общая Выручка (1–${daysPassed} ${fullMonthName})`;
     }
@@ -178,7 +178,7 @@ function renderHeaderInfo() {
   const cardSubtextEl = document.getElementById('dash-card-subtext-revenue');
   if (cardSubtextEl) {
     if (state.selectedMonthKey === '2026-10') {
-      cardSubtextEl.innerHTML = `Текущая выручка за 23 дн. Октября по всем 5 моделям <br><span style="color: var(--accent-purple); font-weight: 600;">(включая +$658.24 PayPal: Sunnery $566.63 + 1lolly $91.61)</span>`;
+      cardSubtextEl.innerHTML = `Текущая выручка за 22 дн. Октября по всем 5 моделям <br><span style="color: var(--accent-purple); font-weight: 600;">(включая +$658.24 PayPal: Sunnery $566.63 + 1lolly $91.61)</span>`;
     } else if (state.selectedMonthKey === '2026-09') {
       cardSubtextEl.innerHTML = `Итоговая выручка за 30 дн. Сентября по всем моделям <br><span style="color: var(--accent-purple); font-weight: 600;">(включая +$2,515.13 PayPal: Lolly $1,813.13 + Eva $652.00 + 1lolly $50.00)</span>`;
     } else if (state.selectedMonthKey === '2026-08') {
