@@ -46,7 +46,7 @@ export const kpiSettingsByMonth = {
   '2026-10': [
     // Lolly (Lollysunnery) - Plan $9,500 (посадка: karina, timur, artem)
     { chatter: 'karina @sanesskio', model: 'Lolly (Lollysunnery)', targetOpenRate: 42, targetAvgPrice: 42, targetTRT: 120, targetPlan: 3500 },
-    { chatter: 'Timur (Тимур)', model: 'Lolly (Lollysunnery)', targetOpenRate: 40, targetAvgPrice: 45, targetTRT: 180, targetPlan: 1250 },
+    { chatter: 'Timur (Тимур)', model: 'Lolly (Lollysunnery)', targetOpenRate: 40, targetAvgPrice: 45, targetTRT: 180, targetPlan: 1750 },
     { chatter: 'paul walkeeer', model: 'Lolly (Lollysunnery)', targetOpenRate: 55, targetAvgPrice: 45, targetTRT: 180, targetPlan: 4750 },
 
     // Lolly (1lollyhere) - Plan $3,200 (посадка: vlada, karina, igor)
