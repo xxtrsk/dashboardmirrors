@@ -20,7 +20,7 @@ export const initialConfig = [
 
 export const modelPlansByMonth = {
   '2026-10': [
-    { id: '39856', name: 'Lolly (Lollysunnery)', plan: 9500, totalBonusPool: 190, teamBonusPool: 95, kpiBonusPool: 95, teamPct: '50%', accountId: '39856' },
+    { id: '39856', name: 'Lolly (Lollysunnery)', plan: 9000, totalBonusPool: 180, teamBonusPool: 90, kpiBonusPool: 90, teamPct: '50%', accountId: '39856' },
     { id: '47892', name: 'Lolly (1lollyhere)', plan: 3200, totalBonusPool: 64, teamBonusPool: 32, kpiBonusPool: 32, teamPct: '50%', accountId: '47892' },
     { id: '30201', name: 'Eva Blush', plan: 3200, totalBonusPool: 64, teamBonusPool: 32, kpiBonusPool: 32, teamPct: '50%', accountId: '30201' },
     { id: '4967', name: 'Lila (angelkiss)', plan: 1650, totalBonusPool: 33, teamBonusPool: 33, kpiBonusPool: 0, teamPct: '100%', accountId: '4967' },
@@ -44,7 +44,7 @@ export const modelPlansByMonth = {
 
 export const kpiSettingsByMonth = {
   '2026-10': [
-    // Lolly (Lollysunnery) - Plan $9,500 (посадка: karina, timur, artem)
+    // Lolly (Lollysunnery) - Plan $9,000 (посадка: karina, timur, artem)
     { chatter: 'karina @sanesskio', model: 'Lolly (Lollysunnery)', targetOpenRate: 42, targetAvgPrice: 42, targetTRT: 120, targetPlan: 3500 },
     { chatter: 'Timur (Тимур)', model: 'Lolly (Lollysunnery)', targetOpenRate: 40, targetAvgPrice: 45, targetTRT: 180, targetPlan: 1750 },
     { chatter: 'paul walkeeer', model: 'Lolly (Lollysunnery)', targetOpenRate: 55, targetAvgPrice: 45, targetTRT: 180, targetPlan: 4750 },
@@ -587,9 +587,9 @@ export const initialModelWeekly = [
     accountId: '39856', 
     modelName: 'Lolly (Lollysunnery)', 
     totalRevenue: 5901.31, // $5,317.68 CRM + $583.63 Total PP ($328.63 + $225.00 + $30.00)
-    plan: 9500.00, 
-    goalProgressPct: 62.12, 
-    goalStatusPct: -8.85, // pace norm for 22 days is 70.97%
+    plan: 9000.00, 
+    goalProgressPct: 65.57, 
+    goalStatusPct: -5.40, // pace norm for 22 days is 70.97%
     runRate: 8315.48, 
     newFans: 554, 
     spenders: 71, 
