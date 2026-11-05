@@ -39,6 +39,7 @@
   <!-- Navigation Tabs -->
   <nav class="nav-tabs">
     <button class="tab-btn active" data-tab="tab-main">📌 Main Dashboard</button>
+    <button class="tab-btn" data-tab="tab-finance">💰 P&L & Чистая Прибыль</button>
     <button class="tab-btn" data-tab="tab-chatter-weekly">👤 Chatter Weekly Dynamics</button>
     <button class="tab-btn" data-tab="tab-model-weekly">👑 Model Weekly Dynamics</button>
     <button class="tab-btn" data-tab="tab-crm-imports">📑 CRM Imports & Config (⚙️)</button>
@@ -316,6 +317,253 @@
           <span style="font-size: 12px; color: var(--text-muted);">Первые строки для проверки структуры колонок</span>
         </div>
         <table id="preview-table" class="data-table"></table>
+      </div>
+    </section>
+
+    <!-- TAB 6: P&L & NET PROFIT / EXPENSE BUDGETING -->
+    <section id="tab-finance" class="tab-content">
+      <!-- Finance Header & Filters -->
+      <div style="margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+        <div>
+          <h2 style="font-size: 22px; font-weight: 800; margin-bottom: 4px; font-family: var(--font-heading); color: var(--text-main);">
+            💰 P&L & Чистая Прибыль Агентства
+          </h2>
+          <p style="font-size: 13px; color: var(--text-muted); margin: 0;">
+            Контроль чистой прибыли, маржинальности, окупаемости трафика и лимитов расходов (План vs Факт)
+          </p>
+        </div>
+
+        <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+          <select id="finance-period-select" class="custom-select" style="padding: 6px 12px; font-weight: 600; background: #0f172a;">
+            <option value="all">🗓 Весь период</option>
+            <option value="2026-11" selected>Ноябрь 2026</option>
+            <option value="2026-10">Октябрь 2026</option>
+            <option value="2026-09">Сентябрь 2026</option>
+          </select>
+
+          <select id="finance-model-select" class="custom-select" style="padding: 6px 12px; font-weight: 600; background: #0f172a;">
+            <option value="all">👑 Все модели</option>
+            <option value="Lolly (Lollysunnery)">Lolly (Lollysunnery)</option>
+            <option value="Lolly (1lollyhere)">Lolly (1lollyhere)</option>
+            <option value="Eva Blush">Eva Blush</option>
+            <option value="Lila (angelkiss)">Lila (angelkiss)</option>
+            <option value="Eva Pinky (Fansly)">Eva Pinky (Fansly)</option>
+            <option value="Agency Core (Общие)">Agency Core (Общие)</option>
+          </select>
+
+          <button id="btn-finance-export-excel" class="btn-action btn-primary" style="padding: 7px 16px;">
+            📥 Экспорт в Excel (.xlsx)
+          </button>
+
+          <label class="btn-action btn-secondary" style="padding: 7px 16px; cursor: pointer; margin: 0;">
+            📤 Загрузить Excel
+            <input type="file" id="finance-file-import" accept=".xlsx, .xls, .csv" style="display: none;" />
+          </label>
+        </div>
+      </div>
+
+      <!-- Executive KPI Cards Grid -->
+      <div class="grid-summary" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px;">
+        <div class="glass-card" style="padding: 18px;">
+          <div class="card-header">
+            <span class="card-title">Общий Доход (Gross)</span>
+            <div class="card-icon">💵</div>
+          </div>
+          <div id="fin-kpi-rev" class="card-value" style="color: var(--accent-green); font-size: 26px;">$0.00</div>
+          <div class="card-subtext">Выплаты OF, PPV, чаевые, кастомы</div>
+        </div>
+
+        <div class="glass-card" style="padding: 18px;">
+          <div class="card-header">
+            <span class="card-title">Общие Расходы (OPEX)</span>
+            <div class="card-icon">💸</div>
+          </div>
+          <div id="fin-kpi-exp" class="card-value" style="color: var(--accent-rose); font-size: 26px;">$0.00</div>
+          <div class="card-subtext">Трафик, чаттеры, модели, софт, комиссии</div>
+        </div>
+
+        <div class="glass-card" style="padding: 18px; border-left: 3px solid var(--primary);">
+          <div class="card-header">
+            <span class="card-title">Чистая Прибыль Агентства</span>
+            <div class="card-icon">🏆</div>
+          </div>
+          <div id="fin-kpi-net" class="card-value" style="color: var(--primary); font-size: 26px;">$0.00</div>
+          <div class="card-subtext">Доходы минус все расходы агентства</div>
+        </div>
+
+        <div class="glass-card" style="padding: 18px;">
+          <div class="card-header">
+            <span class="card-title">Маржинальность Net</span>
+            <div class="card-icon">📊</div>
+          </div>
+          <div id="fin-kpi-margin" class="card-value" style="color: #38bdf8; font-size: 26px;">0.0%</div>
+          <div class="card-subtext">Доля чистой прибыли в выручке</div>
+        </div>
+
+        <div class="glass-card" style="padding: 18px;">
+          <div class="card-header">
+            <span class="card-title">ROAS на Трафик</span>
+            <div class="card-icon">🎯</div>
+          </div>
+          <div id="fin-kpi-roas" class="card-value" style="color: #c084fc; font-size: 26px;">0.00x</div>
+          <div class="card-subtext">Выручка к затратам на рекламу</div>
+        </div>
+      </div>
+
+      <!-- Plan vs Fact Budgets Section -->
+      <div class="glass-card" style="margin-bottom: 24px; padding: 22px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 8px;">
+          <div>
+            <h3 style="font-size: 17px; font-weight: 700; font-family: var(--font-heading); color: var(--text-main); margin-bottom: 4px;">
+              🎯 Контроль лимитов по статьям трат (План vs Факт)
+            </h3>
+            <p style="font-size: 12px; color: var(--text-muted); margin: 0;">
+              Автоматическое отслеживание перерасхода лимитов по трафику, чаттерам и софту
+            </p>
+          </div>
+          <span style="font-size: 11px; color: var(--accent-green); font-family: var(--font-mono); font-weight: 600;">
+            ● Обновляется в реальном времени
+          </span>
+        </div>
+        <div id="fin-budgets-list">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
+
+      <!-- Charts Grid -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 20px; margin-bottom: 24px;">
+        <div class="glass-card" style="padding: 20px;">
+          <h3 style="font-size: 15px; font-weight: 700; font-family: var(--font-heading); margin-bottom: 12px;">
+            📈 Динамика P&L по Месяцам
+          </h3>
+          <div id="fin-chart-timeline"></div>
+        </div>
+
+        <div class="glass-card" style="padding: 20px;">
+          <h3 style="font-size: 15px; font-weight: 700; font-family: var(--font-heading); margin-bottom: 12px;">
+            🍩 Структура Расходов (Топ-5)
+          </h3>
+          <div id="fin-chart-donut"></div>
+        </div>
+      </div>
+
+      <!-- Model Unit-Economics -->
+      <div class="table-container scrollable-slider" style="margin-bottom: 24px;">
+        <div style="padding: 16px 20px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+          <h3 style="font-size: 16px; font-weight: 700; font-family: var(--font-heading);">
+            👑 Unit-экономика по Моделям
+          </h3>
+          <span style="font-size: 12px; color: var(--text-muted);">Выручка, расходы на маркетинг и чистый профит агентства</span>
+        </div>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Модель / Проект</th>
+              <th>Выручка ($)</th>
+              <th>Трафик ($)</th>
+              <th>Выплата Модели ($)</th>
+              <th>Опекс ($)</th>
+              <th>Чистая Прибыль Агентства ($)</th>
+              <th>Маржа (%)</th>
+            </tr>
+          </thead>
+          <tbody id="fin-tbody-unit-economics">
+            <!-- Rendered dynamically -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Two Columns: Add Transaction Form & Ledger -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 20px;">
+        <!-- Add Operation Form -->
+        <div class="glass-card" style="padding: 22px;">
+          <h3 style="font-size: 16px; font-weight: 700; font-family: var(--font-heading); margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+            ➕ Внести операцию
+          </h3>
+          <form id="form-add-finance-tx">
+            <div style="margin-bottom: 14px;">
+              <label style="font-size: 12px; color: var(--text-muted); font-weight: 600; display: block; margin-bottom: 6px;">Тип операции</label>
+              <div style="display: flex; gap: 16px;">
+                <label style="display: flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer; color: var(--accent-rose); font-weight: 600;">
+                  <input type="radio" name="finance-tx-type" value="Расход" checked /> Расход
+                </label>
+                <label style="display: flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer; color: var(--accent-green); font-weight: 600;">
+                  <input type="radio" name="finance-tx-type" value="Доход" /> Доход
+                </label>
+              </div>
+            </div>
+
+            <div style="margin-bottom: 14px;">
+              <label style="font-size: 12px; color: var(--text-muted); font-weight: 600; display: block; margin-bottom: 6px;">Дата</label>
+              <input type="date" id="finance-tx-date" class="custom-select" style="width: 100%; padding: 8px 12px; background: #0f172a;" required />
+            </div>
+
+            <div style="margin-bottom: 14px;">
+              <label style="font-size: 12px; color: var(--text-muted); font-weight: 600; display: block; margin-bottom: 6px;">Категория</label>
+              <select id="finance-tx-category" class="custom-select" style="width: 100%; padding: 8px 12px; background: #0f172a;" required>
+                <!-- Rendered dynamically -->
+              </select>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px;">
+              <div>
+                <label style="font-size: 12px; color: var(--text-muted); font-weight: 600; display: block; margin-bottom: 6px;">Сумма ($)</label>
+                <input type="number" id="finance-tx-amount" step="0.01" min="0.01" placeholder="150.00" class="custom-select" style="width: 100%; padding: 8px 12px; background: #0f172a; font-family: var(--font-mono); font-weight: 700;" required />
+              </div>
+              <div>
+                <label style="font-size: 12px; color: var(--text-muted); font-weight: 600; display: block; margin-bottom: 6px;">Модель / Проект</label>
+                <select id="finance-tx-model" class="custom-select" style="width: 100%; padding: 8px 12px; background: #0f172a;">
+                  <option value="Lolly (Lollysunnery)">Lolly (Lollysunnery)</option>
+                  <option value="Lolly (1lollyhere)">Lolly (1lollyhere)</option>
+                  <option value="Eva Blush">Eva Blush</option>
+                  <option value="Lila (angelkiss)">Lila (angelkiss)</option>
+                  <option value="Eva Pinky (Fansly)">Eva Pinky (Fansly)</option>
+                  <option value="Agency Core (Общие)">Agency Core (Общие)</option>
+                </select>
+              </div>
+            </div>
+
+            <div style="margin-bottom: 18px;">
+              <label style="font-size: 12px; color: var(--text-muted); font-weight: 600; display: block; margin-bottom: 6px;">Комментарий / Примечание</label>
+              <input type="text" id="finance-tx-desc" placeholder="Например: Пакет Reddit аккаунтов, софт" class="custom-select" style="width: 100%; padding: 8px 12px; background: #0f172a;" />
+            </div>
+
+            <button type="submit" class="btn-action btn-primary" style="width: 100%; justify-content: center;">
+              💾 Записать операцию
+            </button>
+          </form>
+        </div>
+
+        <!-- Ledger Table -->
+        <div class="glass-card" style="padding: 22px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <h3 style="font-size: 16px; font-weight: 700; font-family: var(--font-heading); margin: 0;">
+              📋 Реестр Финансовых Записей
+            </h3>
+            <span id="fin-tx-count-badge" style="font-size: 11px; font-family: var(--font-mono); background: rgba(56, 189, 248, 0.15); color: var(--primary); padding: 2px 8px; border-radius: 8px; font-weight: 700;">
+              0 записей
+            </span>
+          </div>
+
+          <div class="table-container scrollable-slider" style="max-height: 410px; overflow-y: auto;">
+            <table class="data-table" style="font-size: 13px;">
+              <thead>
+                <tr>
+                  <th>Дата</th>
+                  <th>Тип</th>
+                  <th>Категория</th>
+                  <th>Модель</th>
+                  <th>Сумма ($)</th>
+                  <th>Комментарий</th>
+                  <th style="text-align: right;">Действие</th>
+                </tr>
+              </thead>
+              <tbody id="fin-tbody-transactions">
+                <!-- Rendered dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </section>
 

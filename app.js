@@ -1,5 +1,6 @@
 import { availableMonths, initialConfig, initialModels, initialKPISettings, initialChatterWeekly, initialModelWeekly, modelPlansByMonth, kpiSettingsByMonth } from './data.js';
 import { setupExcelConverter } from './converter.js';
+import { initFinanceModule } from './finance.js';
 
 // Application State
 const state = {
@@ -542,4 +543,5 @@ document.addEventListener('DOMContentLoaded', () => {
   setupNavigation();
   setupEvents();
   setupExcelConverter();
+  initFinanceModule();
 });
