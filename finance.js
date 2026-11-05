@@ -98,13 +98,13 @@ export const CONTRACTOR_SCHEDULE = [
   {
     id: 'payouts_15_31',
     name: 'Модели & Чаттеры (Аванс / Итог)',
-    role: 'Доля моделей (45-50%) и зарплаты чаттеров/операторов',
-    terms: 'Аванс 15-го числа | Окончательный расчет 31-го числа',
+    role: 'Доля моделей (25%) и зарплаты чаттеров/операторов (20%)',
+    terms: 'Модели: 25% | Чаттеры: 20% (Аванс 15-го числа | Окончательный расчет 31-го числа)',
     dueDateStr: '15 и 31 числа каждого месяца',
     defaultAmount: 0,
     model: 'Все модели',
     category: 'Выплаты моделям (Model Share %)',
-    warning: '🔒 Неприкасаемый фонд. Накапливается из еженедельных понедельничных выводов.',
+    warning: '🔒 Неприкасаемый фонд (суммарно 45% от вала). Накапливается из еженедельных понедельничных выводов.',
     urgencyColor: 'var(--accent-amber)',
     urgencyBadge: '15 и 31 числа'
   }
@@ -743,8 +743,8 @@ export function initFinanceModule() {
 
     function recalculate() {
       const payout = parseFloat(inputPayout.value) || 0;
-      const modelsFund = Math.round(payout * 0.45);
-      const chattersFund = Math.round(payout * 0.15);
+      const modelsFund = Math.round(payout * 0.25);
+      const chattersFund = Math.round(payout * 0.20);
       const trafficWeek = 950;
       const profitBuffer = Math.max(0, payout - modelsFund - chattersFund - trafficWeek);
 
