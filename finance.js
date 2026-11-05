@@ -42,6 +42,74 @@ const DEFAULT_BUDGETS = {
   'Выплаты Моделям': 18000
 };
 
+export const CONTRACTOR_SCHEDULE = [
+  {
+    id: 'osckelly',
+    name: '@osckelly (Оскар) — OFTV',
+    role: 'Сценарии, монтаж, выгрузка контента на платформу',
+    terms: '350 USDT / месяц (4 сценария). Аванс 175 в начале + 175 закрытие с авансом след. круга',
+    dueDateStr: '28 ноября 2026',
+    defaultAmount: 350,
+    model: 'Agency Core (Общие)',
+    category: 'Трафик: TikTok / Reels / Shorts',
+    warning: '⚠️ Проверить отгрузку 4 сценариев перед выплатой вторых 175 USDT! (Посл. выплата: 28.10.2026)',
+    urgencyColor: 'var(--accent-rose)',
+    urgencyBadge: 'Обязательство 28-го'
+  },
+  {
+    id: 'killerleon',
+    name: '@KillerLe0n (Леон) — SFS',
+    role: 'SFS трафик на всех анкетах с SFS',
+    terms: '0.4$ / фанат. Оплата по факту месяца в первых числах (1-5) по сверке',
+    dueDateStr: '1–5 числа месяца',
+    defaultAmount: 580,
+    model: 'Agency Core (Общие)',
+    category: 'Трафик: Reddit & Dating Apps',
+    warning: '🟢 Окупаемость хорошая. Оплачивать строго после первого понедельничного вывода OF!',
+    urgencyColor: 'var(--accent-green)',
+    urgencyBadge: 'По сверке (1–5 число)'
+  },
+  {
+    id: 'aneskagency',
+    name: '@aneskagency (Анастасия) — FYP',
+    role: 'FYP продвижение и закупка трафика',
+    terms: '250 USDT / месяц на анкету. Оплата раз в две недели вперед',
+    dueDateStr: 'Раз в 2 недели вперед',
+    defaultAmount: 250,
+    model: 'Agency Core (Общие)',
+    category: 'Трафик: TikTok / Reels / Shorts',
+    warning: '🔵 Предоплата вперед на 2 недели. Оплачивать сразу после понедельничного вывода.',
+    urgencyColor: 'var(--primary)',
+    urgencyBadge: 'Предоплата 2 недели'
+  },
+  {
+    id: 'crm_monster',
+    name: 'OnlyMonster CRM',
+    role: 'Основная CRM-система учета смен, чаттеров и фанов',
+    terms: 'Ежемесячная подписка на софт агентства',
+    dueDateStr: '2 число каждого месяца',
+    defaultAmount: 180,
+    model: 'Agency Core (Общие)',
+    category: 'Софт: Infloww / CreatorHero / CRM',
+    warning: '🟣 Критическая подписка. Оплачивать с последнего понедельника прошлого месяца.',
+    urgencyColor: 'var(--accent-purple)',
+    urgencyBadge: 'Подписка 2-го числа'
+  },
+  {
+    id: 'payouts_15_31',
+    name: 'Модели & Чаттеры (Аванс / Итог)',
+    role: 'Доля моделей (45-50%) и зарплаты чаттеров/операторов',
+    terms: 'Аванс 15-го числа | Окончательный расчет 31-го числа',
+    dueDateStr: '15 и 31 числа каждого месяца',
+    defaultAmount: 0,
+    model: 'Все модели',
+    category: 'Выплаты моделям (Model Share %)',
+    warning: '🔒 Неприкасаемый фонд. Накапливается из еженедельных понедельничных выводов.',
+    urgencyColor: 'var(--accent-amber)',
+    urgencyBadge: '15 и 31 числа'
+  }
+];
+
 const SEED_TRANSACTIONS = [
   // Ноябрь 2026 (Текущий месяц)
   { id: 1, date: '2026-11-01', type: 'Доход', category: 'OnlyFans Payouts (Выплаты платформы)', amount: 10150, model: 'Lolly (Lollysunnery)', desc: 'Основная выплата за вторую половину октября' },
@@ -603,6 +671,93 @@ export function initFinanceModule() {
     }
   }
 
+  function renderContractorsRunway() {
+    const container = document.getElementById('fin-contractors-runway');
+    if (!container) return;
+
+    container.innerHTML = CONTRACTOR_SCHEDULE.map(c => {
+      const isAuto = c.defaultAmount === 0;
+      const amountStr = isAuto ? 'По факту продаж' : `$${c.defaultAmount.toLocaleString()} USDT`;
+
+      return `
+        <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 12px 16px; display: flex; flex-direction: column; gap: 6px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="font-weight: 700; font-size: 14px; color: var(--text-main);">${c.name}</span>
+              <span style="font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 10px; background: rgba(255, 255, 255, 0.06); color: ${c.urgencyColor}; border: 1px solid ${c.urgencyColor};">
+                ${c.urgencyBadge}
+              </span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <span style="font-family: var(--font-mono); font-weight: 700; color: var(--text-main); font-size: 13px;">${amountStr}</span>
+              <button class="btn-action btn-primary btn-pay-contractor" data-id="${c.id}" style="padding: 4px 10px; font-size: 11px;">
+                ⚡ Оплатить
+              </button>
+            </div>
+          </div>
+
+          <div style="font-size: 11px; color: var(--text-muted); line-height: 1.3;">
+            <strong>Условия:</strong> ${c.terms}
+          </div>
+
+          <div style="font-size: 11px; color: ${c.urgencyColor}; line-height: 1.3; background: rgba(0, 0, 0, 0.2); padding: 4px 8px; border-radius: 4px;">
+            ${c.warning}
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    container.querySelectorAll('.btn-pay-contractor').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.dataset.id;
+        const c = CONTRACTOR_SCHEDULE.find(item => item.id === id);
+        if (!c) return;
+
+        const defaultVal = c.defaultAmount > 0 ? c.defaultAmount : 1500;
+        const inputVal = prompt(`Внести выплату для ${c.name}\nУкажите сумму ($):`, defaultVal);
+        if (inputVal && parseFloat(inputVal) > 0) {
+          const amt = parseFloat(inputVal);
+          manager.addTransaction({
+            date: new Date().toISOString().split('T')[0],
+            type: 'Расход',
+            category: c.category,
+            amount: amt,
+            model: c.model,
+            desc: `Выплата: ${c.name} (${c.dueDateStr})`
+          });
+          renderAll();
+          showToast(`✅ Выплата ${c.name} ($${amt}) внесена в расход!`);
+        }
+      });
+    });
+  }
+
+  function setupMondaySplitCalculator() {
+    const inputPayout = document.getElementById('split-input-payout');
+    const elModels = document.getElementById('split-res-models');
+    const elChatters = document.getElementById('split-res-chatters');
+    const elTraffic = document.getElementById('split-res-traffic');
+    const elProfit = document.getElementById('split-res-profit');
+
+    if (!inputPayout) return;
+
+    function recalculate() {
+      const payout = parseFloat(inputPayout.value) || 0;
+      const modelsFund = Math.round(payout * 0.45);
+      const chattersFund = Math.round(payout * 0.15);
+      const trafficWeek = 950;
+      const profitBuffer = Math.max(0, payout - modelsFund - chattersFund - trafficWeek);
+
+      if (elModels) elModels.textContent = `$${modelsFund.toLocaleString()}`;
+      if (elChatters) elChatters.textContent = `$${chattersFund.toLocaleString()}`;
+      if (elTraffic) elTraffic.textContent = `$${trafficWeek.toLocaleString()}`;
+      if (elProfit) elProfit.textContent = `$${profitBuffer.toLocaleString()}`;
+    }
+
+    inputPayout.addEventListener('input', recalculate);
+    recalculate();
+  }
+
   function renderAll() {
     const txs = manager.getFiltered();
     const metrics = manager.calculateMetrics(txs);
@@ -613,6 +768,7 @@ export function initFinanceModule() {
     renderUnitEconomics(txs);
     renderTransactionsTable(txs);
     renderCharts(txs);
+    renderContractorsRunway();
   }
 
   // Initial Run
@@ -620,5 +776,6 @@ export function initFinanceModule() {
   const dateInput = document.getElementById('finance-tx-date');
   if (dateInput) dateInput.value = today;
 
+  setupMondaySplitCalculator();
   renderAll();
 }

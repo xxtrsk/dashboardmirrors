@@ -410,6 +410,91 @@
         </div>
       </div>
 
+      <!-- Cash Flow Runway & Payment Calendar -->
+      <div class="glass-card" style="margin-bottom: 24px; padding: 22px; border-left: 4px solid var(--accent-amber);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; flex-wrap: wrap; gap: 12px;">
+          <div>
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <h3 style="font-size: 18px; font-weight: 800; font-family: var(--font-heading); color: var(--text-main); margin: 0;">
+                📅 Платежный Календарь & Обязательства (Cash Flow Runway)
+              </h3>
+              <span style="font-size: 11px; background: rgba(251, 191, 36, 0.15); color: var(--accent-amber); padding: 3px 10px; border-radius: 12px; font-weight: 700; border: 1px solid rgba(251, 191, 36, 0.3);">
+                Система Lean Cash Flow
+              </span>
+            </div>
+            <p style="font-size: 12px; color: var(--text-muted); margin: 4px 0 0 0;">
+              График выплат подрядчикам, контроль авансов и расчет удержаний с понедельничных выводов OnlyFans
+            </p>
+          </div>
+          <div style="display: flex; gap: 14px; align-items: center; font-size: 12px; font-family: var(--font-mono); color: var(--text-muted); flex-wrap: wrap;">
+            <span>Выводы OF: <strong style="color: var(--primary);">Каждый Понедельник</strong></span>
+            <span>•</span>
+            <span>Выплаты: <strong style="color: var(--accent-green);">15 и 31 числа</strong></span>
+          </div>
+        </div>
+
+        <!-- 2 Columns: Left = Payment Cards, Right = Monday Split Calculator -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 20px;">
+          <!-- Left: Contractors & Recurring Outflows -->
+          <div>
+            <div style="font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.05em;">
+              Ближайшие выплаты подрядчикам & софт:
+            </div>
+            <div id="fin-contractors-runway" style="display: flex; flex-direction: column; gap: 10px;">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+
+          <!-- Right: Monday Split Calculator -->
+          <div style="background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 18px; display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <span style="font-size: 14px; font-weight: 700; color: var(--text-main);">
+                  🧮 Понедельничный Сплит-Калькулятор
+                </span>
+                <span style="font-size: 11px; color: var(--primary); font-family: var(--font-mono); font-weight: 600;">JIT Расчет</span>
+              </div>
+              <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 14px;">
+                Введите сумму поступившего понедельничного вывода с OnlyFans, чтобы мгновенно распределить средства по безопасным конвертам:
+              </p>
+
+              <div style="margin-bottom: 14px;">
+                <label style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 700; display: block; margin-bottom: 6px;">
+                  Поступление вывода OnlyFans ($)
+                </label>
+                <input type="number" id="split-input-payout" value="8000" step="500" class="custom-select" style="width: 100%; padding: 10px 14px; font-size: 18px; font-family: var(--font-mono); font-weight: 700; background: #07090e; color: var(--accent-green); border-color: var(--accent-green);" />
+              </div>
+
+              <div style="display: flex; flex-direction: column; gap: 8px; font-size: 13px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: rgba(255, 255, 255, 0.02); border-radius: 6px; border-left: 3px solid #fbbf24;">
+                  <span>🔒 <strong>Фонд Моделей (45%)</strong> <br><small style="color: var(--text-muted);">Копилка на 15 / 31 число</small></span>
+                  <strong id="split-res-models" style="font-family: var(--font-mono); font-size: 15px; color: #fbbf24;">$3,600</strong>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: rgba(255, 255, 255, 0.02); border-radius: 6px; border-left: 3px solid #38bdf8;">
+                  <span>🔒 <strong>Фонд Чаттеров (15%)</strong> <br><small style="color: var(--text-muted);">Зарплаты на 15 / 31 число</small></span>
+                  <strong id="split-res-chatters" style="font-family: var(--font-mono); font-size: 15px; color: #38bdf8;">$1,200</strong>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: rgba(255, 255, 255, 0.02); border-radius: 6px; border-left: 3px solid #f87171;">
+                  <span>⚡ <strong>Ближайший Трафик & Софт</strong> <br><small style="color: var(--text-muted);">Оскар, Леон, Анастасия, CRM</small></span>
+                  <strong id="split-res-traffic" style="font-family: var(--font-mono); font-size: 15px; color: #f87171;">$950</strong>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: rgba(52, 211, 153, 0.08); border-radius: 6px; border-left: 3px solid var(--accent-green);">
+                  <span>🟢 <strong>Свободный буфер / Профит</strong> <br><small style="color: var(--text-muted);">Остается агентству</small></span>
+                  <strong id="split-res-profit" style="font-family: var(--font-mono); font-size: 15px; color: var(--accent-green);">$2,250</strong>
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-top: 14px; padding: 10px; background: rgba(255, 255, 255, 0.03); border-radius: 6px; font-size: 11px; color: var(--text-muted); line-height: 1.4;">
+              💡 <strong>Правило PayPal:</strong> При поступлении транша с PayPal (&gt; $400) сразу переводите 100% суммы в неприкасаемый страховой буфер агентства.
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- Plan vs Fact Budgets Section -->
       <div class="glass-card" style="margin-bottom: 24px; padding: 22px;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 8px;">
