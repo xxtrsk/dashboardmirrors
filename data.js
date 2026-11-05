@@ -52,20 +52,20 @@ export const modelPlansByMonth = {
 
 export const kpiSettingsByMonth = {
   '2026-11': [
-    // Lolly (Lollysunnery) - Plan ,000 (посадка: karina, timur, artem)
-    { chatter: 'karina @sanesskio', model: 'Lolly (Lollysunnery)', targetOpenRate: 45, targetAvgPrice: 40, targetTRT: 110, targetPlan: 3600 },
+    // Lolly (Lollysunnery) - Plan $9,000 (посадка: karina, timur, artem)
+    { chatter: 'karina @sanesskio', model: 'Lolly (Lollysunnery)', targetOpenRate: 45, targetAvgPrice: 40, targetTRT: 110, targetPlan: 3400 },
     { chatter: 'Timur (Тимур)', model: 'Lolly (Lollysunnery)', targetOpenRate: 55, targetAvgPrice: 55, targetTRT: 160, targetPlan: 2100 },
-    { chatter: 'paul walkeeer', model: 'Lolly (Lollysunnery)', targetOpenRate: 55, targetAvgPrice: 42, targetTRT: 180, targetPlan: 3300 },
+    { chatter: 'paul walkeeer', model: 'Lolly (Lollysunnery)', targetOpenRate: 55, targetAvgPrice: 42, targetTRT: 180, targetPlan: 3500 },
 
-    // Lolly (1lollyhere) - Plan ,000 (посадка: karina, vlada, igor)
-    { chatter: 'karina @sanesskio', model: 'Lolly (1lollyhere)', targetOpenRate: 35, targetAvgPrice: 28, targetTRT: 110, targetPlan: 1100 },
+    // Lolly (1lollyhere) - Plan $3,000 (посадка: karina, vlada, igor)
+    { chatter: 'karina @sanesskio', model: 'Lolly (1lollyhere)', targetOpenRate: 35, targetAvgPrice: 28, targetTRT: 110, targetPlan: 1000 },
     { chatter: 'hinata hyuga', model: 'Lolly (1lollyhere)', targetOpenRate: 35, targetAvgPrice: 26, targetTRT: 210, targetPlan: 1100 },
     { chatter: 'Igor (Игорь)', model: 'Lolly (1lollyhere)', targetOpenRate: 38, targetAvgPrice: 23, targetTRT: 230, targetPlan: 800 },
 
-    // Eva Blush - Plan ,800 (посадка: artem, karina, timur)
+    // Eva Blush - Plan $3,800 (посадка: artem, karina, timur)
     { chatter: 'paul walkeeer', model: 'Eva Blush', targetOpenRate: 45, targetAvgPrice: 35, targetTRT: 180, targetPlan: 2000 },
     { chatter: 'karina @sanesskio', model: 'Eva Blush', targetOpenRate: 40, targetAvgPrice: 35, targetTRT: 110, targetPlan: 1100 },
-    { chatter: 'Timur (Тимур)', model: 'Eva Blush', targetOpenRate: 55, targetAvgPrice: 50, targetTRT: 170, targetPlan: 700 },
+    { chatter: 'Timur (Тимур)', model: 'Eva Blush', targetOpenRate: 55, targetAvgPrice: 50, targetTRT: 170, targetPlan: 900 },
 
     // Lila (angelkiss) - Plan ,350 (посадка: vlada, igor)
     { chatter: 'hinata hyuga', model: 'Lila (angelkiss)', targetOpenRate: 38, targetAvgPrice: 20, targetTRT: 240, targetPlan: 850 },
