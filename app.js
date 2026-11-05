@@ -4,7 +4,7 @@ import { setupExcelConverter } from './converter.js';
 // Application State
 const state = {
   months: [...availableMonths],
-  selectedMonthKey: '2026-10',
+  selectedMonthKey: '2026-11',
   config: [...initialConfig],
   models: [...initialModels],
   kpiSettings: [...initialKPISettings],
@@ -19,12 +19,17 @@ function getDaysInfo(monthKey) {
   const monthObj = state.months.find(m => m.key === monthKey) || state.months[0];
   
   let daysPassed = monthObj.daysPassed || 5;
-  let daysInMonth = monthObj.totalDays || 31;
-  let reportDateStr = monthObj.label;
-
-  if (monthObj.isCurrent) {
-    reportDateStr = `1–22 Октября`;
-  }
+  let daysInMonth = monthObj.totalDays || 30;
+  
+  const monthNames = {
+    '2026-11': 'Ноября',
+    '2026-10': 'Октября',
+    '2026-09': 'Сентября',
+    '2026-08': 'Августа',
+    '2026-07': 'Июля'
+  };
+  const fullMonth = monthNames[monthObj.key] || '';
+  let reportDateStr = monthObj.isCurrent ? `1–${daysPassed} ${fullMonth}` : monthObj.label;
 
   return { daysPassed, daysInMonth, reportDateStr, isCurrent: monthObj.isCurrent };
 }
@@ -162,22 +167,29 @@ function renderHeaderInfo() {
   }
 
   document.getElementById('header-report-date').textContent = reportDateStr;
-  const monthName = state.selectedMonthKey === '2026-10' ? 'Окт' : (state.selectedMonthKey === '2026-09' ? 'Сент' : (state.selectedMonthKey === '2026-08' ? 'Авг' : 'Июль'));
+  const monthShortMap = { '2026-11': 'Нояб', '2026-10': 'Окт', '2026-09': 'Сент', '2026-08': 'Авг', '2026-07': 'Июль' };
+  const monthFullMap = { '2026-11': 'Ноября', '2026-10': 'Октября', '2026-09': 'Сентября', '2026-08': 'Августа', '2026-07': 'Июля' };
+  const monthName = monthShortMap[state.selectedMonthKey] || 'Мес';
+  const fullMonthName = monthFullMap[state.selectedMonthKey] || 'Месяца';
+
   document.getElementById('header-days-passed').textContent = `${daysPassed} дн. (1–${daysPassed} ${monthName})`;
   document.getElementById('header-days-in-month').textContent = `${daysInMonth} дн.`;
 
-  const fullMonthName = state.selectedMonthKey === '2026-10' ? 'Октября' : (state.selectedMonthKey === '2026-09' ? 'Сентября' : (state.selectedMonthKey === '2026-08' ? 'Августа' : 'Июля'));
   const cardTitleEl = document.getElementById('dash-card-title-revenue');
   if (cardTitleEl) {
-    if (state.selectedMonthKey === '2026-10') {
-      cardTitleEl.textContent = `Общая Выручка (1–22 Окт)`;
+    if (state.selectedMonthKey === '2026-11') {
+      cardTitleEl.textContent = `Общая Выручка (1–${daysPassed} Ноя)`;
+    } else if (state.selectedMonthKey === '2026-10') {
+      cardTitleEl.textContent = `Итоговая Выручка (1–31 Окт)`;
     } else {
       cardTitleEl.textContent = `Общая Выручка (1–${daysPassed} ${fullMonthName})`;
     }
   }
   const cardSubtextEl = document.getElementById('dash-card-subtext-revenue');
   if (cardSubtextEl) {
-    if (state.selectedMonthKey === '2026-10') {
+    if (state.selectedMonthKey === '2026-11') {
+      cardSubtextEl.innerHTML = `Текущая выручка за ${daysPassed} дн. Ноября по всем 5 моделям (План $21.1k)`;
+    } else if (state.selectedMonthKey === '2026-10') {
       cardSubtextEl.innerHTML = `Итоговая выручка за 31 дн. Октября по всем 5 моделям <br><span style="color: var(--accent-purple); font-weight: 600;">(включая +$1,219.24 PayPal: Sunnery $987.63 + Blush $140.00 + 1lolly $91.61)</span>`;
     } else if (state.selectedMonthKey === '2026-09') {
       cardSubtextEl.innerHTML = `Итоговая выручка за 30 дн. Сентября по всем моделям <br><span style="color: var(--accent-purple); font-weight: 600;">(включая +$2,515.13 PayPal: Lolly $1,813.13 + Eva $652.00 + 1lolly $50.00)</span>`;
