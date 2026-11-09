@@ -17,7 +17,7 @@ export const FINANCE_EXPENSE_CATS = [
   'Зарплаты: Чаттеры / Операторы',
   'Зарплаты: Тимлиды / Баеры',
   'Выплаты моделям (Model Share %)',
-  'Софт: Infloww / CreatorHero / CRM',
+  'Софт: OnlyMonster CRM',
   'Инфраструктура: Прокси, Dolphin, SIM',
   'Комиссии: Платежки / Paxum / Вывод',
   'Прочие операционные расходы'
@@ -35,7 +35,7 @@ export const FINANCE_MODELS = [
 const DEFAULT_BUDGETS = {
   'Трафик и Маркетинг': 8500,
   'Зарплаты Чаттеров & Команды': 6000,
-  'Софт и Инфраструктура': 1200,
+  'Софт: OnlyMonster CRM': 220,
   'Комиссии и Обнал': 900
 };
 
@@ -75,18 +75,18 @@ export const CONTRACTOR_SCHEDULE = [
   {
     id: 'crm_monster',
     name: 'OnlyMonster CRM',
-    role: 'Основная CRM-система учета смен, чаттеров и фанов',
-    terms: '180 USDT / месяц. Оплата подписки агентства 2-го числа',
+    role: 'Единственный софт агентства (учет смен, чаттеров, фанов)',
+    terms: '220 USDT / месяц (единственный софт агентства). Оплата 2-го числа',
     dueDateStr: '2 число каждого месяца',
-    defaultAmount: 180,
+    defaultAmount: 220,
     installments: 1,
-    installmentAmount: 180,
+    installmentAmount: 220,
     keywords: ['монстр', 'onlymonster', 'crm'],
     model: 'Agency Core (Общие)',
-    category: 'Софт: Infloww / CreatorHero / CRM',
-    warning: '🟣 Подписка 2-го числа каждого месяца.',
+    category: 'Софт: OnlyMonster CRM',
+    warning: '🟣 Единственная подписка агентства ($220). Оплачивать 2-го числа каждого месяца.',
     urgencyColor: 'var(--accent-purple)',
-    urgencyBadge: 'Подписка 2-го числа'
+    urgencyBadge: '220$ / 2-го числа'
   },
   {
     id: 'killerleon',
@@ -320,7 +320,7 @@ class FinanceManager {
   mapCategoryToBudgetGroup(cat) {
     if (cat.startsWith('Трафик')) return 'Трафик и Маркетинг';
     if (cat.startsWith('Зарплаты')) return 'Зарплаты Чаттеров & Команды';
-    if (cat.includes('Софт') || cat.includes('Инфраструктура')) return 'Софт и Инфраструктура';
+    if (cat.includes('Софт') || cat.includes('Инфраструктура') || cat.toLowerCase().includes('monster') || cat.toLowerCase().includes('монстр')) return 'Софт: OnlyMonster CRM';
     if (cat.includes('Комиссии')) return 'Комиссии и Обнал';
     return null;
   }
@@ -329,7 +329,7 @@ class FinanceManager {
     const actuals = {
       'Трафик и Маркетинг': 0,
       'Зарплаты Чаттеров & Команды': 0,
-      'Софт и Инфраструктура': 0,
+      'Софт: OnlyMonster CRM': 0,
       'Комиссии и Обнал': 0
     };
 
@@ -917,7 +917,7 @@ export function initFinanceModule() {
     if (!alertContainer) return;
 
     // Реальный остаток к выплате подрядчикам с учетом уже внесенных авансов/траншей
-    const contractorsDue = totalContractorsRemaining !== undefined ? totalContractorsRemaining : (350 + 250 + 180 + 580);
+    const contractorsDue = totalContractorsRemaining !== undefined ? totalContractorsRemaining : (350 + 250 + 220 + 580);
     const modelsRem = remainingLiabilities?.modelsRemaining || 0;
     const chattersRem = remainingLiabilities?.chattersRemaining || 0;
     const totalShortTermDue = contractorsDue + modelsRem + chattersRem;

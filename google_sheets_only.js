@@ -175,7 +175,7 @@ function applyDataValidation(sheet) {
     "Зарплаты: Чаттеры / Операторы",
     "Зарплаты: Тимлиды / Баеры",
     "Выплаты моделям (Model Share %)",
-    "Софт: Infloww / CreatorHero / CRM",
+    "Софт: OnlyMonster CRM",
     "Инфраструктура: Прокси, Dolphin, SIM",
     "Комиссии: Платежки / Paxum / Вывод",
     "Прочие операционные расходы",
