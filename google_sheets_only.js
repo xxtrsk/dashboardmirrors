@@ -78,7 +78,7 @@ function doGet(e) {
 }
 
 /**
- * 2. ЗАПИСЬ: Добавляет операцию из дашборда Vercel в Google Таблицу
+ * 2. ЗАПИСЬ / УДАЛЕНИЕ: Обрабатывает добавление и удаление операций из дашборда Vercel
  */
 function doPost(e) {
   try {
@@ -87,9 +87,34 @@ function doPost(e) {
     }
 
     const payload = JSON.parse(e.postData.contents);
-    const tx = payload.transaction || payload;
-
     const sheet = getOrCreateSheet();
+
+    // 1. УДАЛЕНИЕ ОПЕРАЦИИ
+    if (payload.action === "deleteTransaction") {
+      const tx = payload.transaction;
+      const data = sheet.getDataRange().getValues();
+
+      for (let i = 1; i < data.length; i++) {
+        const row = data[i];
+        const rDate = (row[0] instanceof Date) 
+          ? Utilities.formatDate(row[0], Session.getScriptTimeZone(), "yyyy-MM-dd") 
+          : String(row[0] || "").trim();
+        const rAmount = parseFloat(String(row[4]).replace("$", "").replace(",", ".")) || 0;
+        const rDesc = String(row[5] || "").trim();
+        const rModel = String(row[3] || "").trim();
+
+        if (rDate === String(tx.date).trim() &&
+            Math.abs(rAmount - parseFloat(tx.amount)) < 0.01 &&
+            (rDesc === String(tx.desc || "").trim() || rModel === String(tx.model || "").trim())) {
+          sheet.deleteRow(i + 1); // В Sheets нумерация строк с 1
+          return createJsonResponse({ status: "ok", message: "Transaction deleted from sheet" });
+        }
+      }
+      return createJsonResponse({ status: "not_found", message: "Row not found in sheet" });
+    }
+
+    // 2. ДОБАВЛЕНИЕ ОПЕРАЦИИ
+    const tx = payload.transaction || payload;
     const dateStr = tx.date || Utilities.formatDate(new Date(), Session.getScriptTimeZone(), "yyyy-MM-dd");
     const type = tx.type || "Расход";
     const category = tx.category || "Прочие операционные расходы";

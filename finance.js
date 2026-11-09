@@ -219,8 +219,24 @@ class FinanceManager {
   }
 
   deleteTransaction(id) {
-    this.transactions = this.transactions.filter(t => t.id !== id);
+    const targetTx = this.transactions.find(t => String(t.id) === String(id));
+    this.transactions = this.transactions.filter(t => String(t.id) !== String(id));
     this.saveTransactions();
+
+    // Отправляем команду удаления в Google Sheets
+    const gsheetUrl = this.loadGSheetUrl();
+    if (gsheetUrl && targetTx) {
+      try {
+        fetch(gsheetUrl, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'deleteTransaction', transaction: targetTx })
+        }).catch(e => console.warn('Background delete in Google Sheets failed:', e));
+      } catch (e) {
+        console.warn('Fetch error:', e);
+      }
+    }
   }
 
   getFiltered() {
@@ -327,6 +343,7 @@ class FinanceManager {
 
 export function initFinanceModule() {
   const manager = new FinanceManager();
+  let lastSyncTime = 0;
 
   // DOM Elements
   const periodSelect = document.getElementById('finance-period-select');
@@ -671,8 +688,9 @@ export function initFinanceModule() {
 
     tbody.querySelectorAll('.btn-delete-tx').forEach(btn => {
       btn.addEventListener('click', () => {
-        const id = Number(btn.dataset.id);
+        const id = btn.dataset.id;
         if (confirm('Удалить эту операцию?')) {
+          lastSyncTime = Date.now() + 10000; // Пауза автосинхронизации на 10 сек, чтобы дать Sheets удалить строку
           manager.deleteTransaction(id);
           renderAll();
           showToast('🗑 Операция удалена');
@@ -1141,7 +1159,6 @@ export function initFinanceModule() {
   }
 
   // 🔄 Live Auto-Sync: автоматическое обновление при переключении на вкладку
-  let lastSyncTime = 0;
   async function triggerAutoSync() {
     const now = Date.now();
     if (now - lastSyncTime < 15000) return; // Не чаще чем раз в 15 секунд
