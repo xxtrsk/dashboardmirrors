@@ -852,30 +852,205 @@ export function initFinanceModule() {
     });
   }
 
-  function setupMondaySplitCalculator() {
+  let userOverrodePayout = false;
+
+  function renderRunwayAlert(cashBalance, remainingLiabilities) {
+    const alertContainer = document.getElementById('fin-runway-alert');
+    if (!alertContainer) return;
+
+    // Подрядчики фикс (Оскар 350 + Анастасия 250 + CRM 135 + Леон ~1200)
+    const contractorsDue = 350 + 250 + 135 + 1200; // $1,935
+    const modelsRem = remainingLiabilities?.modelsRemaining || 0;
+    const chattersRem = remainingLiabilities?.chattersRemaining || 0;
+    const totalShortTermDue = contractorsDue + modelsRem + chattersRem;
+    const gap = cashBalance - totalShortTermDue;
+
+    if (gap >= 0) {
+      alertContainer.innerHTML = `
+        <div style="background: rgba(52, 211, 153, 0.08); border: 1px solid var(--accent-green); border-radius: var(--radius-sm); padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <span style="font-size: 24px;">🟢</span>
+            <div>
+              <div style="font-weight: 700; color: var(--accent-green); font-size: 14px;">Безопасный Runway: Касса полностью покрывает все ближайшие обязательства</div>
+              <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">
+                В кассе: <strong style="color: var(--text-main);">$${cashBalance.toLocaleString('en-US', { minimumFractionDigits: 2 })}</strong> | Обязательства недели (Подрядчики: $${contractorsDue.toLocaleString()}, Долг моделям: $${modelsRem.toLocaleString()}, Чаттерам: $${chattersRem.toLocaleString()}): <strong style="color: var(--primary);">$${totalShortTermDue.toLocaleString()}</strong>
+              </div>
+            </div>
+          </div>
+          <div style="text-align: right;">
+            <div style="font-family: var(--font-mono); font-weight: 800; font-size: 16px; color: var(--accent-green);">
+              Запас кассы: +$${gap.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+            </div>
+            <div style="font-size: 10px; color: var(--text-muted);">Риска кассового разрыва нет</div>
+          </div>
+        </div>
+      `;
+    } else {
+      alertContainer.innerHTML = `
+        <div style="background: rgba(239, 68, 68, 0.12); border: 1px solid var(--accent-rose); border-radius: var(--radius-sm); padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <span style="font-size: 24px;">🚨</span>
+            <div>
+              <div style="font-weight: 700; color: var(--accent-rose); font-size: 14px;">Внимание: Риск кассового разрыва перед ближайшими выплатами!</div>
+              <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">
+                В кассе: <strong style="color: var(--text-main);">$${cashBalance.toLocaleString('en-US', { minimumFractionDigits: 2 })}</strong> | Обязательства: <strong style="color: var(--accent-rose);">$${totalShortTermDue.toLocaleString()}</strong> (Подрядчики: $${contractorsDue.toLocaleString()}, Долг моделям/чаттерам: $${(modelsRem + chattersRem).toLocaleString()})
+              </div>
+            </div>
+          </div>
+          <div style="text-align: right;">
+            <div style="font-family: var(--font-mono); font-weight: 800; font-size: 16px; color: var(--accent-rose);">
+              Дефицит: -$${Math.abs(gap).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+            </div>
+            <div style="font-size: 10px; color: var(--text-muted);">Дождитесь понедельничного вывода OnlyFans!</div>
+          </div>
+        </div>
+      `;
+    }
+  }
+
+  function calculateAndRenderSplit(txs, metrics) {
     const inputPayout = document.getElementById('split-input-payout');
+    const inputTrafficPlan = document.getElementById('split-traffic-plan-input');
     const elModels = document.getElementById('split-res-models');
+    const elModelsPaid = document.getElementById('split-models-paid');
+    const elModelsRemaining = document.getElementById('split-models-remaining');
     const elChatters = document.getElementById('split-res-chatters');
+    const elChattersPaid = document.getElementById('split-chatters-paid');
+    const elChattersRemaining = document.getElementById('split-chatters-remaining');
     const elTraffic = document.getElementById('split-res-traffic');
+    const elTrafficVariance = document.getElementById('split-traffic-variance');
     const elProfit = document.getElementById('split-res-profit');
+    const syncBadge = document.getElementById('split-sync-badge');
 
-    if (!inputPayout) return;
+    if (!inputPayout) return { modelsRemaining: 0, chattersRemaining: 0 };
 
-    function recalculate() {
-      const payout = parseFloat(inputPayout.value) || 0;
-      const modelsFund = Math.round(payout * 0.25);
-      const chattersFund = Math.round(payout * 0.20);
-      const trafficWeek = 950;
-      const profitBuffer = Math.max(0, payout - modelsFund - chattersFund - trafficWeek);
-
-      if (elModels) elModels.textContent = `$${modelsFund.toLocaleString()}`;
-      if (elChatters) elChatters.textContent = `$${chattersFund.toLocaleString()}`;
-      if (elTraffic) elTraffic.textContent = `$${trafficWeek.toLocaleString()}`;
-      if (elProfit) elProfit.textContent = `$${profitBuffer.toLocaleString()}`;
+    // Если пользователь вручную не вводил прогнозную сумму, синхронизируем с реальной выручкой из кассы
+    if (!userOverrodePayout) {
+      inputPayout.value = Math.round(metrics.income) || 0;
+      if (syncBadge) {
+        syncBadge.textContent = '● Синхронизировано';
+        syncBadge.style.color = 'var(--accent-green)';
+        syncBadge.style.background = 'rgba(52, 211, 153, 0.12)';
+      }
+    } else {
+      if (syncBadge) {
+        syncBadge.textContent = '✎ Ручной ввод (прогноз)';
+        syncBadge.style.color = 'var(--accent-amber)';
+        syncBadge.style.background = 'rgba(251, 191, 36, 0.12)';
+      }
     }
 
-    inputPayout.addEventListener('input', recalculate);
-    recalculate();
+    const payout = parseFloat(inputPayout.value) || 0;
+
+    // Подсчитываем реальные выплаты из транзакций
+    let modelsPaid = 0;
+    let chattersPaid = 0;
+    let trafficFact = 0;
+    let otherOpex = 0;
+
+    txs.forEach(t => {
+      if (t.type === 'Расход') {
+        const amt = Number(t.amount) || 0;
+        if (t.category.includes('Выплаты моделям')) {
+          modelsPaid += amt;
+        } else if (t.category.includes('Чаттеры') || t.category.includes('Операторы')) {
+          chattersPaid += amt;
+        } else if (t.category.startsWith('Трафик')) {
+          trafficFact += amt;
+        } else {
+          otherOpex += amt;
+        }
+      }
+    });
+
+    // Начисления по финансовой модели: Модели 25%, Чаттеры 20%
+    const modelsDueTotal = Math.round(payout * 0.25);
+    const modelsRemaining = Math.max(0, modelsDueTotal - modelsPaid);
+
+    const chattersDueTotal = Math.round(payout * 0.20);
+    const chattersRemaining = Math.max(0, chattersDueTotal - chattersPaid);
+
+    // Бюджет по трафику (+- 0)
+    const trafficPlan = parseFloat(inputTrafficPlan?.value) || 8500;
+    const trafficDelta = trafficPlan - trafficFact;
+
+    let trafficVarianceText = '⚖️ ±$0 (В нуле)';
+    let trafficVarianceColor = 'var(--text-main)';
+
+    if (Math.abs(trafficDelta) < 10) {
+      trafficVarianceText = '⚖️ ±$0 (В нуле — бюджет освоен точно)';
+      trafficVarianceColor = 'var(--text-main)';
+    } else if (trafficDelta > 0) {
+      trafficVarianceText = `🟢 В запасе: +$${Math.round(trafficDelta).toLocaleString()} (из $${trafficPlan.toLocaleString()})`;
+      trafficVarianceColor = 'var(--accent-green)';
+    } else {
+      trafficVarianceText = `🔴 Перерасход: превышение на -$${Math.round(Math.abs(trafficDelta)).toLocaleString()}`;
+      trafficVarianceColor = 'var(--accent-rose)';
+    }
+
+    // Чистый профит агентства (55% от вала за вычетом трафика и опекса)
+    const profitBuffer = Math.round(payout - modelsDueTotal - chattersDueTotal - trafficFact - otherOpex);
+
+    // Обновляем DOM
+    if (elModels) elModels.textContent = `$${modelsDueTotal.toLocaleString()}`;
+    if (elModelsPaid) elModelsPaid.textContent = `$${modelsPaid.toLocaleString()}`;
+    if (elModelsRemaining) {
+      elModelsRemaining.textContent = `$${modelsRemaining.toLocaleString()}`;
+      elModelsRemaining.style.color = modelsRemaining > 0 ? '#fbbf24' : 'var(--accent-green)';
+    }
+
+    if (elChatters) elChatters.textContent = `$${chattersDueTotal.toLocaleString()}`;
+    if (elChattersPaid) elChattersPaid.textContent = `$${chattersPaid.toLocaleString()}`;
+    if (elChattersRemaining) {
+      elChattersRemaining.textContent = `$${chattersRemaining.toLocaleString()}`;
+      elChattersRemaining.style.color = chattersRemaining > 0 ? '#38bdf8' : 'var(--accent-green)';
+    }
+
+    if (elTraffic) elTraffic.textContent = `$${trafficFact.toLocaleString()}`;
+    if (elTrafficVariance) {
+      elTrafficVariance.textContent = trafficVarianceText;
+      elTrafficVariance.style.color = trafficVarianceColor;
+    }
+
+    if (elProfit) {
+      elProfit.textContent = `$${profitBuffer.toLocaleString()}`;
+      elProfit.style.color = profitBuffer >= 0 ? 'var(--accent-green)' : 'var(--accent-rose)';
+    }
+
+    return { modelsRemaining, chattersRemaining };
+  }
+
+  function setupLiveSplitCalculator() {
+    const inputPayout = document.getElementById('split-input-payout');
+    const btnUseActual = document.getElementById('btn-split-use-actual');
+    const inputTrafficPlan = document.getElementById('split-traffic-plan-input');
+
+    inputPayout?.addEventListener('input', () => {
+      userOverrodePayout = true;
+      const txs = manager.getFiltered();
+      const metrics = manager.calculateMetrics(txs);
+      const remaining = calculateAndRenderSplit(txs, metrics);
+      const cashBalance = manager.calculateCashBalance();
+      renderRunwayAlert(cashBalance, remaining);
+    });
+
+    btnUseActual?.addEventListener('click', () => {
+      userOverrodePayout = false;
+      const txs = manager.getFiltered();
+      const metrics = manager.calculateMetrics(txs);
+      const remaining = calculateAndRenderSplit(txs, metrics);
+      const cashBalance = manager.calculateCashBalance();
+      renderRunwayAlert(cashBalance, remaining);
+      showToast('⚡ Сплит синхронизирован с реальной выручкой из кассы!');
+    });
+
+    inputTrafficPlan?.addEventListener('input', () => {
+      const txs = manager.getFiltered();
+      const metrics = manager.calculateMetrics(txs);
+      const remaining = calculateAndRenderSplit(txs, metrics);
+      const cashBalance = manager.calculateCashBalance();
+      renderRunwayAlert(cashBalance, remaining);
+    });
   }
 
   // Google Sheets UI & Sync handlers
@@ -959,6 +1134,10 @@ export function initFinanceModule() {
     renderTransactionsTable(txs);
     renderCharts(txs);
     renderContractorsRunway();
+
+    // Синхронизация сплита и показ индикатора кассового разрыва
+    const remaining = calculateAndRenderSplit(txs, metrics);
+    renderRunwayAlert(cashBalance, remaining);
   }
 
   // Initial Run
@@ -966,7 +1145,7 @@ export function initFinanceModule() {
   const dateInput = document.getElementById('finance-tx-date');
   if (dateInput) dateInput.value = today;
 
-  setupMondaySplitCalculator();
+  setupLiveSplitCalculator();
   updateGsheetUI();
   renderAll();
 
@@ -979,4 +1158,27 @@ export function initFinanceModule() {
       }
     });
   }
+
+  // 🔄 Live Auto-Sync: автоматическое обновление при переключении на вкладку
+  let lastSyncTime = 0;
+  async function triggerAutoSync() {
+    const now = Date.now();
+    if (now - lastSyncTime < 15000) return; // Не чаще чем раз в 15 секунд
+    if (manager.loadGSheetUrl()) {
+      lastSyncTime = now;
+      const res = await manager.syncWithGoogleSheets();
+      if (res.success) {
+        renderAll();
+        updateGsheetUI();
+      }
+    }
+  }
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+      triggerAutoSync();
+    }
+  });
+  window.addEventListener('focus', triggerAutoSync);
+  setInterval(triggerAutoSync, 90000); // Регулярный поллинг каждые 90 секунд
 }

@@ -123,8 +123,70 @@ function getOrCreateSheet() {
     sheet.setColumnWidth(4, 180);
     sheet.setColumnWidth(5, 120);
     sheet.setColumnWidth(6, 300);
+
+    applyDataValidation(sheet);
   }
   return sheet;
+}
+
+/**
+ * Создает выпадающие списки для колонок Тип, Категория и Модель (защита от опечаток)
+ */
+function applyDataValidation(sheet) {
+  const maxRows = 1000;
+
+  // 1. Колонка B: Тип
+  const ruleType = SpreadsheetApp.newDataValidation()
+    .requireValueInList(["Расход", "Доход"], true)
+    .setAllowInvalid(false)
+    .build();
+  sheet.getRange(2, 2, maxRows, 1).setDataValidation(ruleType);
+
+  // 2. Колонка C: Категории
+  const categories = [
+    "Трафик: Reddit & Dating Apps",
+    "Трафик: TikTok / Reels / Shorts",
+    "Трафик: Twitter / X Promo",
+    "Зарплаты: Чаттеры / Операторы",
+    "Зарплаты: Тимлиды / Баеры",
+    "Выплаты моделям (Model Share %)",
+    "Софт: Infloww / CreatorHero / CRM",
+    "Инфраструктура: Прокси, Dolphin, SIM",
+    "Комиссии: Платежки / Paxum / Вывод",
+    "Прочие операционные расходы",
+    "OnlyFans Payouts (Выплаты платформы)",
+    "Платные сообщения (PPV / Chatting)",
+    "Чаевые (Tips) & Кастомы",
+    "Внешняя реклама / Sponsorships"
+  ];
+  const ruleCat = SpreadsheetApp.newDataValidation()
+    .requireValueInList(categories, true)
+    .setAllowInvalid(true)
+    .build();
+  sheet.getRange(2, 3, maxRows, 1).setDataValidation(ruleCat);
+
+  // 3. Колонка D: Модели
+  const models = [
+    "Eva Blush",
+    "Lolly (Lollysunnery)",
+    "Lolly (1lollyhere)",
+    "Lila (angelkiss)",
+    "Eva Pinky (Fansly)",
+    "Agency Core (Общие)"
+  ];
+  const ruleModel = SpreadsheetApp.newDataValidation()
+    .requireValueInList(models, true)
+    .setAllowInvalid(true)
+    .build();
+  sheet.getRange(2, 4, maxRows, 1).setDataValidation(ruleModel);
+}
+
+/**
+ * Можно запустить вручную в редакторе Apps Script, чтобы добавить выпадающие списки в существующую таблицу
+ */
+function setupDropdownsNow() {
+  const sheet = getOrCreateSheet();
+  applyDataValidation(sheet);
 }
 
 function createJsonResponse(obj) {
