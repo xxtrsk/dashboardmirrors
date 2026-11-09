@@ -169,17 +169,15 @@ function applyDataValidation(sheet) {
 
   // 2. Колонка C: Категории
   const categories = [
-    "Трафик: Reddit & Dating Apps",
-    "Трафик: TikTok / Reels / Shorts",
-    "Трафик: Twitter / X Promo",
-    "Зарплаты: Чаттеры / Операторы",
-    "Зарплаты: Тимлиды / Баеры",
-    "Выплаты моделям (Model Share %)",
-    "Софт: OnlyMonster CRM",
-    "Инфраструктура: Прокси, Dolphin, SIM",
-    "Комиссии: Платежки / Paxum / Вывод",
-    "Прочие операционные расходы",
-    "OnlyFans Payouts (Выплаты платформы)",
+    "Трафик: Reddit",
+    "Трафик: TikTok",
+    "Трафик: Twitter",
+    "Зарплаты: Чаттеры",
+    "Выплаты моделям",
+    "Софт: OnlyMonster",
+    "Комиссии и вывод",
+    "Прочие расходы",
+    "Выплаты OnlyFans",
     "Прочий доход"
   ];
   const ruleCat = SpreadsheetApp.newDataValidation()

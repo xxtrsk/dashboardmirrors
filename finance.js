@@ -6,21 +6,19 @@ const STORAGE_KEY_BUDGET = 'mirrors_finance_budgets_v2';
 const STORAGE_KEY_GSHEET_URL = 'mirrors_finance_gsheet_url_v1';
 
 export const FINANCE_INCOME_CATS = [
-  'OnlyFans Payouts (Выплаты платформы)',
+  'Выплаты OnlyFans',
   'Прочий доход'
 ];
 
 export const FINANCE_EXPENSE_CATS = [
-  'Трафик: Reddit & Dating Apps',
-  'Трафик: TikTok / Reels / Shorts',
-  'Трафик: Twitter / X Promo',
-  'Зарплаты: Чаттеры / Операторы',
-  'Зарплаты: Тимлиды / Баеры',
-  'Выплаты моделям (Model Share %)',
-  'Софт: OnlyMonster CRM',
-  'Инфраструктура: Прокси, Dolphin, SIM',
-  'Комиссии: Платежки / Paxum / Вывод',
-  'Прочие операционные расходы'
+  'Трафик: Reddit',
+  'Трафик: TikTok',
+  'Трафик: Twitter',
+  'Зарплаты: Чаттеры',
+  'Выплаты моделям',
+  'Софт: OnlyMonster',
+  'Комиссии и вывод',
+  'Прочие расходы'
 ];
 
 export const FINANCE_MODELS = [
@@ -51,7 +49,7 @@ export const CONTRACTOR_SCHEDULE = [
     installmentAmount: 175,
     keywords: ['оскар', 'osckelly', 'oftv'],
     model: 'Agency Core (Общие)',
-    category: 'Трафик: TikTok / Reels / Shorts',
+    category: 'Трафик: TikTok',
     warning: '⚠️ Проверить отгрузку сценариев перед выплатой 2-й части (175 USDT)!',
     urgencyColor: 'var(--accent-amber)',
     urgencyBadge: '2 транша (175 + 175)'
@@ -67,7 +65,7 @@ export const CONTRACTOR_SCHEDULE = [
     installmentAmount: 125,
     keywords: ['анастасия', 'aneskagency', 'fyp'],
     model: 'Agency Core (Общие)',
-    category: 'Трафик: TikTok / Reels / Shorts',
+    category: 'Трафик: TikTok',
     warning: '🔵 Предоплата на 2 недели вперед. Оплачивать после понедельничного вывода.',
     urgencyColor: 'var(--primary)',
     urgencyBadge: '2 транша (125 + 125)'
@@ -83,7 +81,7 @@ export const CONTRACTOR_SCHEDULE = [
     installmentAmount: 220,
     keywords: ['монстр', 'onlymonster', 'crm'],
     model: 'Agency Core (Общие)',
-    category: 'Софт: OnlyMonster CRM',
+    category: 'Софт: OnlyMonster',
     warning: '🟣 Единственная подписка агентства ($220). Оплачивать 2-го числа каждого месяца.',
     urgencyColor: 'var(--accent-purple)',
     urgencyBadge: '220$ / 2-го числа'
@@ -99,7 +97,7 @@ export const CONTRACTOR_SCHEDULE = [
     installmentAmount: 580,
     keywords: ['леон', 'killerle0n', 'sfs'],
     model: 'Agency Core (Общие)',
-    category: 'Трафик: Reddit & Dating Apps',
+    category: 'Трафик: Twitter',
     warning: '🟢 Оплата по сверке после первого понедельничного вывода OF.',
     urgencyColor: 'var(--accent-green)',
     urgencyBadge: 'По сверке (1–5 число)'
