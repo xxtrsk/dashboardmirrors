@@ -359,11 +359,24 @@
             📤 Загрузить Excel
             <input type="file" id="finance-file-import" accept=".xlsx, .xls, .csv" style="display: none;" />
           </label>
+
+          <button id="btn-finance-reset" class="btn-action" style="padding: 7px 14px; background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); color: var(--accent-rose); cursor: pointer;" title="Сбросить все операции кассы">
+            🔄 Обнулить кассу
+          </button>
         </div>
       </div>
 
       <!-- Executive KPI Cards Grid -->
-      <div class="grid-summary" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px;">
+      <div class="grid-summary" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 24px;">
+        <div class="glass-card" style="padding: 18px; border-left: 3px solid #10b981; background: rgba(16, 185, 129, 0.05);">
+          <div class="card-header">
+            <span class="card-title">Баланс Кассы (Остаток)</span>
+            <div class="card-icon">🏦</div>
+          </div>
+          <div id="fin-kpi-cash-balance" class="card-value" style="color: #34d399; font-size: 26px;">$0.00</div>
+          <div class="card-subtext">Фактический остаток на руках (все время)</div>
+        </div>
+
         <div class="glass-card" style="padding: 18px;">
           <div class="card-header">
             <span class="card-title">Общий Доход (Gross)</span>
@@ -546,9 +559,10 @@
               <th>Модель / Проект</th>
               <th>Выручка ($)</th>
               <th>Трафик ($)</th>
+              <th>Чаттеры ($)</th>
               <th>Выплата Модели ($)</th>
               <th>Опекс ($)</th>
-              <th>Чистая Прибыль Агентства ($)</th>
+              <th>Чистая Прибыль ($)</th>
               <th>Маржа (%)</th>
             </tr>
           </thead>

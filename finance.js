@@ -1,8 +1,8 @@
 // MIRRORS Financial P&L Engine & Budgeting System (Plan vs Fact)
 // Compatible with Vercel Static Hosting & Client-side XLSX export/import
 
-const STORAGE_KEY_TX = 'mirrors_finance_transactions_v1';
-const STORAGE_KEY_BUDGET = 'mirrors_finance_budgets_v1';
+const STORAGE_KEY_TX = 'mirrors_finance_transactions_v2';
+const STORAGE_KEY_BUDGET = 'mirrors_finance_budgets_v2';
 
 export const FINANCE_INCOME_CATS = [
   'OnlyFans Payouts (Выплаты платформы)',
@@ -110,31 +110,7 @@ export const CONTRACTOR_SCHEDULE = [
   }
 ];
 
-const SEED_TRANSACTIONS = [
-  // Ноябрь 2026 (Текущий месяц)
-  { id: 1, date: '2026-11-01', type: 'Доход', category: 'OnlyFans Payouts (Выплаты платформы)', amount: 10150, model: 'Lolly (Lollysunnery)', desc: 'Основная выплата за вторую половину октября' },
-  { id: 2, date: '2026-11-01', type: 'Расход', category: 'Выплаты моделям (Model Share %)', amount: 5075, model: 'Lolly (Lollysunnery)', desc: 'Доля 50% модели' },
-  { id: 3, date: '2026-11-02', type: 'Расход', category: 'Трафик: Reddit & Dating Apps', amount: 1450, model: 'Lolly (Lollysunnery)', desc: 'Закупка аккаунтов и прогрев' },
-  { id: 4, date: '2026-11-02', type: 'Доход', category: 'OnlyFans Payouts (Выплаты платформы)', amount: 4600, model: 'Eva Blush', desc: 'Первая выплата ноября' },
-  { id: 5, date: '2026-11-02', type: 'Расход', category: 'Выплаты моделям (Model Share %)', amount: 2300, model: 'Eva Blush', desc: '50% модели' },
-  { id: 6, date: '2026-11-03', type: 'Расход', category: 'Трафик: TikTok / Reels / Shorts', amount: 1200, model: 'Eva Blush', desc: 'Оплата контент-фермы' },
-  { id: 7, date: '2026-11-03', type: 'Расход', category: 'Зарплаты: Чаттеры / Операторы', amount: 2850, model: 'Agency Core (Общие)', desc: 'Аванс чаттерам (Karina, Timur, Paul)' },
-  { id: 8, date: '2026-11-04', type: 'Расход', category: 'Софт: Infloww / CreatorHero / CRM', amount: 480, model: 'Agency Core (Общие)', desc: 'Infloww Pro + Dolphin Anty' },
-  { id: 9, date: '2026-11-04', type: 'Расход', category: 'Инфраструктура: Прокси, Dolphin, SIM', amount: 320, model: 'Agency Core (Общие)', desc: 'Мобильные прокси США 10 шт' },
-  { id: 10, date: '2026-11-04', type: 'Доход', category: 'Платные сообщения (PPV / Chatting)', amount: 3100, model: 'Lolly (1lollyhere)', desc: 'PPV рассылка марафон' },
-  { id: 11, date: '2026-11-05', type: 'Расход', category: 'Комиссии: Платежки / Paxum / Вывод', amount: 420, model: 'Agency Core (Общие)', desc: 'Комиссия за вывод в крипту USDT' },
-  { id: 12, date: '2026-11-05', type: 'Доход', category: 'Чаевые (Tips) & Кастомы', amount: 1400, model: 'Lila (angelkiss)', desc: 'Кастом от топ-фана' },
-  // Октябрь 2026 (Завершенный)
-  { id: 13, date: '2026-10-15', type: 'Доход', category: 'OnlyFans Payouts (Выплаты платформы)', amount: 28300, model: 'Agency Core (Общие)', desc: 'Итог октября по всем моделям' },
-  { id: 14, date: '2026-10-16', type: 'Расход', category: 'Выплаты моделям (Model Share %)', amount: 14150, model: 'Agency Core (Общие)', desc: 'Выплаты моделям за октябрь' },
-  { id: 15, date: '2026-10-18', type: 'Расход', category: 'Трафик: Reddit & Dating Apps', amount: 4800, model: 'Agency Core (Общие)', desc: 'Трафик октябрь' },
-  { id: 16, date: '2026-10-20', type: 'Расход', category: 'Зарплаты: Чаттеры / Операторы', amount: 3800, model: 'Agency Core (Общие)', desc: 'Зарплаты чаттеров октябрь' },
-  // Сентябрь 2026 (Завершенный)
-  { id: 17, date: '2026-09-20', type: 'Доход', category: 'OnlyFans Payouts (Выплаты платформы)', amount: 24500, model: 'Agency Core (Общие)', desc: 'Итог сентября' },
-  { id: 18, date: '2026-09-21', type: 'Расход', category: 'Выплаты моделям (Model Share %)', amount: 12250, model: 'Agency Core (Общие)', desc: 'Выплаты моделям' },
-  { id: 19, date: '2026-09-22', type: 'Расход', category: 'Трафик: Reddit & Dating Apps', amount: 3900, model: 'Agency Core (Общие)', desc: 'Трафик сентябрь' },
-  { id: 20, date: '2026-09-25', type: 'Расход', category: 'Зарплаты: Чаттеры / Операторы', amount: 3400, model: 'Agency Core (Общие)', desc: 'Зарплаты чаттеров' }
-];
+const SEED_TRANSACTIONS = [];
 
 class FinanceManager {
   constructor() {
@@ -216,10 +192,37 @@ class FinanceManager {
     });
   }
 
+  // Баланс кассы — считает ВСЕ транзакции (не фильтрованные), чтобы показывать актуальный остаток
+  calculateCashBalance() {
+    let balance = 0;
+    this.transactions.forEach(t => {
+      const amt = Number(t.amount) || 0;
+      if (t.type === 'Доход') {
+        balance += amt;
+      } else if (t.type === 'Расход') {
+        balance -= amt;
+      }
+    });
+    return balance;
+  }
+
+  // Полный сброс кассы (удаляет все данные)
+  resetAll() {
+    this.transactions = [];
+    this.budgets = { ...DEFAULT_BUDGETS };
+    try {
+      localStorage.removeItem(STORAGE_KEY_TX);
+      localStorage.removeItem(STORAGE_KEY_BUDGET);
+    } catch (e) {
+      console.warn('Reset failed:', e);
+    }
+  }
+
   calculateMetrics(txList = this.getFiltered()) {
     let income = 0;
     let expense = 0;
     let trafficExpense = 0;
+    let chatterExpense = 0;
 
     txList.forEach(t => {
       const amt = Number(t.amount) || 0;
@@ -230,6 +233,9 @@ class FinanceManager {
         if (t.category.startsWith('Трафик')) {
           trafficExpense += amt;
         }
+        if (t.category.includes('Чаттеры') || t.category.includes('Операторы')) {
+          chatterExpense += amt;
+        }
       }
     });
 
@@ -237,7 +243,7 @@ class FinanceManager {
     const netMargin = income > 0 ? (netProfit / income) * 100 : 0;
     const roas = trafficExpense > 0 ? (income / trafficExpense) : 0;
 
-    return { income, expense, netProfit, netMargin, trafficExpense, roas };
+    return { income, expense, netProfit, netMargin, trafficExpense, chatterExpense, roas };
   }
 
   mapCategoryToBudgetGroup(cat) {
@@ -286,6 +292,7 @@ export function initFinanceModule() {
   const modelSelect = document.getElementById('finance-model-select');
   const btnExportExcel = document.getElementById('btn-finance-export-excel');
   const fileImportInput = document.getElementById('finance-file-import');
+  const btnReset = document.getElementById('btn-finance-reset');
   const formAddTx = document.getElementById('form-add-finance-tx');
   const txTypeRadios = document.querySelectorAll('input[name="finance-tx-type"]');
   const txCatSelect = document.getElementById('finance-tx-category');
@@ -413,10 +420,37 @@ export function initFinanceModule() {
         let importedCount = 0;
         rows.forEach(r => {
           const date = r['Дата'] || r['Date'] || new Date().toISOString().split('T')[0];
-          const type = r['Тип'] || r['Type'] || 'Расход';
-          const category = r['Категория'] || r['Category'] || 'Прочие операционные расходы';
+          let type = r['Тип'] || r['Type'] || 'Расход';
+          // Поддержка формата овнера: out → Расход, in → Доход
+          if (type.toLowerCase() === 'out' || type.toLowerCase() === 'расход') type = 'Расход';
+          else if (type.toLowerCase() === 'in' || type.toLowerCase() === 'доход') type = 'Доход';
+
+          let category = r['Категория'] || r['Category'] || 'Прочие операционные расходы';
+          // Маппинг английских категорий овнера на русские
+          const catMap = {
+            'operations': 'Прочие операционные расходы',
+            'traffic': 'Трафик: Reddit & Dating Apps',
+            'traffic reddit': 'Трафик: Reddit & Dating Apps',
+            'traffic tiktok': 'Трафик: TikTok / Reels / Shorts',
+            'traffic twitter': 'Трафик: Twitter / X Promo',
+            'chatters': 'Зарплаты: Чаттеры / Операторы',
+            'salaries': 'Зарплаты: Тимлиды / Баеры',
+            'model share': 'Выплаты моделям (Model Share %)',
+            'software': 'Софт: Infloww / CreatorHero / CRM',
+            'infra': 'Инфраструктура: Прокси, Dolphin, SIM',
+            'commissions': 'Комиссии: Платежки / Paxum / Вывод',
+            'payout': 'OnlyFans Payouts (Выплаты платформы)',
+            'tips': 'Чаевые (Tips) & Кастомы',
+            'ppv': 'Платные сообщения (PPV / Chatting)',
+            'income': 'OnlyFans Payouts (Выплаты платформы)'
+          };
+          const catLower = category.toLowerCase().trim();
+          if (catMap[catLower]) {
+            category = catMap[catLower];
+          }
+
           const amount = parseFloat(r['Сумма ($)'] || r['Сумма'] || r['Amount'] || 0);
-          const model = r['Модель/Проект'] || r['Модель'] || r['Model'] || 'Agency Core (Общие)';
+          const model = r['Модель/Проект'] || r['Модель'] || r['Проект'] || r['Model'] || r['Project'] || 'Agency Core (Общие)';
           const desc = r['Комментарий'] || r['Описание'] || r['Description'] || '';
 
           if (amount > 0) {
@@ -435,12 +469,28 @@ export function initFinanceModule() {
     e.target.value = '';
   });
 
-  function renderKPIs(metrics) {
+  // Reset Cash (Clear all data)
+  btnReset?.addEventListener('click', () => {
+    const confirmation = confirm('⚠️ Внимание! Вы уверены, что хотите полностью ОБНУЛИТЬ кассу?\n\nВсе финансовые операции будут удалены, а баланс станет $0.00.\n(Это действие нельзя отменить)');
+    if (confirmation) {
+      manager.resetAll();
+      renderAll();
+      showToast('🔄 Касса успешно обнулена! Баланс: $0.00');
+    }
+  });
+
+  function renderKPIs(metrics, cashBalance = 0) {
+    const elCash = document.getElementById('fin-kpi-cash-balance');
     const elRev = document.getElementById('fin-kpi-rev');
     const elExp = document.getElementById('fin-kpi-exp');
     const elNet = document.getElementById('fin-kpi-net');
     const elMargin = document.getElementById('fin-kpi-margin');
     const elRoas = document.getElementById('fin-kpi-roas');
+
+    if (elCash) {
+      elCash.textContent = `$${cashBalance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      elCash.style.color = cashBalance >= 0 ? '#34d399' : 'var(--accent-rose)';
+    }
 
     if (elRev) elRev.textContent = `$${metrics.income.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
     if (elExp) elExp.textContent = `$${metrics.expense.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
@@ -498,12 +548,12 @@ export function initFinanceModule() {
 
     const stats = {};
     FINANCE_MODELS.forEach(m => {
-      stats[m] = { income: 0, traffic: 0, payouts: 0, opex: 0 };
+      stats[m] = { income: 0, traffic: 0, chatters: 0, payouts: 0, opex: 0 };
     });
 
     txs.forEach(t => {
       if (!stats[t.model]) {
-        stats[t.model] = { income: 0, traffic: 0, payouts: 0, opex: 0 };
+        stats[t.model] = { income: 0, traffic: 0, chatters: 0, payouts: 0, opex: 0 };
       }
       const amt = Number(t.amount) || 0;
       if (t.type === 'Доход') {
@@ -511,6 +561,8 @@ export function initFinanceModule() {
       } else {
         if (t.category.startsWith('Трафик')) {
           stats[t.model].traffic += amt;
+        } else if (t.category.includes('Чаттеры') || t.category.includes('Операторы')) {
+          stats[t.model].chatters += amt;
         } else if (t.category.includes('Выплаты моделям')) {
           stats[t.model].payouts += amt;
         } else {
@@ -520,7 +572,7 @@ export function initFinanceModule() {
     });
 
     tbody.innerHTML = Object.entries(stats).map(([model, data]) => {
-      const net = data.income - (data.traffic + data.payouts + data.opex);
+      const net = data.income - (data.traffic + data.chatters + data.payouts + data.opex);
       const margin = data.income > 0 ? (net / data.income) * 100 : 0;
       const netColor = net >= 0 ? 'var(--accent-green)' : 'var(--accent-rose)';
 
@@ -529,10 +581,11 @@ export function initFinanceModule() {
           <td style="font-weight: 700; color: var(--text-main);">${model}</td>
           <td style="font-family: var(--font-mono); color: var(--accent-green);">$${data.income.toLocaleString()}</td>
           <td style="font-family: var(--font-mono); color: var(--accent-rose);">$${data.traffic.toLocaleString()}</td>
+          <td style="font-family: var(--font-mono); color: #38bdf8;">$${data.chatters.toLocaleString()}</td>
           <td style="font-family: var(--font-mono); color: #fbbf24;">$${data.payouts.toLocaleString()}</td>
           <td style="font-family: var(--font-mono); color: var(--text-muted);">$${data.opex.toLocaleString()}</td>
           <td style="font-family: var(--font-mono); font-weight: 700; color: ${netColor};">$${net.toLocaleString()}</td>
-          <td style="font-family: var(--font-mono); font-weight: 700; color: ${margin >= 30 ? 'var(--accent-green)' : 'var(--text-muted)'};">${margin.toFixed(1)}%</td>
+          <td style="font-family: var(--font-mono); font-weight: 700; color: ${margin >= 30 ? 'var(--accent-green)' : (margin > 0 ? 'var(--accent-amber)' : 'var(--accent-rose)')};">${margin.toFixed(1)}%</td>
         </tr>
       `;
     }).join('');
@@ -762,8 +815,9 @@ export function initFinanceModule() {
     const txs = manager.getFiltered();
     const metrics = manager.calculateMetrics(txs);
     const budgets = manager.calculateBudgetsProgress(txs);
+    const cashBalance = manager.calculateCashBalance();
 
-    renderKPIs(metrics);
+    renderKPIs(metrics, cashBalance);
     renderBudgets(budgets);
     renderUnitEconomics(txs);
     renderTransactionsTable(txs);
