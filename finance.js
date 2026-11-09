@@ -44,14 +44,49 @@ export const CONTRACTOR_SCHEDULE = [
     id: 'osckelly',
     name: '@osckelly (Оскар) — OFTV',
     role: 'Сценарии, монтаж, выгрузка контента на платформу',
-    terms: '350 USDT / месяц (4 сценария). Аванс 175 в начале + 175 закрытие с авансом след. круга',
-    dueDateStr: '28 ноября 2026',
+    terms: '350 USDT / месяц (4 сценария). Аванс 175$ в начале + 175$ закрытие в конце',
+    dueDateStr: '2-е число (175$) и 31-е (175$)',
     defaultAmount: 350,
+    installments: 2,
+    installmentAmount: 175,
+    keywords: ['оскар', 'osckelly', 'oftv'],
     model: 'Agency Core (Общие)',
     category: 'Трафик: TikTok / Reels / Shorts',
-    warning: '⚠️ Проверить отгрузку 4 сценариев перед выплатой вторых 175 USDT! (Посл. выплата: 28.10.2026)',
-    urgencyColor: 'var(--accent-rose)',
-    urgencyBadge: 'Обязательство 28-го'
+    warning: '⚠️ Проверить отгрузку сценариев перед выплатой 2-й части (175 USDT)!',
+    urgencyColor: 'var(--accent-amber)',
+    urgencyBadge: '2 транша (175 + 175)'
+  },
+  {
+    id: 'aneskagency',
+    name: '@aneskagency (Анастасия) — FYP',
+    role: 'FYP продвижение и закупка трафика',
+    terms: '250 USDT / месяц на анкету. Выплата 2 раза в месяц (по 125$ каждые 2 недели)',
+    dueDateStr: 'Каждые 2 недели вперед (по 125$)',
+    defaultAmount: 250,
+    installments: 2,
+    installmentAmount: 125,
+    keywords: ['анастасия', 'aneskagency', 'fyp'],
+    model: 'Agency Core (Общие)',
+    category: 'Трафик: TikTok / Reels / Shorts',
+    warning: '🔵 Предоплата на 2 недели вперед. Оплачивать после понедельничного вывода.',
+    urgencyColor: 'var(--primary)',
+    urgencyBadge: '2 транша (125 + 125)'
+  },
+  {
+    id: 'crm_monster',
+    name: 'OnlyMonster CRM',
+    role: 'Основная CRM-система учета смен, чаттеров и фанов',
+    terms: '180 USDT / месяц. Оплата подписки агентства 2-го числа',
+    dueDateStr: '2 число каждого месяца',
+    defaultAmount: 180,
+    installments: 1,
+    installmentAmount: 180,
+    keywords: ['монстр', 'onlymonster', 'crm'],
+    model: 'Agency Core (Общие)',
+    category: 'Софт: Infloww / CreatorHero / CRM',
+    warning: '🟣 Подписка 2-го числа каждого месяца.',
+    urgencyColor: 'var(--accent-purple)',
+    urgencyBadge: 'Подписка 2-го числа'
   },
   {
     id: 'killerleon',
@@ -60,37 +95,14 @@ export const CONTRACTOR_SCHEDULE = [
     terms: '0.4$ / фанат. Оплата по факту месяца в первых числах (1-5) по сверке',
     dueDateStr: '1–5 числа месяца',
     defaultAmount: 580,
+    installments: 1,
+    installmentAmount: 580,
+    keywords: ['леон', 'killerle0n', 'sfs'],
     model: 'Agency Core (Общие)',
     category: 'Трафик: Reddit & Dating Apps',
-    warning: '🟢 Окупаемость хорошая. Оплачивать строго после первого понедельничного вывода OF!',
+    warning: '🟢 Оплата по сверке после первого понедельничного вывода OF.',
     urgencyColor: 'var(--accent-green)',
     urgencyBadge: 'По сверке (1–5 число)'
-  },
-  {
-    id: 'aneskagency',
-    name: '@aneskagency (Анастасия) — FYP',
-    role: 'FYP продвижение и закупка трафика',
-    terms: '250 USDT / месяц на анкету. Оплата раз в две недели вперед',
-    dueDateStr: 'Раз в 2 недели вперед',
-    defaultAmount: 250,
-    model: 'Agency Core (Общие)',
-    category: 'Трафик: TikTok / Reels / Shorts',
-    warning: '🔵 Предоплата вперед на 2 недели. Оплачивать сразу после понедельничного вывода.',
-    urgencyColor: 'var(--primary)',
-    urgencyBadge: 'Предоплата 2 недели'
-  },
-  {
-    id: 'crm_monster',
-    name: 'OnlyMonster CRM',
-    role: 'Основная CRM-система учета смен, чаттеров и фанов',
-    terms: 'Ежемесячная подписка на софт агентства',
-    dueDateStr: '2 число каждого месяца',
-    defaultAmount: 180,
-    model: 'Agency Core (Общие)',
-    category: 'Софт: Infloww / CreatorHero / CRM',
-    warning: '🟣 Критическая подписка. Оплачивать с последнего понедельника прошлого месяца.',
-    urgencyColor: 'var(--accent-purple)',
-    urgencyBadge: 'Подписка 2-го числа'
   }
 ];
 
@@ -790,16 +802,51 @@ export function initFinanceModule() {
     }
   }
 
-  function renderContractorsRunway() {
+  function renderContractorsRunway(txs) {
     const container = document.getElementById('fin-contractors-runway');
-    if (!container) return;
+    if (!container) return { totalContractorsRemaining: 0 };
+
+    let totalContractorsRemaining = 0;
 
     container.innerHTML = CONTRACTOR_SCHEDULE.map(c => {
-      const isAuto = c.defaultAmount === 0;
-      const amountStr = isAuto ? 'По факту продаж' : `$${c.defaultAmount.toLocaleString()} USDT`;
+      // Ищем все выплаты этому подрядчику за текущий выбранный период
+      const matchingTxs = (txs || []).filter(t => {
+        if (t.type !== 'Расход') return false;
+        const desc = (t.desc || '').toLowerCase();
+        const cat = (t.category || '').toLowerCase();
+        return (c.keywords || []).some(k => desc.includes(k) || cat.includes(k));
+      });
+
+      const paidSoFar = matchingTxs.reduce((sum, t) => sum + (Number(t.amount) || 0), 0);
+      const remaining = Math.max(0, c.defaultAmount - paidSoFar);
+      totalContractorsRemaining += remaining;
+
+      const pct = c.defaultAmount > 0 ? Math.min(100, Math.round((paidSoFar / c.defaultAmount) * 100)) : 0;
+
+      let statusBadge = '';
+      let statusColor = '';
+      let nextActionLabel = '';
+      let suggestAmount = c.defaultAmount;
+
+      if (paidSoFar >= c.defaultAmount) {
+        statusColor = 'var(--accent-green)';
+        statusBadge = `🟢 Оплачено 100% ($${paidSoFar} / $${c.defaultAmount})`;
+        nextActionLabel = '✓ Оплачено (добавить еще)';
+        suggestAmount = c.installmentAmount || c.defaultAmount;
+      } else if (paidSoFar > 0) {
+        statusColor = 'var(--accent-amber)';
+        statusBadge = `🟡 Оплачена 1-я часть ($${paidSoFar} из $${c.defaultAmount})`;
+        nextActionLabel = `⚡ Доплатить 2-ю часть ($${remaining})`;
+        suggestAmount = remaining;
+      } else {
+        statusColor = 'var(--accent-rose)';
+        statusBadge = `🔴 Не оплачено ($0 / $${c.defaultAmount})`;
+        nextActionLabel = (c.installments === 2) ? `⚡ Оплатить 1-ю часть ($${c.installmentAmount})` : `⚡ Оплатить ($${c.defaultAmount})`;
+        suggestAmount = (c.installments === 2) ? c.installmentAmount : c.defaultAmount;
+      }
 
       return `
-        <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 12px 16px; display: flex; flex-direction: column; gap: 6px;">
+        <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 14px 16px; display: flex; flex-direction: column; gap: 8px;">
           <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
             <div style="display: flex; align-items: center; gap: 8px;">
               <span style="font-weight: 700; font-size: 14px; color: var(--text-main);">${c.name}</span>
@@ -807,16 +854,26 @@ export function initFinanceModule() {
                 ${c.urgencyBadge}
               </span>
             </div>
-            <div style="display: flex; align-items: center; gap: 10px;">
-              <span style="font-family: var(--font-mono); font-weight: 700; color: var(--text-main); font-size: 13px;">${amountStr}</span>
-              <button class="btn-action btn-primary btn-pay-contractor" data-id="${c.id}" style="padding: 4px 10px; font-size: 11px;">
-                ⚡ Оплатить
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="font-family: var(--font-mono); font-weight: 700; font-size: 11px; padding: 3px 8px; border-radius: 8px; background: rgba(255, 255, 255, 0.04); color: ${statusColor}; border: 1px solid ${statusColor};">
+                ${statusBadge}
+              </span>
+              <button class="btn-action btn-primary btn-pay-contractor" data-id="${c.id}" data-suggest="${suggestAmount}" style="padding: 4px 10px; font-size: 11px; white-space: nowrap;">
+                ${nextActionLabel}
               </button>
             </div>
           </div>
 
-          <div style="font-size: 11px; color: var(--text-muted); line-height: 1.3;">
-            <strong>Условия:</strong> ${c.terms}
+          <!-- Progress Bar -->
+          <div style="height: 5px; background: rgba(255, 255, 255, 0.06); border-radius: 3px; overflow: hidden;">
+            <div style="width: ${pct}%; height: 100%; background: ${statusColor}; border-radius: 3px; transition: width 0.3s ease;"></div>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: var(--text-muted); flex-wrap: wrap; gap: 6px;">
+            <span><strong>Условия:</strong> ${c.terms}</span>
+            <span style="font-family: var(--font-mono);">
+              ${remaining > 0 ? `<strong style="color: ${statusColor};">Остаток к доплате: $${remaining}</strong>` : `<strong style="color: var(--accent-green);">Месяц закрыт ✓</strong>`}
+            </span>
           </div>
 
           <div style="font-size: 11px; color: ${c.urgencyColor}; line-height: 1.3; background: rgba(0, 0, 0, 0.2); padding: 4px 8px; border-radius: 4px;">
@@ -829,11 +886,11 @@ export function initFinanceModule() {
     container.querySelectorAll('.btn-pay-contractor').forEach(btn => {
       btn.addEventListener('click', () => {
         const id = btn.dataset.id;
+        const suggest = btn.dataset.suggest || 175;
         const c = CONTRACTOR_SCHEDULE.find(item => item.id === id);
         if (!c) return;
 
-        const defaultVal = c.defaultAmount > 0 ? c.defaultAmount : 1500;
-        const inputVal = prompt(`Внести выплату для ${c.name}\nУкажите сумму ($):`, defaultVal);
+        const inputVal = prompt(`Внести выплату для ${c.name}\nУкажите сумму ($):`, suggest);
         if (inputVal && parseFloat(inputVal) > 0) {
           const amt = parseFloat(inputVal);
           manager.addTransaction({
@@ -842,23 +899,25 @@ export function initFinanceModule() {
             category: c.category,
             amount: amt,
             model: c.model,
-            desc: `Выплата: ${c.name} (${c.dueDateStr})`
+            desc: `Выплата: ${c.name} (${amt >= c.defaultAmount ? 'Полная оплата' : 'Транш/Аванс'})`
           });
           renderAll();
           showToast(`✅ Выплата ${c.name} ($${amt}) внесена в расход!`);
         }
       });
     });
+
+    return { totalContractorsRemaining };
   }
 
   let userOverrodePayout = false;
 
-  function renderRunwayAlert(cashBalance, remainingLiabilities) {
+  function renderRunwayAlert(cashBalance, remainingLiabilities, totalContractorsRemaining) {
     const alertContainer = document.getElementById('fin-runway-alert');
     if (!alertContainer) return;
 
-    // Подрядчики фикс (Оскар 350 + Анастасия 250 + CRM 135 + Леон ~1200)
-    const contractorsDue = 350 + 250 + 135 + 1200; // $1,935
+    // Реальный остаток к выплате подрядчикам с учетом уже внесенных авансов/траншей
+    const contractorsDue = totalContractorsRemaining !== undefined ? totalContractorsRemaining : (350 + 250 + 180 + 580);
     const modelsRem = remainingLiabilities?.modelsRemaining || 0;
     const chattersRem = remainingLiabilities?.chattersRemaining || 0;
     const totalShortTermDue = contractorsDue + modelsRem + chattersRem;
@@ -872,7 +931,7 @@ export function initFinanceModule() {
             <div>
               <div style="font-weight: 700; color: var(--accent-green); font-size: 14px;">Безопасный Runway: Касса полностью покрывает все ближайшие обязательства</div>
               <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">
-                В кассе: <strong style="color: var(--text-main);">$${cashBalance.toLocaleString('en-US', { minimumFractionDigits: 2 })}</strong> | Обязательства недели (Подрядчики: $${contractorsDue.toLocaleString()}, Долг моделям: $${modelsRem.toLocaleString()}, Чаттерам: $${chattersRem.toLocaleString()}): <strong style="color: var(--primary);">$${totalShortTermDue.toLocaleString()}</strong>
+                В кассе: <strong style="color: var(--text-main);">$${cashBalance.toLocaleString('en-US', { minimumFractionDigits: 2 })}</strong> | Обязательства к доплате (Подрядчики: $${contractorsDue.toLocaleString()}, Долг моделям: $${modelsRem.toLocaleString()}, Чаттерам: $${chattersRem.toLocaleString()}): <strong style="color: var(--primary);">$${totalShortTermDue.toLocaleString()}</strong>
               </div>
             </div>
           </div>
@@ -892,7 +951,7 @@ export function initFinanceModule() {
             <div>
               <div style="font-weight: 700; color: var(--accent-rose); font-size: 14px;">Внимание: Риск кассового разрыва перед ближайшими выплатами!</div>
               <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">
-                В кассе: <strong style="color: var(--text-main);">$${cashBalance.toLocaleString('en-US', { minimumFractionDigits: 2 })}</strong> | Обязательства: <strong style="color: var(--accent-rose);">$${totalShortTermDue.toLocaleString()}</strong> (Подрядчики: $${contractorsDue.toLocaleString()}, Долг моделям/чаттерам: $${(modelsRem + chattersRem).toLocaleString()})
+                В кассе: <strong style="color: var(--text-main);">$${cashBalance.toLocaleString('en-US', { minimumFractionDigits: 2 })}</strong> | Обязательства к доплате: <strong style="color: var(--accent-rose);">$${totalShortTermDue.toLocaleString()}</strong> (Подрядчики: $${contractorsDue.toLocaleString()}, Долг моделям/чаттерам: $${(modelsRem + chattersRem).toLocaleString()})
               </div>
             </div>
           </div>
@@ -1132,11 +1191,13 @@ export function initFinanceModule() {
     renderUnitEconomics(txs);
     renderTransactionsTable(txs);
     renderCharts(txs);
-    renderContractorsRunway();
+    
+    // Подрядчики: расчет статуса оплат (100% / 50% / 0%)
+    const contractorsStatus = renderContractorsRunway(txs);
 
     // Синхронизация сплита и показ индикатора кассового разрыва
     const remaining = calculateAndRenderSplit(txs, metrics);
-    renderRunwayAlert(cashBalance, remaining);
+    renderRunwayAlert(cashBalance, remaining, contractorsStatus?.totalContractorsRemaining);
   }
 
   // Initial Run
