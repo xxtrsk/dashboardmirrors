@@ -351,6 +351,10 @@
             <option value="Agency Core (Общие)">Agency Core (Общие)</option>
           </select>
 
+          <button id="btn-toggle-gsheet-panel" class="btn-action" style="padding: 7px 14px; background: rgba(56, 189, 248, 0.12); border: 1px solid var(--primary); color: var(--primary); cursor: pointer;" title="Подключение и синхронизация с Google Sheets">
+            ☁️ Google Sheets
+          </button>
+
           <button id="btn-finance-export-excel" class="btn-action btn-primary" style="padding: 7px 16px;">
             📥 Экспорт в Excel (.xlsx)
           </button>
@@ -362,6 +366,36 @@
 
           <button id="btn-finance-reset" class="btn-action" style="padding: 7px 14px; background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); color: var(--accent-rose); cursor: pointer;" title="Сбросить все операции кассы">
             🔄 Обнулить кассу
+          </button>
+        </div>
+      </div>
+
+      <!-- Collapsible Google Sheets Integration Panel -->
+      <div id="fin-gsheet-panel" class="glass-card" style="display: none; margin-bottom: 24px; padding: 18px 22px; border: 1px solid var(--primary); background: rgba(15, 23, 42, 0.85);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span style="font-size: 18px;">☁️</span>
+            <strong style="font-size: 15px; color: var(--text-main);">Синхронизация с Google Sheets & Telegram Ботом</strong>
+            <span id="gsheet-status-badge" style="font-size: 11px; padding: 2px 8px; border-radius: 10px; background: rgba(255, 255, 255, 0.08); color: var(--text-muted); font-weight: 700;">
+              ⚪ Не подключено (Локальный режим)
+            </span>
+          </div>
+          <button id="btn-close-gsheet-panel" style="background: none; border: none; color: var(--text-muted); font-size: 18px; cursor: pointer;">✕</button>
+        </div>
+
+        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 14px; line-height: 1.4;">
+          Вставьте URL вашего веб-приложения Google Apps Script. Дашборд будет автоматически считывать транзакции, внесённые вами и тимлидами через Telegram-бота, и сохранять новые операции в облако Google Таблиц.
+        </p>
+
+        <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+          <input type="url" id="input-gsheet-url" placeholder="https://script.google.com/macros/s/ВАШ_SCRIPT_ID/exec" class="custom-select" style="flex: 1; min-width: 280px; padding: 8px 12px; font-family: var(--font-mono); font-size: 12px; background: #07090e;" />
+          
+          <button id="btn-gsheet-save-sync" class="btn-action btn-primary" style="padding: 8px 16px;">
+            🔄 Синхронизировать
+          </button>
+
+          <button id="btn-gsheet-disconnect" class="btn-action" style="padding: 8px 12px; background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.3); color: var(--accent-rose); font-size: 12px; display: none;">
+            Отключить
           </button>
         </div>
       </div>

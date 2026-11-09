@@ -3,6 +3,7 @@
 
 const STORAGE_KEY_TX = 'mirrors_finance_transactions_v2';
 const STORAGE_KEY_BUDGET = 'mirrors_finance_budgets_v2';
+const STORAGE_KEY_GSHEET_URL = 'mirrors_finance_gsheet_url_v1';
 
 export const FINANCE_INCOME_CATS = [
   'OnlyFans Payouts (Выплаты платформы)',
@@ -160,6 +161,49 @@ class FinanceManager {
     }
   }
 
+  loadGSheetUrl() {
+    try {
+      return localStorage.getItem(STORAGE_KEY_GSHEET_URL) || '';
+    } catch (e) {
+      return '';
+    }
+  }
+
+  saveGSheetUrl(url) {
+    try {
+      if (url) {
+        localStorage.setItem(STORAGE_KEY_GSHEET_URL, url.trim());
+      } else {
+        localStorage.removeItem(STORAGE_KEY_GSHEET_URL);
+      }
+    } catch (e) {
+      console.warn('Failed to save GSheet URL:', e);
+    }
+  }
+
+  async syncWithGoogleSheets(url) {
+    const targetUrl = url || this.loadGSheetUrl();
+    if (!targetUrl) return { success: false, message: 'URL не указан' };
+
+    try {
+      const response = await fetch(targetUrl);
+      if (!response.ok) {
+        throw new Error(`HTTP error: ${response.status}`);
+      }
+      const data = await response.json();
+      if (data && Array.isArray(data.transactions)) {
+        this.transactions = data.transactions;
+        this.saveTransactions();
+        return { success: true, count: data.transactions.length };
+      } else {
+        throw new Error('Некорректный формат данных от скрипта Google Sheets');
+      }
+    } catch (err) {
+      console.warn('Sync with Google Sheets failed:', err);
+      return { success: false, message: err.message };
+    }
+  }
+
   addTransaction(tx) {
     const newTx = {
       id: Date.now(),
@@ -172,6 +216,22 @@ class FinanceManager {
     };
     this.transactions.unshift(newTx);
     this.saveTransactions();
+
+    // Фоновая синхронизация с Google Sheets, если подключен Webhook
+    const gsheetUrl = this.loadGSheetUrl();
+    if (gsheetUrl) {
+      try {
+        fetch(gsheetUrl, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'addTransaction', transaction: newTx })
+        }).catch(e => console.warn('Background sync to Google Sheets failed:', e));
+      } catch (e) {
+        console.warn('Fetch error:', e);
+      }
+    }
+
     return newTx;
   }
 
@@ -293,6 +353,13 @@ export function initFinanceModule() {
   const btnExportExcel = document.getElementById('btn-finance-export-excel');
   const fileImportInput = document.getElementById('finance-file-import');
   const btnReset = document.getElementById('btn-finance-reset');
+  const btnToggleGsheet = document.getElementById('btn-toggle-gsheet-panel');
+  const btnCloseGsheet = document.getElementById('btn-close-gsheet-panel');
+  const gsheetPanel = document.getElementById('fin-gsheet-panel');
+  const inputGsheetUrl = document.getElementById('input-gsheet-url');
+  const btnGsheetSaveSync = document.getElementById('btn-gsheet-save-sync');
+  const btnGsheetDisconnect = document.getElementById('btn-gsheet-disconnect');
+  const badgeGsheet = document.getElementById('gsheet-status-badge');
   const formAddTx = document.getElementById('form-add-finance-tx');
   const txTypeRadios = document.querySelectorAll('input[name="finance-tx-type"]');
   const txCatSelect = document.getElementById('finance-tx-category');
@@ -811,6 +878,75 @@ export function initFinanceModule() {
     recalculate();
   }
 
+  // Google Sheets UI & Sync handlers
+  function updateGsheetUI() {
+    const savedUrl = manager.loadGSheetUrl();
+    if (inputGsheetUrl) inputGsheetUrl.value = savedUrl;
+    if (savedUrl) {
+      if (badgeGsheet) {
+        badgeGsheet.textContent = `🟢 Подключено (${manager.transactions.length} записей)`;
+        badgeGsheet.style.background = 'rgba(52, 211, 153, 0.15)';
+        badgeGsheet.style.color = 'var(--accent-green)';
+        badgeGsheet.style.border = '1px solid var(--accent-green)';
+      }
+      if (btnGsheetDisconnect) btnGsheetDisconnect.style.display = 'inline-block';
+      if (btnToggleGsheet) btnToggleGsheet.style.borderColor = 'var(--accent-green)';
+    } else {
+      if (badgeGsheet) {
+        badgeGsheet.textContent = '⚪ Не подключено (Локальный режим)';
+        badgeGsheet.style.background = 'rgba(255, 255, 255, 0.08)';
+        badgeGsheet.style.color = 'var(--text-muted)';
+        badgeGsheet.style.border = 'none';
+      }
+      if (btnGsheetDisconnect) btnGsheetDisconnect.style.display = 'none';
+      if (btnToggleGsheet) btnToggleGsheet.style.borderColor = 'var(--primary)';
+    }
+  }
+
+  btnToggleGsheet?.addEventListener('click', () => {
+    if (gsheetPanel) {
+      const isVisible = gsheetPanel.style.display === 'block';
+      gsheetPanel.style.display = isVisible ? 'none' : 'block';
+      if (!isVisible) updateGsheetUI();
+    }
+  });
+
+  btnCloseGsheet?.addEventListener('click', () => {
+    if (gsheetPanel) gsheetPanel.style.display = 'none';
+  });
+
+  btnGsheetSaveSync?.addEventListener('click', async () => {
+    const url = inputGsheetUrl?.value.trim();
+    if (!url) {
+      alert('Пожалуйста, вставьте URL развернутого веб-приложения Google Apps Script.');
+      return;
+    }
+    btnGsheetSaveSync.textContent = '⏳ Синхронизация...';
+    btnGsheetSaveSync.disabled = true;
+
+    manager.saveGSheetUrl(url);
+    const result = await manager.syncWithGoogleSheets(url);
+
+    btnGsheetSaveSync.textContent = '🔄 Синхронизировать';
+    btnGsheetSaveSync.disabled = false;
+
+    if (result.success) {
+      renderAll();
+      updateGsheetUI();
+      showToast(`☁️ Синхронизировано ${result.count} операций из Google Таблицы!`);
+    } else {
+      alert(`Ошибка синхронизации: ${result.message}\n\nУбедитесь, что веб-приложение Google Apps Script развернуто с доступом "Anyone" (Все).`);
+    }
+  });
+
+  btnGsheetDisconnect?.addEventListener('click', () => {
+    if (confirm('Отключить синхронизацию с Google Sheets? (Данные в таблице останутся сохранены)')) {
+      manager.saveGSheetUrl('');
+      updateGsheetUI();
+      showToast('Синхронизация отключена (локальный режим)');
+    }
+  });
+
   function renderAll() {
     const txs = manager.getFiltered();
     const metrics = manager.calculateMetrics(txs);
@@ -831,5 +967,16 @@ export function initFinanceModule() {
   if (dateInput) dateInput.value = today;
 
   setupMondaySplitCalculator();
+  updateGsheetUI();
   renderAll();
+
+  // Автосинхронизация при старте, если URL был сохранен ранее
+  if (manager.loadGSheetUrl()) {
+    manager.syncWithGoogleSheets().then(res => {
+      if (res.success) {
+        renderAll();
+        updateGsheetUI();
+      }
+    });
+  }
 }
