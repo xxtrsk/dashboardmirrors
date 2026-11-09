@@ -155,9 +155,7 @@ function applyDataValidation(sheet) {
     "Комиссии: Платежки / Paxum / Вывод",
     "Прочие операционные расходы",
     "OnlyFans Payouts (Выплаты платформы)",
-    "Платные сообщения (PPV / Chatting)",
-    "Чаевые (Tips) & Кастомы",
-    "Внешняя реклама / Sponsorships"
+    "Прочий доход"
   ];
   const ruleCat = SpreadsheetApp.newDataValidation()
     .requireValueInList(categories, true)

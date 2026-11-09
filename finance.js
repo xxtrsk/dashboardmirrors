@@ -7,9 +7,6 @@ const STORAGE_KEY_GSHEET_URL = 'mirrors_finance_gsheet_url_v1';
 
 export const FINANCE_INCOME_CATS = [
   'OnlyFans Payouts (Выплаты платформы)',
-  'Платные сообщения (PPV / Chatting)',
-  'Чаевые (Tips) & Кастомы',
-  'Внешняя реклама / Sponsorships',
   'Прочий доход'
 ];
 
@@ -39,8 +36,7 @@ const DEFAULT_BUDGETS = {
   'Трафик и Маркетинг': 8500,
   'Зарплаты Чаттеров & Команды': 6000,
   'Софт и Инфраструктура': 1200,
-  'Комиссии и Обнал': 900,
-  'Выплаты Моделям': 18000
+  'Комиссии и Обнал': 900
 };
 
 export const CONTRACTOR_SCHEDULE = [
@@ -95,19 +91,6 @@ export const CONTRACTOR_SCHEDULE = [
     warning: '🟣 Критическая подписка. Оплачивать с последнего понедельника прошлого месяца.',
     urgencyColor: 'var(--accent-purple)',
     urgencyBadge: 'Подписка 2-го числа'
-  },
-  {
-    id: 'payouts_15_31',
-    name: 'Модели & Чаттеры (Аванс / Итог)',
-    role: 'Доля моделей (25%) и зарплаты чаттеров/операторов (20%)',
-    terms: 'Модели: 25% | Чаттеры: 20% (Аванс 15-го числа | Окончательный расчет 31-го числа)',
-    dueDateStr: '15 и 31 числа каждого месяца',
-    defaultAmount: 0,
-    model: 'Все модели',
-    category: 'Выплаты моделям (Model Share %)',
-    warning: '🔒 Неприкасаемый фонд (суммарно 45% от вала). Накапливается из еженедельных понедельничных выводов.',
-    urgencyColor: 'var(--accent-amber)',
-    urgencyBadge: '15 и 31 числа'
   }
 ];
 
@@ -311,7 +294,6 @@ class FinanceManager {
     if (cat.startsWith('Зарплаты')) return 'Зарплаты Чаттеров & Команды';
     if (cat.includes('Софт') || cat.includes('Инфраструктура')) return 'Софт и Инфраструктура';
     if (cat.includes('Комиссии')) return 'Комиссии и Обнал';
-    if (cat.includes('Выплаты моделям')) return 'Выплаты Моделям';
     return null;
   }
 
@@ -320,8 +302,7 @@ class FinanceManager {
       'Трафик и Маркетинг': 0,
       'Зарплаты Чаттеров & Команды': 0,
       'Софт и Инфраструктура': 0,
-      'Комиссии и Обнал': 0,
-      'Выплаты Моделям': 0
+      'Комиссии и Обнал': 0
     };
 
     txList.forEach(t => {
