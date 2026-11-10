@@ -4,7 +4,7 @@
 // Timur (exy sdof): $48.44 Total | PPV $0.00 | Tips $24.00 | OpenRate 0.00% | AvgPriceSold $0.00 | TRT 187.03s | Chats 125
 
 export const availableMonths = [
-  { key: '2026-11', label: 'Ноябрь 2026 (1–10 Ноя | План $16.9k)', isCurrent: true, totalDays: 30, daysPassed: 10 },
+  { key: '2026-11', label: 'Ноябрь 2026 (1–10 Ноя | План $16.5k)', isCurrent: true, totalDays: 30, daysPassed: 10 },
   { key: '2026-10', label: 'Октябрь 2026 (Завершен Итог $17.3k с PP)', isCurrent: false, totalDays: 31, daysPassed: 31 },
   { key: '2026-09', label: 'Сентябрь 2026 (Завершен Итог $17.6k с PP)', isCurrent: false, totalDays: 30, daysPassed: 30 },
   { key: '2026-08', label: 'Август 2026 (Завершен Итог $19.5k)', isCurrent: false, totalDays: 31, daysPassed: 31 },
@@ -23,7 +23,7 @@ export const modelPlansByMonth = {
   '2026-11': [
     { id: '39856', name: 'Lolly (Lollysunnery)', plan: 7000, totalBonusPool: 140, teamBonusPool: 70, kpiBonusPool: 70, teamPct: '50%', accountId: '39856' },
     { id: '47892', name: 'Lolly (1lollyhere)', plan: 3000, totalBonusPool: 60, teamBonusPool: 30, kpiBonusPool: 30, teamPct: '50%', accountId: '47892' },
-    { id: '30201', name: 'Eva Blush', plan: 3600, totalBonusPool: 72, teamBonusPool: 36, kpiBonusPool: 36, teamPct: '50%', accountId: '30201' },
+    { id: '30201', name: 'Eva Blush', plan: 3200, totalBonusPool: 64, teamBonusPool: 32, kpiBonusPool: 32, teamPct: '50%', accountId: '30201' },
     { id: '4967', name: 'Lila (angelkiss)', plan: 1500, totalBonusPool: 30, teamBonusPool: 30, kpiBonusPool: 0, teamPct: '100%', accountId: '4967' },
     { id: '77304', name: 'Eva Pinky (Fansly)', plan: 1800, totalBonusPool: 36, teamBonusPool: 36, kpiBonusPool: 0, teamPct: '100%', accountId: '77304' }
   ],
@@ -62,9 +62,9 @@ export const kpiSettingsByMonth = {
     { chatter: 'hinata hyuga', model: 'Lolly (1lollyhere)', targetOpenRate: 35, targetAvgPrice: 26, targetTRT: 210, targetPlan: 1200 },
     { chatter: 'Igor (Игорь)', model: 'Lolly (1lollyhere)', targetOpenRate: 38, targetAvgPrice: 23, targetTRT: 230, targetPlan: 800 },
 
-    // Eva Blush - Plan $3,600 (посадка: artem, karina, timur)
-    { chatter: 'paul walkeeer', model: 'Eva Blush', targetOpenRate: 45, targetAvgPrice: 35, targetTRT: 180, targetPlan: 1800 },
-    { chatter: 'karina @sanesskio', model: 'Eva Blush', targetOpenRate: 40, targetAvgPrice: 35, targetTRT: 110, targetPlan: 900 },
+    // Eva Blush - Plan $3,200 (посадка: artem, karina, timur)
+    { chatter: 'paul walkeeer', model: 'Eva Blush', targetOpenRate: 45, targetAvgPrice: 35, targetTRT: 180, targetPlan: 1600 },
+    { chatter: 'karina @sanesskio', model: 'Eva Blush', targetOpenRate: 40, targetAvgPrice: 35, targetTRT: 110, targetPlan: 700 },
     { chatter: 'Timur (Тимур)', model: 'Eva Blush', targetOpenRate: 55, targetAvgPrice: 50, targetTRT: 170, targetPlan: 900 },
 
     // Lila (angelkiss) - Plan $1,500 (посадка: vlada, igor)
@@ -676,9 +676,9 @@ export const initialModelWeekly = [
     accountId: '30201', 
     modelName: 'Eva Blush', 
     totalRevenue: 807.04, 
-    plan: 3600.00, 
-    goalProgressPct: 22.42, 
-    goalStatusPct: -10.91, 
+    plan: 3200.00, 
+    goalProgressPct: 25.22, 
+    goalStatusPct: -8.11, 
     runRate: 2421.12, 
     newFans: 239, 
     spenders: 27, 
