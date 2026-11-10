@@ -189,7 +189,7 @@ function renderHeaderInfo() {
   const cardSubtextEl = document.getElementById('dash-card-subtext-revenue');
   if (cardSubtextEl) {
     if (state.selectedMonthKey === '2026-11') {
-      cardSubtextEl.innerHTML = `Текущая выручка за ${daysPassed} дн. Ноября по всем 5 моделям (План $18.95k)`;
+      cardSubtextEl.innerHTML = `Текущая выручка за ${daysPassed} дн. Ноября по всем 5 моделям (План $16.9k)`;
     } else if (state.selectedMonthKey === '2026-10') {
       cardSubtextEl.innerHTML = `Итоговая выручка за 31 дн. Октября по всем 5 моделям <br><span style="color: var(--accent-purple); font-weight: 600;">(включая +$1,219.24 PayPal: Sunnery $987.63 + Blush $140.00 + 1lolly $91.61)</span>`;
     } else if (state.selectedMonthKey === '2026-09') {

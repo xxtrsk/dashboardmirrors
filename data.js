@@ -4,8 +4,8 @@
 // Timur (exy sdof): $48.44 Total | PPV $0.00 | Tips $24.00 | OpenRate 0.00% | AvgPriceSold $0.00 | TRT 187.03s | Chats 125
 
 export const availableMonths = [
-  { key: '2026-11', label: 'Ноябрь 2026 (1–10 Ноя)', isCurrent: true, totalDays: 30, daysPassed: 10 },
-  { key: '2026-10', label: 'Октябрь 2026 (Завершен Итог .3k с PP)', isCurrent: false, totalDays: 31, daysPassed: 31 },
+  { key: '2026-11', label: 'Ноябрь 2026 (1–10 Ноя | План $16.9k)', isCurrent: true, totalDays: 30, daysPassed: 10 },
+  { key: '2026-10', label: 'Октябрь 2026 (Завершен Итог $17.3k с PP)', isCurrent: false, totalDays: 31, daysPassed: 31 },
   { key: '2026-09', label: 'Сентябрь 2026 (Завершен Итог $17.6k с PP)', isCurrent: false, totalDays: 30, daysPassed: 30 },
   { key: '2026-08', label: 'Август 2026 (Завершен Итог $19.5k)', isCurrent: false, totalDays: 31, daysPassed: 31 },
   { key: '2026-07', label: 'Июль 2026 (Завершен)', isCurrent: false, totalDays: 31, daysPassed: 31 }
@@ -16,15 +16,15 @@ export const initialConfig = [
   { id: '47892', modelName: 'Lolly (1lollyhere)', page: '1lollyhere', chatters: ['hinata hyuga', 'karina @sanesskio', 'Igor (Игорь)'] },
   { id: '30201', modelName: 'Eva Blush', page: 'evablush', chatters: ['karina @sanesskio', 'paul walkeeer', 'Timur (Тимур)'] },
   { id: '4967', modelName: 'Lila (angelkiss)', page: 'angelkiss', chatters: ['hinata hyuga', 'Igor (Игорь)'] },
-  { id: '77304', modelName: 'Eva Pinky (Fansly)', page: 'evapinky', chatters: ['karina @sanesskio', 'hinata hyuga', 'Timur (Тимур)'] }
+  { id: '77304', modelName: 'Eva Pinky (Fansly)', page: 'evapinky', chatters: ['karina @sanesskio', 'paul walkeeer', 'Timur (Тимур)'] }
 ];
 
 export const modelPlansByMonth = {
   '2026-11': [
-    { id: '39856', name: 'Lolly (Lollysunnery)', plan: 9000, totalBonusPool: 180, teamBonusPool: 90, kpiBonusPool: 90, teamPct: '50%', accountId: '39856' },
+    { id: '39856', name: 'Lolly (Lollysunnery)', plan: 7000, totalBonusPool: 140, teamBonusPool: 70, kpiBonusPool: 70, teamPct: '50%', accountId: '39856' },
     { id: '47892', name: 'Lolly (1lollyhere)', plan: 3000, totalBonusPool: 60, teamBonusPool: 30, kpiBonusPool: 30, teamPct: '50%', accountId: '47892' },
-    { id: '30201', name: 'Eva Blush', plan: 3800, totalBonusPool: 76, teamBonusPool: 38, kpiBonusPool: 38, teamPct: '50%', accountId: '30201' },
-    { id: '4967', name: 'Lila (angelkiss)', plan: 1350, totalBonusPool: 27, teamBonusPool: 27, kpiBonusPool: 0, teamPct: '100%', accountId: '4967' },
+    { id: '30201', name: 'Eva Blush', plan: 3600, totalBonusPool: 72, teamBonusPool: 36, kpiBonusPool: 36, teamPct: '50%', accountId: '30201' },
+    { id: '4967', name: 'Lila (angelkiss)', plan: 1500, totalBonusPool: 30, teamBonusPool: 30, kpiBonusPool: 0, teamPct: '100%', accountId: '4967' },
     { id: '77304', name: 'Eva Pinky (Fansly)', plan: 1800, totalBonusPool: 36, teamBonusPool: 36, kpiBonusPool: 0, teamPct: '100%', accountId: '77304' }
   ],
   '2026-10': [
@@ -52,29 +52,29 @@ export const modelPlansByMonth = {
 
 export const kpiSettingsByMonth = {
   '2026-11': [
-    // Lolly (Lollysunnery) - Plan $9,000 (посадка: karina, timur, artem)
-    { chatter: 'karina @sanesskio', model: 'Lolly (Lollysunnery)', targetOpenRate: 45, targetAvgPrice: 40, targetTRT: 110, targetPlan: 3400 },
-    { chatter: 'Timur (Тимур)', model: 'Lolly (Lollysunnery)', targetOpenRate: 55, targetAvgPrice: 55, targetTRT: 160, targetPlan: 2100 },
-    { chatter: 'paul walkeeer', model: 'Lolly (Lollysunnery)', targetOpenRate: 55, targetAvgPrice: 42, targetTRT: 180, targetPlan: 3500 },
+    // Lolly (Lollysunnery) - Plan $7,000 (посадка: karina, timur, artem)
+    { chatter: 'karina @sanesskio', model: 'Lolly (Lollysunnery)', targetOpenRate: 45, targetAvgPrice: 40, targetTRT: 110, targetPlan: 2600 },
+    { chatter: 'Timur (Тимур)', model: 'Lolly (Lollysunnery)', targetOpenRate: 55, targetAvgPrice: 55, targetTRT: 160, targetPlan: 1700 },
+    { chatter: 'paul walkeeer', model: 'Lolly (Lollysunnery)', targetOpenRate: 55, targetAvgPrice: 42, targetTRT: 180, targetPlan: 2700 },
 
     // Lolly (1lollyhere) - Plan $3,000 (посадка: karina, vlada, igor)
     { chatter: 'karina @sanesskio', model: 'Lolly (1lollyhere)', targetOpenRate: 35, targetAvgPrice: 28, targetTRT: 110, targetPlan: 1000 },
-    { chatter: 'hinata hyuga', model: 'Lolly (1lollyhere)', targetOpenRate: 35, targetAvgPrice: 26, targetTRT: 210, targetPlan: 1100 },
+    { chatter: 'hinata hyuga', model: 'Lolly (1lollyhere)', targetOpenRate: 35, targetAvgPrice: 26, targetTRT: 210, targetPlan: 1200 },
     { chatter: 'Igor (Игорь)', model: 'Lolly (1lollyhere)', targetOpenRate: 38, targetAvgPrice: 23, targetTRT: 230, targetPlan: 800 },
 
-    // Eva Blush - Plan $3,800 (посадка: artem, karina, timur)
-    { chatter: 'paul walkeeer', model: 'Eva Blush', targetOpenRate: 45, targetAvgPrice: 35, targetTRT: 180, targetPlan: 2000 },
-    { chatter: 'karina @sanesskio', model: 'Eva Blush', targetOpenRate: 40, targetAvgPrice: 35, targetTRT: 110, targetPlan: 1100 },
+    // Eva Blush - Plan $3,600 (посадка: artem, karina, timur)
+    { chatter: 'paul walkeeer', model: 'Eva Blush', targetOpenRate: 45, targetAvgPrice: 35, targetTRT: 180, targetPlan: 1800 },
+    { chatter: 'karina @sanesskio', model: 'Eva Blush', targetOpenRate: 40, targetAvgPrice: 35, targetTRT: 110, targetPlan: 900 },
     { chatter: 'Timur (Тимур)', model: 'Eva Blush', targetOpenRate: 55, targetAvgPrice: 50, targetTRT: 170, targetPlan: 900 },
 
-    // Lila (angelkiss) - Plan ,350 (посадка: vlada, igor)
-    { chatter: 'hinata hyuga', model: 'Lila (angelkiss)', targetOpenRate: 38, targetAvgPrice: 20, targetTRT: 240, targetPlan: 850 },
-    { chatter: 'Igor (Игорь)', model: 'Lila (angelkiss)', targetOpenRate: 35, targetAvgPrice: 18, targetTRT: 240, targetPlan: 500 },
+    // Lila (angelkiss) - Plan $1,500 (посадка: vlada, igor)
+    { chatter: 'hinata hyuga', model: 'Lila (angelkiss)', targetOpenRate: 38, targetAvgPrice: 20, targetTRT: 240, targetPlan: 950 },
+    { chatter: 'Igor (Игорь)', model: 'Lila (angelkiss)', targetOpenRate: 35, targetAvgPrice: 18, targetTRT: 240, targetPlan: 550 },
 
-    // Eva Pinky (Fansly) - Plan ,800 (посадка: timur, karina, vlada)
+    // Eva Pinky (Fansly) - Plan $1,800 (посадка: timur, karina, artem)
     { chatter: 'Timur (Тимур)', model: 'Eva Pinky (Fansly)', targetOpenRate: 40, targetAvgPrice: 30, targetTRT: 170, targetPlan: 700 },
     { chatter: 'karina @sanesskio', model: 'Eva Pinky (Fansly)', targetOpenRate: 35, targetAvgPrice: 22, targetTRT: 120, targetPlan: 600 },
-    { chatter: 'hinata hyuga', model: 'Eva Pinky (Fansly)', targetOpenRate: 35, targetAvgPrice: 20, targetTRT: 180, targetPlan: 500 }
+    { chatter: 'paul walkeeer', model: 'Eva Pinky (Fansly)', targetOpenRate: 40, targetAvgPrice: 25, targetTRT: 180, targetPlan: 500 }
   ],
   '2026-10': [
     // Lolly (Lollysunnery) - Plan $9,000 (посадка: karina, timur, artem)
@@ -141,7 +141,7 @@ export const initialChatterWeekly = [
   { monthKey: '2026-11', week: '1–5 Ноя', chatter: 'Igor (Игорь)', accountId: '4967', totalSales: 0, ppvSales: 0, tips: 0, messages: 0, freeMedia: 0, ppvSent: 0, ppvSold: 0, chats: 0, words: 0, trt: 0, avgPPV: 0, openRate: 0, avgPriceSent: 0, avgPriceSold: 0 },
   { monthKey: '2026-11', week: '1–5 Ноя', chatter: 'Timur (Тимур)', accountId: '77304', totalSales: 0, ppvSales: 0, tips: 0, messages: 0, freeMedia: 0, ppvSent: 0, ppvSold: 0, chats: 0, words: 0, trt: 0, avgPPV: 0, openRate: 0, avgPriceSent: 0, avgPriceSold: 0 },
   { monthKey: '2026-11', week: '1–5 Ноя', chatter: 'karina @sanesskio', accountId: '77304', totalSales: 0, ppvSales: 0, tips: 0, messages: 0, freeMedia: 0, ppvSent: 0, ppvSold: 0, chats: 0, words: 0, trt: 0, avgPPV: 0, openRate: 0, avgPriceSent: 0, avgPriceSold: 0 },
-  { monthKey: '2026-11', week: '1–5 Ноя', chatter: 'hinata hyuga', accountId: '77304', totalSales: 0, ppvSales: 0, tips: 0, messages: 0, freeMedia: 0, ppvSent: 0, ppvSold: 0, chats: 0, words: 0, trt: 0, avgPPV: 0, openRate: 0, avgPriceSent: 0, avgPriceSold: 0 },
+  { monthKey: '2026-11', week: '1–5 Ноя', chatter: 'paul walkeeer', accountId: '77304', totalSales: 0, ppvSales: 0, tips: 0, messages: 0, freeMedia: 0, ppvSent: 0, ppvSold: 0, chats: 0, words: 0, trt: 0, avgPPV: 0, openRate: 0, avgPriceSent: 0, avgPriceSold: 0 },
   // OCTOBER 2026 RECORDS (1–31 Окт - ИТОГ МЕСЯЦА С УЧЕТОМ PAYPAL)
   { 
     monthKey: '2026-10', 
@@ -634,9 +634,9 @@ export const initialModelWeekly = [
     accountId: '39856', 
     modelName: 'Lolly (Lollysunnery)', 
     totalRevenue: 1284.99, 
-    plan: 9000.00, 
-    goalProgressPct: 14.28, 
-    goalStatusPct: -19.05, // pace norm for 10 of 30 days is 33.33%
+    plan: 7000.00, 
+    goalProgressPct: 18.36, 
+    goalStatusPct: -14.97, // pace norm for 10 of 30 days is 33.33%
     runRate: 3854.97, 
     newFans: 225, 
     spenders: 34, 
@@ -676,9 +676,9 @@ export const initialModelWeekly = [
     accountId: '30201', 
     modelName: 'Eva Blush', 
     totalRevenue: 807.04, 
-    plan: 3800.00, 
-    goalProgressPct: 21.24, 
-    goalStatusPct: -12.09, 
+    plan: 3600.00, 
+    goalProgressPct: 22.42, 
+    goalStatusPct: -10.91, 
     runRate: 2421.12, 
     newFans: 239, 
     spenders: 27, 
@@ -705,7 +705,7 @@ export const initialModelWeekly = [
     spenders: 17, 
     newSpenders: 4,
     conversion: 2.35,
-    ppvRev: 391.94, // Media .99 + Media sets .95
+    ppvRev: 391.94, // Media 111.99 + Media sets 279.95
     tipsRev: 193.60, 
     transactions: 30, 
     apc: 1.76, 
@@ -718,9 +718,9 @@ export const initialModelWeekly = [
     accountId: '4967', 
     modelName: 'Lila (angelkiss)', 
     totalRevenue: 438.03, 
-    plan: 1350.00, 
-    goalProgressPct: 32.45, 
-    goalStatusPct: -0.88, 
+    plan: 1500.00, 
+    goalProgressPct: 29.20, 
+    goalStatusPct: -4.13, 
     runRate: 1314.09, 
     newFans: 188, 
     spenders: 28, 
