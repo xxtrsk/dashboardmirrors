@@ -124,6 +124,22 @@ function doPost(e) {
     const payload = JSON.parse(e.postData.contents);
     const sheet = getOrCreateTransactionsSheet();
 
+    // 0. УДАЛЕНИЕ ЦИКЛИЧНОЙ 100K ТРАНЗАКЦИИ
+    if (payload.action === "deleteBuggy100k") {
+      const data = sheet.getDataRange().getValues();
+      let deleted = 0;
+      for (let i = data.length - 1; i >= 1; i--) {
+        const row = data[i];
+        const rAmount = cleanAmount(row[4]);
+        const rModel = String(row[3] || "").toLowerCase();
+        if (rAmount >= 90000 || (rModel.includes("lolly") && rAmount >= 50000)) {
+          sheet.deleteRow(i + 1);
+          deleted++;
+        }
+      }
+      return createJsonResponse({ status: "ok", message: `Deleted ${deleted} buggy 100k rows`, deletedCount: deleted });
+    }
+
     // 1. УДАЛЕНИЕ ОПЕРАЦИИ (из веб-дашборда)
     if (payload.action === "deleteTransaction") {
       const tx = payload.transaction || {};

@@ -4,6 +4,7 @@
 const STORAGE_KEY_TX = 'mirrors_finance_transactions_v2';
 const STORAGE_KEY_BUDGET = 'mirrors_finance_budgets_v2';
 const STORAGE_KEY_GSHEET_URL = 'mirrors_finance_gsheet_url_v1';
+const STORAGE_KEY_DELETED = 'mirrors_deleted_tx_signatures_v1';
 
 export const FINANCE_INCOME_CATS = [
   'Выплаты OnlyFans',
@@ -108,17 +109,54 @@ const SEED_TRANSACTIONS = [];
 
 class FinanceManager {
   constructor() {
-    this.transactions = this.loadTransactions();
+    this.deletedSignatures = this.loadDeletedSignatures();
+    this.transactions = this.loadTransactions().filter(t => !this.isBuggyTransaction(t));
+    this.saveTransactions();
     this.budgets = this.loadBudgets();
     this.selectedPeriod = 'all'; // 'all', '2026-11', '2026-10', '2026-09'
     this.selectedModel = 'all';
+  }
+
+  loadDeletedSignatures() {
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY_DELETED);
+      if (stored) {
+        return new Set(JSON.parse(stored));
+      }
+    } catch (e) {}
+    return new Set();
+  }
+
+  addDeletedSignature(sig) {
+    if (!sig) return;
+    this.deletedSignatures.add(sig);
+    try {
+      localStorage.setItem(STORAGE_KEY_DELETED, JSON.stringify(Array.from(this.deletedSignatures)));
+    } catch (e) {}
+  }
+
+  isBuggyTransaction(t) {
+    if (!t) return true;
+    const amt = Number(t.amount) || 0;
+    // 1. Блокируем любую аномальную 100k / >=90k транзакцию навсегда
+    if (amt >= 90000) return true;
+    if (t.model && t.model.toLowerCase().includes('lolly') && t.type === 'Доход' && amt >= 50000) return true;
+
+    // 2. Черный список ранее удаленных операций
+    const sig = `${t.date}_${t.type}_${t.category}_${t.model}_${amt.toFixed(2)}_${(t.desc || '').trim()}`;
+    if (this.deletedSignatures && this.deletedSignatures.has(sig)) return true;
+
+    return false;
   }
 
   loadTransactions() {
     try {
       const stored = localStorage.getItem(STORAGE_KEY_TX);
       if (stored) {
-        return JSON.parse(stored);
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed)) {
+          return parsed.filter(t => !this.isBuggyTransaction(t));
+        }
       }
     } catch (e) {
       console.warn('LocalStorage load failed, using seed data:', e);
@@ -185,11 +223,11 @@ class FinanceManager {
       }
       const data = await response.json();
       if (data && Array.isArray(data.transactions)) {
-        // Защита от размножения дубликатов при синхронизации:
-        // Если в таблице накопились идентичные строки из-за бага удаления, схлопываем их
+        // Защита от размножения дубликатов и цикличных 100k операций:
         const seen = new Set();
         const uniqueTx = [];
         data.transactions.forEach(t => {
+          if (this.isBuggyTransaction(t)) return; // ПОЛНОСТЬЮ ИГНОРИРУЕМ 100k И УДАЛЕННЫЕ
           const key = `${t.date}_${t.type}_${t.category}_${t.model}_${Number(t.amount).toFixed(2)}_${(t.desc || '').trim()}`;
           if (!seen.has(key)) {
             seen.add(key);
@@ -243,6 +281,11 @@ class FinanceManager {
   deleteTransaction(id, deleteAllDuplicates = true) {
     const targetTx = this.transactions.find(t => String(t.id) === String(id));
     if (!targetTx) return;
+
+    // Запоминаем удаленную операцию в черном списке, чтобы автосинк никогда не вернул её
+    const amt = Number(targetTx.amount) || 0;
+    const sig = `${targetTx.date}_${targetTx.type}_${targetTx.category}_${targetTx.model}_${amt.toFixed(2)}_${(targetTx.desc || '').trim()}`;
+    this.addDeletedSignature(sig);
 
     if (deleteAllDuplicates) {
       // Удаляем саму операцию и все её идентичные дубликаты
@@ -1295,6 +1338,19 @@ export function initFinanceModule() {
   setupLiveSplitCalculator();
   updateGsheetUI();
   renderAll();
+
+  // Принудительное удаление цикличной 100k транзы из Google Sheets при старте
+  const currentGsheetUrl = manager.loadGSheetUrl();
+  if (currentGsheetUrl) {
+    try {
+      fetch(currentGsheetUrl, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action: 'deleteBuggy100k' })
+      }).catch(() => {});
+    } catch (e) {}
+  }
 
   // Автосинхронизация при старте, если URL был сохранен ранее
   if (manager.loadGSheetUrl()) {
