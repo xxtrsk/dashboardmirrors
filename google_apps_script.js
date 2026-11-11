@@ -36,6 +36,30 @@ const ALLOWED_USER_IDS = []; // Например: [123456789, 987654321]
 // -------------------------------------------------------------------------
 
 /**
+ * Надежный парсер числовых сумм (поддерживает $4,200.00, 4 200,00, 400.000 и др.)
+ */
+function cleanAmount(val) {
+  if (typeof val === "number") return val;
+  if (!val) return 0;
+  let s = String(val).trim().replace(/[$€₽\s]/g, "");
+  if (s.includes(",") && s.includes(".")) {
+    if (s.lastIndexOf(".") > s.lastIndexOf(",")) {
+      s = s.replace(/,/g, "");
+    } else {
+      s = s.replace(/\./g, "").replace(",", ".");
+    }
+  } else if (s.includes(",")) {
+    const parts = s.split(",");
+    if (parts.length === 2 && parts[1].length === 2) {
+      s = s.replace(",", ".");
+    } else {
+      s = s.replace(/,/g, "");
+    }
+  }
+  return parseFloat(s) || 0;
+}
+
+/**
  * Обработка GET-запроса: Выгрузка транзакций в JSON для веб-дашборда Vercel
  */
 function doGet(e) {
@@ -69,7 +93,7 @@ function doGet(e) {
         type: String(row[1] || "Расход"),
         category: String(row[2] || "Прочие операционные расходы"),
         model: String(row[3] || "Agency Core (Общие)"),
-        amount: parseFloat(row[4]) || 0,
+        amount: cleanAmount(row[4]),
         desc: String(row[5] || ""),
         author: String(row[6] || "Sheets")
       });
@@ -98,8 +122,91 @@ function doPost(e) {
     }
 
     const payload = JSON.parse(e.postData.contents);
+    const sheet = getOrCreateTransactionsSheet();
 
-    // 1. Если это запрос от веб-дашборда Vercel
+    // 1. УДАЛЕНИЕ ОПЕРАЦИИ (из веб-дашборда)
+    if (payload.action === "deleteTransaction") {
+      const tx = payload.transaction || {};
+      const data = sheet.getDataRange().getValues();
+      let deletedCount = 0;
+      const targetAmount = cleanAmount(tx.amount);
+      const targetModel = String(tx.model || "").trim().toLowerCase();
+      const targetDate = String(tx.date || "").trim();
+      const targetRowIndex = Number(payload.rowIndex || tx.id);
+      const deleteAll = payload.deleteAllDuplicates === true;
+
+      // Удаляем строки снизу вверх
+      for (let i = data.length - 1; i >= 1; i--) {
+        const row = data[i];
+        const rDate = (row[0] instanceof Date) 
+          ? Utilities.formatDate(row[0], Session.getScriptTimeZone(), "yyyy-MM-dd") 
+          : String(row[0] || "").trim();
+        const rAmount = cleanAmount(row[4]);
+        const rModel = String(row[3] || "").trim().toLowerCase();
+
+        const isExactIndex = (targetRowIndex > 0 && targetRowIndex === i);
+        const isFieldMatch = (
+          Math.abs(rAmount - targetAmount) < 0.01 &&
+          (targetModel === "" || rModel === targetModel || rModel.includes(targetModel) || targetModel.includes(rModel)) &&
+          (targetDate === "" || rDate === targetDate || rDate.includes(targetDate) || targetDate.includes(rDate))
+        );
+
+        if (isExactIndex || isFieldMatch) {
+          sheet.deleteRow(i + 1);
+          deletedCount++;
+          if (!deleteAll && !isExactIndex) break;
+        }
+      }
+
+      return createJsonResponse({ 
+        status: "ok", 
+        message: `Deleted ${deletedCount} rows`, 
+        deletedCount: deletedCount 
+      });
+    }
+
+    // 2. ОЧИСТКА ДУБЛИКАТОВ
+    if (payload.action === "cleanDuplicates") {
+      const data = sheet.getDataRange().getValues();
+      const seen = new Set();
+      let removed = 0;
+      for (let i = data.length - 1; i >= 1; i--) {
+        const row = data[i];
+        const key = `${row[0]}_${row[1]}_${row[2]}_${row[3]}_${cleanAmount(row[4]).toFixed(2)}_${row[5]}`;
+        if (seen.has(key)) {
+          sheet.deleteRow(i + 1);
+          removed++;
+        } else {
+          seen.add(key);
+        }
+      }
+      return createJsonResponse({ status: "ok", message: `Cleaned ${removed} duplicates`, removedCount: removed });
+    }
+
+    // 3. УДАЛЕНИЕ ОПЕРАЦИЙ КОНКРЕТНОЙ МОДЕЛИ
+    if (payload.action === "deleteModelTransactions") {
+      const targetModel = String(payload.model || "").trim().toLowerCase();
+      const targetType = payload.type ? String(payload.type).trim().toLowerCase() : null;
+      const data = sheet.getDataRange().getValues();
+      let deleted = 0;
+
+      for (let i = data.length - 1; i >= 1; i--) {
+        const row = data[i];
+        const rType = String(row[1] || "").trim().toLowerCase();
+        const rModel = String(row[3] || "").trim().toLowerCase();
+
+        const modelMatch = rModel.includes(targetModel) || targetModel.includes(rModel);
+        const typeMatch = !targetType || rType.includes(targetType);
+
+        if (modelMatch && typeMatch) {
+          sheet.deleteRow(i + 1);
+          deleted++;
+        }
+      }
+      return createJsonResponse({ status: "ok", message: `Deleted ${deleted} rows for ${payload.model}`, deletedCount: deleted });
+    }
+
+    // 4. ДОБАВЛЕНИЕ ОПЕРАЦИИ ИЗ ДАШБОРДА
     if (payload.action === "addTransaction") {
       const tx = payload.transaction;
       addTransactionRow(
@@ -107,14 +214,14 @@ function doPost(e) {
         tx.type || "Расход",
         tx.category || "Прочие операционные расходы",
         tx.model || "Agency Core (Общие)",
-        parseFloat(tx.amount) || 0,
+        cleanAmount(tx.amount),
         tx.desc || "",
         "Vercel Dashboard"
       );
       return createJsonResponse({ status: "ok", message: "Transaction added" });
     }
 
-    // 2. Если это входящее сообщение от Telegram Webhook
+    // 5. Если это входящее сообщение от Telegram Webhook
     if (payload.message) {
       handleTelegramMessage(payload.message);
     } else if (payload.callback_query) {

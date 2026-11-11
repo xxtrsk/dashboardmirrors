@@ -16,6 +16,32 @@
 const SHEET_NAME = "Транзакции";
 
 /**
+ * Надежный парсер числовых сумм (поддерживает $4,200.00, 4 200,00, 400.000 и др.)
+ */
+function cleanAmount(val) {
+  if (typeof val === "number") return val;
+  if (!val) return 0;
+  let s = String(val).trim().replace(/[$€₽\s]/g, "");
+  if (s.includes(",") && s.includes(".")) {
+    if (s.lastIndexOf(".") > s.lastIndexOf(",")) {
+      // Запятые — разделители тысяч: 400,000.00
+      s = s.replace(/,/g, "");
+    } else {
+      // Точки — разделители тысяч, запятая — десятичная: 400.000,00
+      s = s.replace(/\./g, "").replace(",", ".");
+    }
+  } else if (s.includes(",")) {
+    const parts = s.split(",");
+    if (parts.length === 2 && parts[1].length === 2) {
+      s = s.replace(",", ".");
+    } else {
+      s = s.replace(/,/g, "");
+    }
+  }
+  return parseFloat(s) || 0;
+}
+
+/**
  * 1. ЧТЕНИЕ: Отдает все строки из таблицы в дашборд Vercel
  */
 function doGet(e) {
@@ -48,12 +74,12 @@ function doGet(e) {
 
       const category = String(row[2] || "Прочие операционные расходы").trim();
       const model = String(row[3] || "Agency Core (Общие)").trim();
-      const amount = parseFloat(String(row[4]).replace("$", "").replace(",", ".")) || 0;
+      const amount = cleanAmount(row[4]);
       const desc = String(row[5] || "").trim();
 
       if (amount > 0) {
         transactions.push({
-          id: i,
+          id: i, // индекс строки data[i] (в таблице i+1)
           date: dateStr,
           type: type,
           category: category,
@@ -89,42 +115,106 @@ function doPost(e) {
     const payload = JSON.parse(e.postData.contents);
     const sheet = getOrCreateSheet();
 
-    // 1. УДАЛЕНИЕ ОПЕРАЦИИ
+    // 1. УДАЛЕНИЕ ОПЕРАЦИИ (или группы дубликатов)
     if (payload.action === "deleteTransaction") {
-      const tx = payload.transaction;
+      const tx = payload.transaction || {};
       const data = sheet.getDataRange().getValues();
+      let deletedCount = 0;
+      const targetAmount = cleanAmount(tx.amount);
+      const targetModel = String(tx.model || "").trim().toLowerCase();
+      const targetDate = String(tx.date || "").trim();
+      const targetDesc = String(tx.desc || "").trim();
+      const targetRowIndex = Number(payload.rowIndex || tx.id);
+      const deleteAll = payload.deleteAllDuplicates === true;
 
-      for (let i = 1; i < data.length; i++) {
+      // Удаляем строки снизу вверх, чтобы не сбивались номера строк
+      for (let i = data.length - 1; i >= 1; i--) {
         const row = data[i];
         const rDate = (row[0] instanceof Date) 
           ? Utilities.formatDate(row[0], Session.getScriptTimeZone(), "yyyy-MM-dd") 
           : String(row[0] || "").trim();
-        const rAmount = parseFloat(String(row[4]).replace("$", "").replace(",", ".")) || 0;
+        const rAmount = cleanAmount(row[4]);
+        const rModel = String(row[3] || "").trim().toLowerCase();
         const rDesc = String(row[5] || "").trim();
-        const rModel = String(row[3] || "").trim();
 
-        if (rDate === String(tx.date).trim() &&
-            Math.abs(rAmount - parseFloat(tx.amount)) < 0.01 &&
-            (rDesc === String(tx.desc || "").trim() || rModel === String(tx.model || "").trim())) {
+        // Проверка по индексу строки или по ключевым полям
+        const isExactIndex = (targetRowIndex > 0 && targetRowIndex === i);
+        const isFieldMatch = (
+          Math.abs(rAmount - targetAmount) < 0.01 &&
+          (targetModel === "" || rModel === targetModel || rModel.includes(targetModel) || targetModel.includes(rModel)) &&
+          (targetDate === "" || rDate === targetDate || rDate.includes(targetDate) || targetDate.includes(rDate))
+        );
+
+        if (isExactIndex || isFieldMatch) {
           sheet.deleteRow(i + 1); // В Sheets нумерация строк с 1
-          return createJsonResponse({ status: "ok", message: "Transaction deleted from sheet" });
+          deletedCount++;
+          if (!deleteAll && !isExactIndex) break;
         }
       }
-      return createJsonResponse({ status: "not_found", message: "Row not found in sheet" });
+
+      return createJsonResponse({ 
+        status: "ok", 
+        message: `Deleted ${deletedCount} rows`, 
+        deletedCount: deletedCount 
+      });
     }
 
-    // 2. ДОБАВЛЕНИЕ ОПЕРАЦИИ
-    const tx = payload.transaction || payload;
-    const dateStr = tx.date || Utilities.formatDate(new Date(), Session.getScriptTimeZone(), "yyyy-MM-dd");
-    const type = tx.type || "Расход";
-    const category = tx.category || "Прочие операционные расходы";
-    const model = tx.model || "Agency Core (Общие)";
-    const amount = parseFloat(tx.amount) || 0;
-    const desc = tx.desc || "";
+    // 2. ОЧИСТКА ДУБЛИКАТОВ
+    if (payload.action === "cleanDuplicates") {
+      const data = sheet.getDataRange().getValues();
+      const seen = new Set();
+      let removed = 0;
+      for (let i = data.length - 1; i >= 1; i--) {
+        const row = data[i];
+        const key = `${row[0]}_${row[1]}_${row[2]}_${row[3]}_${cleanAmount(row[4]).toFixed(2)}_${row[5]}`;
+        if (seen.has(key)) {
+          sheet.deleteRow(i + 1);
+          removed++;
+        } else {
+          seen.add(key);
+        }
+      }
+      return createJsonResponse({ status: "ok", message: `Cleaned ${removed} duplicates`, removedCount: removed });
+    }
 
-    sheet.appendRow([dateStr, type, category, model, amount, desc]);
+    // 3. УДАЛЕНИЕ ОПЕРАЦИЙ КОНКРЕТНОЙ МОДЕЛИ (например, для сброса бага)
+    if (payload.action === "deleteModelTransactions") {
+      const targetModel = String(payload.model || "").trim().toLowerCase();
+      const targetType = payload.type ? String(payload.type).trim().toLowerCase() : null;
+      const data = sheet.getDataRange().getValues();
+      let deleted = 0;
 
-    return createJsonResponse({ status: "ok", message: "Transaction added successfully" });
+      for (let i = data.length - 1; i >= 1; i--) {
+        const row = data[i];
+        const rType = String(row[1] || "").trim().toLowerCase();
+        const rModel = String(row[3] || "").trim().toLowerCase();
+
+        const modelMatch = rModel.includes(targetModel) || targetModel.includes(rModel);
+        const typeMatch = !targetType || rType.includes(targetType);
+
+        if (modelMatch && typeMatch) {
+          sheet.deleteRow(i + 1);
+          deleted++;
+        }
+      }
+      return createJsonResponse({ status: "ok", message: `Deleted ${deleted} rows for ${payload.model}`, deletedCount: deleted });
+    }
+
+    // 4. ДОБАВЛЕНИЕ ОПЕРАЦИИ (ТОЛЬКО ЕСЛИ ЯВНО ВЫЗВАН addTransaction)
+    if (payload.action === "addTransaction") {
+      const tx = payload.transaction || payload;
+      const dateStr = tx.date || Utilities.formatDate(new Date(), Session.getScriptTimeZone(), "yyyy-MM-dd");
+      const type = tx.type || "Расход";
+      const category = tx.category || "Прочие операционные расходы";
+      const model = tx.model || "Agency Core (Общие)";
+      const amount = cleanAmount(tx.amount);
+      const desc = tx.desc || "";
+
+      sheet.appendRow([dateStr, type, category, model, amount, desc]);
+      return createJsonResponse({ status: "ok", message: "Transaction added successfully" });
+    }
+
+    return createJsonResponse({ status: "ignored", message: "Unknown action" });
   } catch (err) {
     return createJsonResponse({ status: "error", message: err.toString() });
   }

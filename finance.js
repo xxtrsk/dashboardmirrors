@@ -185,9 +185,21 @@ class FinanceManager {
       }
       const data = await response.json();
       if (data && Array.isArray(data.transactions)) {
-        this.transactions = data.transactions;
+        // Защита от размножения дубликатов при синхронизации:
+        // Если в таблице накопились идентичные строки из-за бага удаления, схлопываем их
+        const seen = new Set();
+        const uniqueTx = [];
+        data.transactions.forEach(t => {
+          const key = `${t.date}_${t.type}_${t.category}_${t.model}_${Number(t.amount).toFixed(2)}_${(t.desc || '').trim()}`;
+          if (!seen.has(key)) {
+            seen.add(key);
+            uniqueTx.push(t);
+          }
+        });
+
+        this.transactions = uniqueTx;
         this.saveTransactions();
-        return { success: true, count: data.transactions.length };
+        return { success: true, count: uniqueTx.length, totalRaw: data.transactions.length };
       } else {
         throw new Error('Некорректный формат данных от скрипта Google Sheets');
       }
@@ -228,9 +240,23 @@ class FinanceManager {
     return newTx;
   }
 
-  deleteTransaction(id) {
+  deleteTransaction(id, deleteAllDuplicates = true) {
     const targetTx = this.transactions.find(t => String(t.id) === String(id));
-    this.transactions = this.transactions.filter(t => String(t.id) !== String(id));
+    if (!targetTx) return;
+
+    if (deleteAllDuplicates) {
+      // Удаляем саму операцию и все её идентичные дубликаты
+      this.transactions = this.transactions.filter(t => !(
+        String(t.id) === String(id) ||
+        (t.date === targetTx.date &&
+         t.type === targetTx.type &&
+         t.model === targetTx.model &&
+         Math.abs(Number(t.amount) - Number(targetTx.amount)) < 0.01 &&
+         (t.desc || '') === (targetTx.desc || ''))
+      ));
+    } else {
+      this.transactions = this.transactions.filter(t => String(t.id) !== String(id));
+    }
     this.saveTransactions();
 
     // Отправляем команду удаления в Google Sheets
@@ -240,13 +266,63 @@ class FinanceManager {
         fetch(gsheetUrl, {
           method: 'POST',
           mode: 'no-cors',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: 'deleteTransaction', transaction: targetTx })
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ 
+            action: 'deleteTransaction', 
+            transaction: targetTx,
+            rowIndex: targetTx.id,
+            deleteAllDuplicates: deleteAllDuplicates
+          })
         }).catch(e => console.warn('Background delete in Google Sheets failed:', e));
       } catch (e) {
         console.warn('Fetch error:', e);
       }
     }
+  }
+
+  cleanDuplicates() {
+    const seen = new Set();
+    const initialLen = this.transactions.length;
+    this.transactions = this.transactions.filter(t => {
+      const key = `${t.date}_${t.type}_${t.category}_${t.model}_${Number(t.amount).toFixed(2)}_${t.desc || ''}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+    this.saveTransactions();
+
+    const gsheetUrl = this.loadGSheetUrl();
+    if (gsheetUrl) {
+      try {
+        fetch(gsheetUrl, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ action: 'cleanDuplicates' })
+        }).catch(e => console.warn('Clean duplicates in Google Sheets failed:', e));
+      } catch (e) {}
+    }
+
+    return initialLen - this.transactions.length;
+  }
+
+  resetModelIncome(modelName) {
+    const beforeCount = this.transactions.length;
+    this.transactions = this.transactions.filter(t => !(t.model === modelName && t.type === 'Доход'));
+    this.saveTransactions();
+
+    const gsheetUrl = this.loadGSheetUrl();
+    if (gsheetUrl) {
+      try {
+        fetch(gsheetUrl, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ action: 'deleteModelTransactions', model: modelName, type: 'Доход' })
+        }).catch(e => console.warn('Reset model income in Google Sheets failed:', e));
+      } catch (e) {}
+    }
+    return beforeCount - this.transactions.length;
   }
 
   getFiltered() {
@@ -554,6 +630,17 @@ export function initFinanceModule() {
     }
   });
 
+  // Clean Duplicates
+  const btnCleanDuplicates = document.getElementById('btn-fin-clean-duplicates');
+  btnCleanDuplicates?.addEventListener('click', () => {
+    if (confirm('🧹 Удалить все повторяющиеся строки-дубликаты в реестре и таблице Google?')) {
+      lastSyncTime = Date.now() + 15000;
+      const removed = manager.cleanDuplicates();
+      renderAll();
+      showToast(`🧹 Удалено дубликатов: ${removed}`);
+    }
+  });
+
   function renderKPIs(metrics, cashBalance = 0) {
     const elCash = document.getElementById('fin-kpi-cash-balance');
     const elRev = document.getElementById('fin-kpi-rev');
@@ -699,9 +786,11 @@ export function initFinanceModule() {
     tbody.querySelectorAll('.btn-delete-tx').forEach(btn => {
       btn.addEventListener('click', () => {
         const id = btn.dataset.id;
-        if (confirm('Удалить эту операцию?')) {
-          lastSyncTime = Date.now() + 10000; // Пауза автосинхронизации на 10 сек, чтобы дать Sheets удалить строку
-          manager.deleteTransaction(id);
+        const tx = manager.transactions.find(t => String(t.id) === String(id));
+        const txTitle = tx ? `${tx.type} $${Number(tx.amount).toLocaleString()} (${tx.model})` : 'эту операцию';
+        if (confirm(`Удалить ${txTitle}?\n(Если в таблице есть повторяющиеся дубликаты, они будут удалены вместе с ней)`)) {
+          lastSyncTime = Date.now() + 15000; // Пауза автосинхронизации на 15 сек, чтобы дать Sheets удалить строку
+          manager.deleteTransaction(id, true);
           renderAll();
           showToast('🗑 Операция удалена');
         }
