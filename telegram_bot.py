@@ -420,21 +420,29 @@ def handle_composite_split_save(msg, split_info: dict, tx_date: str, original_te
         }
         send_tx_to_sheets(m_tx)
 
-    # 2. Если была комиссия - делим её поровну между всеми моделями в сплите
-    if fee > 0 and split_info["splits"]:
-        n = len(split_info["splits"])
-        fee_base = round(fee / n, 2)
-        fee_rem = round(fee - (fee_base * n), 2)
+    # 2. Если была комиссия - распределяем её строго ПРОПОРЦИОНАЛЬНО выручке каждой модели
+    model_fees = {}
+    if fee > 0 and split_info["splits"] and total_gross > 0:
+        eff_fee_rate = fee / total_gross
+        running_sum = 0.0
 
         for idx, s in enumerate(split_info["splits"]):
-            m_fee = round(fee_base + (fee_rem if idx == 0 else 0.0), 2)
+            if idx == len(split_info["splits"]) - 1:
+                # Последней модели отдаем остаток до копейки, чтобы сошлось на 100%
+                m_fee = round(fee - running_sum, 2)
+            else:
+                m_fee = round(s["amount"] * eff_fee_rate, 2)
+                running_sum += m_fee
+
+            model_fees[s["model"]] = m_fee
+
             fee_tx = {
                 "date": tx_date,
                 "type": "Расход",
                 "category": "Комиссии и вывод",
                 "model": s["model"],
                 "amount": m_fee,
-                "desc": f"Комиссия вывода / обнала Paxum Bybit (доля {s['model']} со сплита ${total_gross:,.2f})",
+                "desc": f"Комиссия вывода Paxum / Bybit ({eff_fee_rate*100:.2f}% от ${s['amount']:,.2f})",
                 "author": author
             }
             send_tx_to_sheets(fee_tx)
@@ -444,14 +452,19 @@ def handle_composite_split_save(msg, split_info: dict, tx_date: str, original_te
         "🔀 <b>Обнаружен и разбит составной вывод OnlyFans!</b>\n",
         f"📅 <b>Дата:</b> {tx_date}",
         f"💵 <b>Сумма начислений (Gross):</b> +${total_gross:,.2f}\n",
-        "<b>Разбивка по анкетам:</b>"
+        "<b>Разбивка по анкетам (с учетом пропорциональной комиссии):</b>"
     ]
+    eff_fee_pct = (fee / total_gross * 100) if total_gross > 0 else 0.0
     for idx, s in enumerate(split_info["splits"], 1):
-        lines.append(f"{idx}. <b>+${s['amount']:,.2f}</b> — {s['model']}")
+        m_fee = model_fees.get(s["model"], 0.0)
+        net_m = s["amount"] - m_fee
+        if fee > 0:
+            lines.append(f"{idx}. <b>{s['model']}:</b> +${s['amount']:,.2f} <i>(комса -${m_fee:,.2f} ➔ чистыми +${net_m:,.2f})</i>")
+        else:
+            lines.append(f"{idx}. <b>+${s['amount']:,.2f}</b> — {s['model']}")
 
     if fee > 0:
-        eff_fee = (fee / total_gross) * 100
-        lines.append(f"\n💳 <b>Комиссия вывода (Paxum/P2P):</b> -${fee:,.2f} (эфф. {eff_fee:.1f}%)")
+        lines.append(f"\n💳 <b>Общая комиссия вывода (Paxum/P2P):</b> -${fee:,.2f} (эфф. {eff_fee_pct:.2f}%)")
 
     lines.append(f"🏦 <b>Фактически зачислено в кассу:</b> <b>+${actual_received:,.2f}</b>\n")
     lines.append("<i>☁️ Все операции успешно синхронизированы с Google Sheets и дашбордом!</i>")
