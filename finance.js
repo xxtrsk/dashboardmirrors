@@ -15,6 +15,7 @@ export const FINANCE_EXPENSE_CATS = [
   'Трафик: Reddit',
   'Трафик: TikTok',
   'Трафик: Twitter',
+  'Выплаты: PayPal',
   'Зарплаты: Чаттеры',
   'Выплаты моделям',
   'Софт: OnlyMonster',
@@ -641,6 +642,11 @@ export function initFinanceModule() {
     renderAll();
   });
 
+  const filterCatSelect = document.getElementById('fin-filter-cat');
+  filterCatSelect?.addEventListener('change', () => {
+    renderTransactionsTable(manager.getFiltered());
+  });
+
   // Add Transaction
   formAddTx?.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -904,6 +910,23 @@ export function initFinanceModule() {
       elMargin.textContent = `${metrics.netMargin.toFixed(1)}%`;
       elMargin.style.color = metrics.netMargin >= 30 ? 'var(--accent-green)' : (metrics.netMargin > 0 ? 'var(--accent-amber)' : 'var(--accent-rose)');
     }
+
+    // 7. Выплаты PayPal
+    const elPaypal = document.getElementById('fin-kpi-paypal');
+    if (elPaypal) {
+      const allTx = manager.getFiltered() || [];
+      const paypalTotal = allTx.reduce((sum, t) => {
+        if (t.type === 'Расход') {
+          const c = (t.category || '').toLowerCase();
+          const d = (t.desc || '').toLowerCase();
+          if (c.includes('paypal') || d.includes('paypal') || d.includes('пейпал') || d.includes('пайпал')) {
+            return sum + (Number(t.amount) || 0);
+          }
+        }
+        return sum;
+      }, 0);
+      elPaypal.textContent = `$${paypalTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    }
   }
 
   function renderBudgets(budgets) {
@@ -1027,26 +1050,48 @@ export function initFinanceModule() {
     }).join('');
   }
 
+  let selectedCategoryFilter = 'all';
+
   function renderTransactionsTable(txs) {
     const tbody = document.getElementById('fin-tbody-transactions');
     const countBadge = document.getElementById('fin-tx-count-badge');
-    if (countBadge) countBadge.textContent = `${txs.length} записей`;
+    const filterCatSelect = document.getElementById('fin-filter-cat');
+    if (filterCatSelect) {
+      selectedCategoryFilter = filterCatSelect.value;
+    }
+
+    let filteredTxs = txs;
+    if (selectedCategoryFilter === 'paypal') {
+      filteredTxs = txs.filter(t => {
+        const c = (t.category || '').toLowerCase();
+        const d = (t.desc || '').toLowerCase();
+        return c.includes('paypal') || d.includes('paypal') || d.includes('пейпал') || d.includes('пайпал');
+      });
+    } else if (selectedCategoryFilter !== 'all') {
+      filteredTxs = txs.filter(t => (t.category || '').toLowerCase().includes(selectedCategoryFilter.toLowerCase()));
+    }
+
+    if (countBadge) countBadge.textContent = `${filteredTxs.length} записей`;
     if (!tbody) return;
 
-    if (txs.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding: 24px; color: var(--text-dim);">Операций за выбранный период не найдено</td></tr>`;
+    if (filteredTxs.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding: 24px; color: var(--text-dim);">Операций за выбранный фильтр не найдено</td></tr>`;
       return;
     }
 
-    tbody.innerHTML = txs.map(t => {
+    tbody.innerHTML = filteredTxs.map(t => {
       const isInc = t.type === 'Доход';
       const badgeStyle = isInc ? 'background: rgba(52, 211, 153, 0.15); color: var(--accent-green);' : 'background: rgba(248, 113, 113, 0.15); color: var(--accent-rose);';
+      const isPaypal = (t.category || '').toLowerCase().includes('paypal') || (t.desc || '').toLowerCase().includes('paypal') || (t.desc || '').toLowerCase().includes('пейпал');
+      const catBadge = isPaypal 
+        ? `<span style="display: inline-flex; align-items: center; gap: 4px; padding: 2px 7px; border-radius: 6px; font-size: 11px; font-weight: 700; background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3);">🅿️ PayPal</span>` 
+        : t.category;
 
       return `
         <tr>
           <td style="font-family: var(--font-mono); font-size: 12px; color: var(--text-muted);">${t.date}</td>
           <td><span style="display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 700; ${badgeStyle}">${t.type}</span></td>
-          <td style="font-weight: 600; font-size: 13px;">${t.category}</td>
+          <td style="font-weight: 600; font-size: 13px;">${catBadge}</td>
           <td style="font-size: 12px; color: var(--primary);">${t.model}</td>
           <td style="font-family: var(--font-mono); font-weight: 700; color: ${isInc ? 'var(--accent-green)' : 'var(--text-main)'};">$${Number(t.amount).toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
           <td style="font-size: 12px; color: var(--text-muted); max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${t.desc || '—'}</td>
