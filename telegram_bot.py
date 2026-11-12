@@ -130,7 +130,13 @@ def fetch_data_from_sheets() -> list:
         res = requests.get(url, timeout=10)
         if res.status_code == 200:
             data = res.json()
-            return data.get("transactions", [])
+            raw = data.get("transactions", [])
+            # Полная фильтрация багнутых 100k операций
+            return [
+                t for t in raw 
+                if float(t.get("amount", 0)) < 90000 
+                and not (float(t.get("amount", 0)) >= 50000 and "lolly" in str(t.get("model", "")).lower())
+            ]
     except Exception as e:
         logging.error(f"Ошибка выгрузки из Sheets: {e}")
     return []
