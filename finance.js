@@ -28,6 +28,7 @@ export const FINANCE_MODELS = [
   'Eva Blush',
   'Lila (angelkiss)',
   'Eva Pinky (Fansly)',
+  'Polina',
   'Agency Core (Общие)'
 ];
 

@@ -73,6 +73,7 @@ MODELS_LIST = [
     "Eva Blush",
     "Lila (angelkiss)",
     "Eva Pinky (Fansly)",
+    "Polina",
     "Agency Core (Общие)"
 ]
 
@@ -145,6 +146,51 @@ def fetch_data_from_sheets() -> list:
 # ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ АВТООПРЕДЕЛЕНИЯ
 # ---------------------------------------------------------------------------
 
+def extract_date_from_text(text: str):
+    """
+    Извлекает дату задним числом из текста сообщения:
+    - YYYY-MM-DD (2026-11-02)
+    - DD.MM.YYYY (02.11.2026)
+    - DD.MM (02.11 или 2.11) -> берет текущий год
+    - 'вчера' / 'позавчера'
+    Возвращает (YYYY-MM-DD, очищенный_текст)
+    """
+    today = datetime.date.today()
+    y = today.year
+    date_val = today.isoformat()
+    s = text.strip()
+
+    # 1. YYYY-MM-DD
+    m_iso = re.search(r"\b(202\d)-(0?[1-9]|1[0-2])-(0?[1-9]|[12]\d|3[01])\b", s)
+    if m_iso:
+        date_val = f"{int(m_iso.group(1)):04d}-{int(m_iso.group(2)):02d}-{int(m_iso.group(3)):02d}"
+        s = (s[:m_iso.start()] + " " + s[m_iso.end():]).strip()
+        return date_val, re.sub(r"\s+", " ", s).strip()
+
+    # 2. DD.MM.YYYY или DD/MM/YYYY
+    m_full = re.search(r"\b(0?[1-9]|[12]\d|3[01])[./](0?[1-9]|1[0-2])[./](202\d)\b", s)
+    if m_full:
+        date_val = f"{int(m_full.group(3)):04d}-{int(m_full.group(2)):02d}-{int(m_full.group(1)):02d}"
+        s = (s[:m_full.start()] + " " + s[m_full.end():]).strip()
+        return date_val, re.sub(r"\s+", " ", s).strip()
+
+    # 3. DD.MM или DD/MM (например 02.11, 2.11)
+    m_short = re.search(r"\b(0?[1-9]|[12]\d|3[01])[./](0?[1-9]|1[0-2])\b", s)
+    if m_short:
+        date_val = f"{y:04d}-{int(m_short.group(2)):02d}-{int(m_short.group(1)):02d}"
+        s = (s[:m_short.start()] + " " + s[m_short.end():]).strip()
+        return date_val, re.sub(r"\s+", " ", s).strip()
+
+    # 4. Вчера / позавчера
+    if re.search(r"\bвчера\b", s, flags=re.IGNORECASE):
+        date_val = (today - datetime.timedelta(days=1)).isoformat()
+        s = re.sub(r"\bвчера\b", "", s, flags=re.IGNORECASE).strip()
+    elif re.search(r"\bпозавчера\b", s, flags=re.IGNORECASE):
+        date_val = (today - datetime.timedelta(days=2)).isoformat()
+        s = re.sub(r"\bпозавчера\b", "", s, flags=re.IGNORECASE).strip()
+
+    return date_val, re.sub(r"\s+", " ", s).strip()
+
 def detect_model(desc: str) -> str:
     d = desc.lower()
     # 1. 1lolly (вторая анкета)
@@ -162,7 +208,10 @@ def detect_model(desc: str) -> str:
     # 5. Lila
     if "lila" in d or "angelkiss" in d or "лила" in d:
         return "Lila (angelkiss)"
-    # 6. Если просто Eva / Ева
+    # 6. Polina / Полина
+    if "полин" in d or "polina" in d or "паулин" in d:
+        return "Polina"
+    # 7. Если просто Eva / Ева
     if "eva" in d or "ева" in d:
         return "Eva Blush"
     return "Agency Core (Общие)"
@@ -290,7 +339,7 @@ def handle_cmd_out_in(msg):
     cleaned = re.sub(r"^/(out|in)\s*", "", msg.text, flags=re.IGNORECASE).strip()
     process_amount_and_desc(msg, tx_type, cleaned)
 
-@bot.message_handler(func=lambda m: m.text and (m.text.startswith("-") or m.text.startswith("+") or re.match(r"^\d+", m.text)))
+@bot.message_handler(func=lambda m: m.text and (m.text.startswith("-") or m.text.startswith("+") or re.search(r"\b\d+(?:[.,]\d+)?\b", m.text)))
 def handle_quick_amount(msg):
     text = msg.text.strip()
     tx_type = "Доход" if text.startswith("+") else "Расход"
@@ -298,40 +347,58 @@ def handle_quick_amount(msg):
     process_amount_and_desc(msg, tx_type, cleaned)
 
 def process_amount_and_desc(msg, tx_type: str, text: str):
-    match = re.match(r"^(\d+(?:[.,]\d+)?)(?:\s*(.*))?$", text)
+    # 1. Извлекаем дату задним числом (02.11, 02.11.2026, 2026-11-02, вчера)
+    tx_date, clean_s = extract_date_from_text(text)
+
+    # 2. Если в очищенном тексте явно указан знак + или -
+    if clean_s.startswith("+"):
+        tx_type = "Доход"
+        clean_s = clean_s[1:].strip()
+    elif clean_s.startswith("-"):
+        tx_type = "Расход"
+        clean_s = clean_s[1:].strip()
+
+    # 3. Ищем сумму числом
+    match = re.search(r"\b(\d+(?:[.,]\d+)?)\b", clean_s)
     if not match:
         bot.send_message(
             msg.chat.id,
-            f"⚠️ Укажите сумму числом. Пример: <code>150 TikTok</code> или <code>/out 250</code>"
+            "⚠️ Укажите сумму числом. Пример: <code>150 TikTok</code> или <code>+2384 02.11 вывод оф полина</code>",
+            reply_markup=get_main_keyboard(),
+            parse_mode="HTML"
         )
         return
 
     amount = float(match.group(1).replace(",", "."))
     if amount <= 0:
-        bot.send_message(msg.chat.id, "⚠️ Сумма должна быть больше 0.")
+        bot.send_message(msg.chat.id, "⚠️ Сумма должна быть больше 0.", reply_markup=get_main_keyboard())
         return
 
-    desc = (match.group(2) or "").strip()
+    # Описание - весь текст за вычетом найденной суммы
+    desc = (clean_s[:match.start()] + " " + clean_s[match.end():]).strip()
+    desc = re.sub(r"\s+", " ", desc)
     uid = msg.from_user.id
 
     if desc:
         # Автоопределение категории и модели
         cat = detect_category(desc, tx_type)
         model = detect_model(desc)
-        save_and_confirm(msg.chat.id, uid, tx_type, amount, cat, model, desc, msg.from_user.first_name)
+        save_and_confirm(msg.chat.id, uid, tx_type, amount, cat, model, desc, msg.from_user.first_name, tx_date=tx_date)
     else:
         # Интерактивный режим по кнопкам
         user_sessions[uid] = {
             "type": tx_type,
             "amount": amount,
             "desc": desc,
+            "date": tx_date,
             "step": "choose_category"
         }
         icon = "💸" if tx_type == "Расход" else "💵"
         bot.send_message(
             msg.chat.id,
-            f"{icon} <b>Сумма: ${amount:,.2f}</b> ({tx_type})\n\nВыберите категорию:",
-            reply_markup=get_category_keyboard(tx_type)
+            f"{icon} <b>Сумма: ${amount:,.2f}</b> ({tx_type}) | 📅 {tx_date}\n\nВыберите категорию:",
+            reply_markup=get_category_keyboard(tx_type),
+            parse_mode="HTML"
         )
 
 # ---------------------------------------------------------------------------
@@ -382,8 +449,9 @@ def handle_callbacks(call):
         desc = session.get("desc") or f"{cat} ({model})"
         author = call.from_user.first_name or "Telegram"
 
+        tx_date = session.get("date")
         user_sessions.pop(uid, None)
-        save_and_confirm(call.message.chat.id, uid, tx_type, amount, cat, model, desc, author, edit_msg_id=call.message.message_id)
+        save_and_confirm(call.message.chat.id, uid, tx_type, amount, cat, model, desc, author, edit_msg_id=call.message.message_id, tx_date=tx_date)
         bot.answer_callback_query(call.id)
         return
 
@@ -426,10 +494,10 @@ def handle_callbacks(call):
         bot.answer_callback_query(call.id)
         return
 
-def save_and_confirm(chat_id, user_id, tx_type, amount, category, model, desc, author, edit_msg_id=None):
-    today_str = datetime.date.today().isoformat()
+def save_and_confirm(chat_id, user_id, tx_type, amount, category, model, desc, author, edit_msg_id=None, tx_date=None):
+    tx_date_str = tx_date or datetime.date.today().isoformat()
     new_tx = {
-        "date": today_str,
+        "date": tx_date_str,
         "type": tx_type,
         "category": category,
         "model": model,
@@ -452,7 +520,7 @@ def save_and_confirm(chat_id, user_id, tx_type, amount, category, model, desc, a
         f"👑 <b>Модель:</b> {model}\n"
         f"📝 <b>Описание:</b> {desc}\n"
         f"👤 <b>Автор:</b> {author}\n"
-        f"📅 <b>Дата:</b> {today_str}\n\n"
+        f"📅 <b>Дата:</b> {tx_date_str}\n\n"
         f"<i>{sync_badge}</i>"
     )
 
