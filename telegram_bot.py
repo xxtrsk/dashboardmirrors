@@ -193,18 +193,18 @@ def extract_date_from_text(text: str):
 
 def detect_model(desc: str) -> str:
     d = desc.lower()
-    # 1. 1lolly (вторая анкета)
+    # 1. 1lolly (вторая анкета Lolly)
     if "1lolly" in d or "1лолли" in d or "1lollyhere" in d:
         return "Lolly (1lollyhere)"
-    # 2. Основная Lolly
+    # 2. Основная Lolly (Lollysunnery)
     if "lolly" in d or "лолли" in d or "sunnery" in d or "саннери" in d:
         return "Lolly (Lollysunnery)"
-    # 3. Eva Blush
-    if "blush" in d or "блаш" in d or "eva blush" in d or "ева блаш" in d:
-        return "Eva Blush"
-    # 4. Eva Pinky
-    if "pinky" in d or "eva pinky" in d or "пинки" in d or "fansly" in d:
+    # 3. Fansly (Eva Pinky) - единственная анкета на Fansly
+    if "pinky" in d or "eva pinky" in d or "пинки" in d or "fansly" in d or "фансли" in d or "evapinky" in d:
         return "Eva Pinky (Fansly)"
+    # 4. Eva Blush (OnlyFans) - третья анкета на OnlyFans
+    if "blush" in d or "блаш" in d or "eva blush" in d or "ева блаш" in d or "evablush" in d:
+        return "Eva Blush"
     # 5. Lila
     if "lila" in d or "angelkiss" in d or "лила" in d:
         return "Lila (angelkiss)"
