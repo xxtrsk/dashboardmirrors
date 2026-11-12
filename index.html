@@ -451,7 +451,60 @@
         </div>
       </div>
 
-      <!-- Cash Flow Runway & Payment Calendar -->
+      <!-- 1. Top Section: P&L Charts Grid -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 20px; margin-bottom: 24px;">
+        <div class="glass-card" style="padding: 20px;">
+          <h3 style="font-size: 15px; font-weight: 700; font-family: var(--font-heading); margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between;">
+            <span>📈 Динамика P&L по Месяцам</span>
+            <span style="font-size: 11px; color: var(--accent-green); font-family: var(--font-mono); font-weight: 600;">Accrual P&L</span>
+          </h3>
+          <div id="fin-chart-timeline"></div>
+        </div>
+
+        <div class="glass-card" style="padding: 20px;">
+          <h3 style="font-size: 15px; font-weight: 700; font-family: var(--font-heading); margin-bottom: 12px;">
+            🍩 Структура Расходов (Топ-5)
+          </h3>
+          <div id="fin-chart-donut"></div>
+        </div>
+      </div>
+
+      <!-- 2. Top Section: Model Unit-Economics & Profitability Ranking -->
+      <div class="table-container scrollable-slider" style="margin-bottom: 24px;">
+        <div style="padding: 16px 20px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+          <div>
+            <h3 style="font-size: 16px; font-weight: 700; font-family: var(--font-heading); margin-bottom: 2px;">
+              👑 Рейтинг Прибыльности & Unit-экономика по Анкетам
+            </h3>
+            <span style="font-size: 12px; color: var(--text-muted);">Ранжирование от самых маржинальных проектов к слабым (с учётом себестоимости и комиссий)</span>
+          </div>
+          <span style="font-size: 11px; background: rgba(56, 189, 248, 0.12); color: var(--primary); padding: 3px 10px; border-radius: 12px; font-weight: 700; border: 1px solid rgba(56, 189, 248, 0.3);">
+            Executive Leaderboard
+          </span>
+        </div>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th style="width: 60px;">Ранг</th>
+              <th>Модель / Анкета</th>
+              <th>Выручка Net ($)</th>
+              <th>Трафик ($)</th>
+              <th>Чаттеры (20%)</th>
+              <th>Модель (25%)</th>
+              <th>Комиссии ($)</th>
+              <th>Опекс ($)</th>
+              <th>Чистая Прибыль ($)</th>
+              <th>Маржа (%)</th>
+              <th>ROI Трафика</th>
+            </tr>
+          </thead>
+          <tbody id="fin-tbody-unit-economics">
+            <!-- Rendered dynamically -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 3. Bottom Section: Cash Flow Runway & Payment Calendar -->
       <div class="glass-card" style="margin-bottom: 24px; padding: 22px; border-left: 4px solid var(--accent-amber);">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; flex-wrap: wrap; gap: 12px;">
           <div>
@@ -490,7 +543,7 @@
         </div>
       </div>
 
-      <!-- Plan vs Fact Budgets Section -->
+      <!-- 4. Bottom Section: Plan vs Fact Budgets Section -->
       <div class="glass-card" style="margin-bottom: 24px; padding: 22px;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 8px;">
           <div>
@@ -508,50 +561,6 @@
         <div id="fin-budgets-list">
           <!-- Rendered dynamically -->
         </div>
-      </div>
-
-      <!-- Charts Grid -->
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 20px; margin-bottom: 24px;">
-        <div class="glass-card" style="padding: 20px;">
-          <h3 style="font-size: 15px; font-weight: 700; font-family: var(--font-heading); margin-bottom: 12px;">
-            📈 Динамика P&L по Месяцам
-          </h3>
-          <div id="fin-chart-timeline"></div>
-        </div>
-
-        <div class="glass-card" style="padding: 20px;">
-          <h3 style="font-size: 15px; font-weight: 700; font-family: var(--font-heading); margin-bottom: 12px;">
-            🍩 Структура Расходов (Топ-5)
-          </h3>
-          <div id="fin-chart-donut"></div>
-        </div>
-      </div>
-
-      <!-- Model Unit-Economics -->
-      <div class="table-container scrollable-slider" style="margin-bottom: 24px;">
-        <div style="padding: 16px 20px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
-          <h3 style="font-size: 16px; font-weight: 700; font-family: var(--font-heading);">
-            👑 Unit-экономика по Моделям
-          </h3>
-          <span style="font-size: 12px; color: var(--text-muted);">Выручка, расходы на маркетинг и чистый профит агентства</span>
-        </div>
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th>Модель / Проект</th>
-              <th>Выручка ($)</th>
-              <th>Трафик ($)</th>
-              <th>Чаттеры ($)</th>
-              <th>Выплата Модели ($)</th>
-              <th>Опекс ($)</th>
-              <th>Чистая Прибыль ($)</th>
-              <th>Маржа (%)</th>
-            </tr>
-          </thead>
-          <tbody id="fin-tbody-unit-economics">
-            <!-- Rendered dynamically -->
-          </tbody>
-        </table>
       </div>
 
       <!-- Two Columns: Add Transaction Form & Ledger -->

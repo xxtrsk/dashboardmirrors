@@ -421,18 +421,19 @@ class FinanceManager {
 
   calculateMetrics(txList = this.getFiltered()) {
     let income = 0;
-    let expense = 0;
+    let cashExpenses = 0;
     let trafficExpense = 0;
     let chatterExpense = 0;
     let modelPayouts = 0;
     let withdrawalFees = 0;
+    let otherOpex = 0;
 
     txList.forEach(t => {
       const amt = Number(t.amount) || 0;
       if (t.type === 'Доход') {
         income += amt;
       } else if (t.type === 'Расход') {
-        expense += amt;
+        cashExpenses += amt;
         const cat = (t.category || '').toLowerCase();
         const desc = (t.desc || '').toLowerCase();
         if (cat.startsWith('трафик')) {
@@ -443,16 +444,37 @@ class FinanceManager {
           modelPayouts += amt;
         } else if (cat.includes('комисси') || cat.includes('вывод') || desc.includes('комисси') || desc.includes('вывод') || desc.includes('paxum') || desc.includes('bybit')) {
           withdrawalFees += amt;
+        } else {
+          otherOpex += amt;
         }
       }
     });
 
-    const netProfit = income - expense;
+    // P&L Accrual (Экономическая прибыль): себестоимость команды 45% (25% модель + 20% чаттеры)
+    // зафиксирована сразу, чтобы фактические выплаты на 31-е и 15-е число НЕ задваивали расход!
+    const modelsAccrued = income * 0.25;
+    const chattersAccrued = income * 0.20;
+    const economicOpex = modelsAccrued + chattersAccrued + trafficExpense + withdrawalFees + otherOpex;
+    const netProfit = income - economicOpex;
     const netMargin = income > 0 ? (netProfit / income) * 100 : 0;
     const roas = trafficExpense > 0 ? (income / trafficExpense) : 0;
     const effectiveFeePct = income > 0 ? (withdrawalFees / income) * 100 : 0;
 
-    return { income, expense, netProfit, netMargin, trafficExpense, chatterExpense, modelPayouts, withdrawalFees, effectiveFeePct, roas };
+    return { 
+      income, 
+      expense: economicOpex, 
+      cashExpenses, 
+      netProfit, 
+      netMargin, 
+      trafficExpense, 
+      chatterExpense, 
+      modelsAccrued, 
+      chattersAccrued, 
+      modelPayouts, 
+      withdrawalFees, 
+      effectiveFeePct, 
+      roas 
+    };
   }
 
   // Расчет зарплатного резерва (Эскроу) по периодам:
@@ -905,44 +927,69 @@ export function initFinanceModule() {
 
     const stats = {};
     FINANCE_MODELS.forEach(m => {
-      stats[m] = { income: 0, traffic: 0, chatters: 0, payouts: 0, opex: 0 };
+      stats[m] = { income: 0, traffic: 0, chatters: 0, modelDue: 0, fees: 0, opex: 0 };
     });
 
     txs.forEach(t => {
-      if (!stats[t.model]) {
-        stats[t.model] = { income: 0, traffic: 0, chatters: 0, payouts: 0, opex: 0 };
+      const model = t.model || 'Agency Core (Общие)';
+      if (!stats[model]) {
+        stats[model] = { income: 0, traffic: 0, chatters: 0, modelDue: 0, fees: 0, opex: 0 };
       }
       const amt = Number(t.amount) || 0;
       if (t.type === 'Доход') {
-        stats[t.model].income += amt;
+        stats[model].income += amt;
       } else {
-        if (t.category.startsWith('Трафик')) {
-          stats[t.model].traffic += amt;
-        } else if (t.category.includes('Чаттеры') || t.category.includes('Операторы')) {
-          stats[t.model].chatters += amt;
-        } else if (t.category.includes('Выплаты моделям')) {
-          stats[t.model].payouts += amt;
-        } else {
-          stats[t.model].opex += amt;
+        const cat = (t.category || '').toLowerCase();
+        const desc = (t.desc || '').toLowerCase();
+        if (cat.startsWith('трафик')) {
+          stats[model].traffic += amt;
+        } else if (cat.includes('комисси') || cat.includes('вывод') || desc.includes('комисси') || desc.includes('вывод') || desc.includes('paxum') || desc.includes('bybit')) {
+          stats[model].fees += amt;
+        } else if (!cat.includes('модел') && !cat.includes('чаттер')) {
+          stats[model].opex += amt;
         }
       }
     });
 
-    tbody.innerHTML = Object.entries(stats).map(([model, data]) => {
-      const net = data.income - (data.traffic + data.chatters + data.payouts + data.opex);
+    // Начисление себестоимости по моделям: 25% доля модели, 20% чаттеры
+    Object.keys(stats).forEach(m => {
+      if (m !== 'Agency Core (Общие)') {
+        stats[m].modelDue = stats[m].income * 0.25;
+        stats[m].chatters = stats[m].income * 0.20;
+      }
+    });
+
+    // Сортировка: Profitability Ranking (от самой прибыльной к слабой)
+    const ranked = Object.entries(stats).map(([model, data]) => {
+      const net = data.income - (data.traffic + data.chatters + data.modelDue + data.fees + data.opex);
       const margin = data.income > 0 ? (net / data.income) * 100 : 0;
-      const netColor = net >= 0 ? 'var(--accent-green)' : 'var(--accent-rose)';
+      const roi = data.traffic > 0 ? (data.income / data.traffic) : 0;
+      return { model, ...data, net, margin, roi };
+    }).sort((a, b) => b.net - a.net);
+
+    const medals = ['🥇 #1', '🥈 #2', '🥉 #3'];
+
+    tbody.innerHTML = ranked.map((d, idx) => {
+      const rankBadge = idx < 3 ? medals[idx] : `#${idx + 1}`;
+      const netColor = d.net >= 0 ? 'var(--accent-green)' : 'var(--accent-rose)';
+      const marginBadge = d.income > 0 
+        ? `<span style="padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 700; background: ${d.margin >= 30 ? 'rgba(52, 211, 153, 0.15)' : (d.margin > 0 ? 'rgba(251, 191, 36, 0.15)' : 'rgba(248, 113, 113, 0.15)')}; color: ${d.margin >= 30 ? 'var(--accent-green)' : (d.margin > 0 ? 'var(--accent-amber)' : 'var(--accent-rose)')};">${d.margin.toFixed(1)}%</span>`
+        : '—';
+      const roiText = d.roi > 0 ? `${d.roi.toFixed(2)}x` : '—';
 
       return `
         <tr>
-          <td style="font-weight: 700; color: var(--text-main);">${model}</td>
-          <td style="font-family: var(--font-mono); color: var(--accent-green);">$${data.income.toLocaleString()}</td>
-          <td style="font-family: var(--font-mono); color: var(--accent-rose);">$${data.traffic.toLocaleString()}</td>
-          <td style="font-family: var(--font-mono); color: #38bdf8;">$${data.chatters.toLocaleString()}</td>
-          <td style="font-family: var(--font-mono); color: #fbbf24;">$${data.payouts.toLocaleString()}</td>
-          <td style="font-family: var(--font-mono); color: var(--text-muted);">$${data.opex.toLocaleString()}</td>
-          <td style="font-family: var(--font-mono); font-weight: 700; color: ${netColor};">$${net.toLocaleString()}</td>
-          <td style="font-family: var(--font-mono); font-weight: 700; color: ${margin >= 30 ? 'var(--accent-green)' : (margin > 0 ? 'var(--accent-amber)' : 'var(--accent-rose)')};">${margin.toFixed(1)}%</td>
+          <td style="font-family: var(--font-mono); font-weight: 800; font-size: 12px; color: ${idx === 0 ? 'var(--accent-green)' : 'var(--text-muted)'};">${rankBadge}</td>
+          <td style="font-weight: 700; color: var(--text-main); font-size: 13px;">${d.model}</td>
+          <td style="font-family: var(--font-mono); color: var(--accent-green); font-weight: 600;">$${d.income.toLocaleString()}</td>
+          <td style="font-family: var(--font-mono); color: var(--accent-rose);">$${d.traffic.toLocaleString()}</td>
+          <td style="font-family: var(--font-mono); color: #38bdf8;">$${Math.round(d.chatters).toLocaleString()}</td>
+          <td style="font-family: var(--font-mono); color: #fbbf24;">$${Math.round(d.modelDue).toLocaleString()}</td>
+          <td style="font-family: var(--font-mono); color: var(--accent-rose);">$${d.fees.toLocaleString()}</td>
+          <td style="font-family: var(--font-mono); color: var(--text-muted);">$${d.opex.toLocaleString()}</td>
+          <td style="font-family: var(--font-mono); font-weight: 800; color: ${netColor}; font-size: 14px;">$${Math.round(d.net).toLocaleString()}</td>
+          <td>${marginBadge}</td>
+          <td style="font-family: var(--font-mono); font-weight: 700; color: ${d.roi >= 2 ? 'var(--accent-green)' : 'var(--text-muted)'};">${roiText}</td>
         </tr>
       `;
     }).join('');
@@ -1203,57 +1250,48 @@ export function initFinanceModule() {
     const p1Due = escrowData ? (escrowData.p1Remaining !== undefined ? escrowData.p1Remaining : 0) : 0;
     const p2Due = escrowData ? (escrowData.p2Remaining !== undefined ? escrowData.p2Remaining : 0) : 0;
     const totalEscrow = escrowData 
-      ? (escrowData.totalEscrowRemaining !== undefined ? escrowData.totalEscrowRemaining : ((escrowData.modelsRemaining || 0) + (escrowData.chattersRemaining || 0))) 
+      ? (escrowData.totalEscrowRemaining !== undefined ? escrowData.totalEscrowRemaining : 0) 
       : 0;
     const totalObligations = contractorsDue + totalEscrow;
     const safeCash = cashBalance - totalObligations;
 
-    if (safeCash >= 0) {
-      alertContainer.innerHTML = `
-        <div style="background: rgba(52, 211, 153, 0.08); border: 1px solid var(--accent-green); border-radius: var(--radius-sm); padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+    // Прогноз кассы к 31-му числу (Cash Flow Forecast)
+    const forecast31stMinBalance = cashBalance - p1Due - (contractorsDue * 0.5);
+
+    alertContainer.innerHTML = `
+      <div style="background: ${safeCash >= 0 ? 'rgba(52, 211, 153, 0.08)' : 'rgba(239, 68, 68, 0.12)'}; border: 1px solid ${safeCash >= 0 ? 'var(--accent-green)' : 'var(--accent-rose)'}; border-radius: var(--radius-sm); padding: 16px 20px; display: flex; flex-direction: column; gap: 12px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
           <div style="display: flex; align-items: center; gap: 12px;">
-            <span style="font-size: 24px;">🟢</span>
+            <span style="font-size: 26px;">${safeCash >= 0 ? '🟢' : '🚨'}</span>
             <div>
-              <div style="font-weight: 700; color: var(--accent-green); font-size: 14px;">Безопасный Runway: Касса полностью покрывает все зарплаты и обязательства</div>
-              <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">
-                В кассе: <strong style="color: var(--text-main);">$${cashBalance.toLocaleString('en-US', { minimumFractionDigits: 2 })}</strong> | 
-                Резерв к 31-му: <strong style="color: #fbbf24;">$${Math.round(p1Due).toLocaleString()}</strong> | 
-                Резерв к 15-му: <strong style="color: #fbbf24;">$${Math.round(p2Due).toLocaleString()}</strong> | 
-                Подрядчики: <strong style="color: var(--primary);">$${contractorsDue.toLocaleString()}</strong>
+              <div style="font-weight: 800; color: ${safeCash >= 0 ? 'var(--accent-green)' : 'var(--accent-rose)'}; font-size: 15px;">
+                ${safeCash >= 0 ? 'Безопасный Runway: Касса полностью покрывает все зарплаты и обязательства' : 'Внимание: Риск кассового разрыва перед ближайшими выплатами!'}
+              </div>
+              <div style="font-size: 12px; color: var(--text-muted); margin-top: 3px;">
+                В кассе на Bybit: <strong style="color: var(--text-main); font-family: var(--font-mono);">$${cashBalance.toLocaleString('en-US', { minimumFractionDigits: 2 })}</strong> | 
+                Резерв к 31-му: <strong style="color: #fbbf24; font-family: var(--font-mono);">$${Math.round(p1Due).toLocaleString()}</strong> | 
+                Резерв к 15-му: <strong style="color: #fbbf24; font-family: var(--font-mono);">$${Math.round(p2Due).toLocaleString()}</strong> | 
+                Подрядчики: <strong style="color: var(--primary); font-family: var(--font-mono);">$${contractorsDue.toLocaleString()}</strong>
               </div>
             </div>
           </div>
           <div style="text-align: right;">
-            <div style="font-family: var(--font-mono); font-weight: 800; font-size: 16px; color: var(--accent-green);">
-              Свободная касса: +$${safeCash.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+            <div style="font-family: var(--font-mono); font-weight: 800; font-size: 18px; color: ${safeCash >= 0 ? 'var(--accent-green)' : 'var(--accent-rose)'};">
+              Свободная касса: ${safeCash >= 0 ? '+' : '-'}$${Math.abs(safeCash).toLocaleString('en-US', { minimumFractionDigits: 2 })}
             </div>
-            <div style="font-size: 10px; color: var(--text-muted);">Доступно к выводу овнером без риска разрыва</div>
+            <div style="font-size: 11px; color: var(--text-muted);">
+              ${safeCash >= 0 ? 'Чистые дивиденды овнера без риска разрыва' : 'Не выводить дивиденды до закрытия выплат!'}
+            </div>
           </div>
         </div>
-      `;
-    } else {
-      alertContainer.innerHTML = `
-        <div style="background: rgba(239, 68, 68, 0.12); border: 1px solid var(--accent-rose); border-radius: var(--radius-sm); padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
-          <div style="display: flex; align-items: center; gap: 12px;">
-            <span style="font-size: 24px;">🚨</span>
-            <div>
-              <div style="font-weight: 700; color: var(--accent-rose); font-size: 14px;">Внимание: Риск кассового разрыва перед ближайшими выплатами!</div>
-              <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">
-                В кассе: <strong style="color: var(--text-main);">$${cashBalance.toLocaleString('en-US', { minimumFractionDigits: 2 })}</strong> | 
-                Обязательства к выплате: <strong style="color: var(--accent-rose);">$${totalObligations.toLocaleString()}</strong> 
-                (Резерв зарплат: $${totalEscrow.toLocaleString()} [к 31-му: $${Math.round(p1Due).toLocaleString()}, к 15-му: $${Math.round(p2Due).toLocaleString()}], Подрядчики: $${contractorsDue.toLocaleString()})
-              </div>
-            </div>
-          </div>
-          <div style="text-align: right;">
-            <div style="font-family: var(--font-mono); font-weight: 800; font-size: 16px; color: var(--accent-rose);">
-              Дефицит: -$${Math.abs(safeCash).toLocaleString('en-US', { minimumFractionDigits: 2 })}
-            </div>
-            <div style="font-size: 10px; color: var(--text-muted);">Не выводите дивиденды до закрытия выплат!</div>
-          </div>
+
+        <!-- 30-Day Cash Flow Forecast Mini-Bar -->
+        <div style="background: rgba(0, 0, 0, 0.25); border-radius: 6px; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: var(--text-muted); flex-wrap: wrap; gap: 8px;">
+          <span>📈 <strong>Cash Flow Forecast:</strong> Ожидаемый остаток кассы после закрытия выплат 31-го: <strong style="color: ${forecast31stMinBalance >= 0 ? 'var(--accent-green)' : 'var(--accent-rose)'}; font-family: var(--font-mono);">$${Math.round(forecast31stMinBalance).toLocaleString()}</strong></span>
+          <span>📅 Выплаты: 1–15 число ➔ 31-го | 16–31 число ➔ 15-го</span>
         </div>
-      `;
-    }
+      </div>
+    `;
   }
 
   // Google Sheets UI & Sync handlers
