@@ -420,18 +420,24 @@ def handle_composite_split_save(msg, split_info: dict, tx_date: str, original_te
         }
         send_tx_to_sheets(m_tx)
 
-    # 2. Если была комиссия - сохраняем отдельный расход
-    if fee > 0:
-        fee_tx = {
-            "date": tx_date,
-            "type": "Расход",
-            "category": "Комиссии и вывод",
-            "model": "Agency Core (Общие)",
-            "amount": fee,
-            "desc": f"Комиссия вывода / обнала Paxum Bybit (${total_gross:,.2f} -> ${actual_received:,.2f})",
-            "author": author
-        }
-        send_tx_to_sheets(fee_tx)
+    # 2. Если была комиссия - делим её поровну между всеми моделями в сплите
+    if fee > 0 and split_info["splits"]:
+        n = len(split_info["splits"])
+        fee_base = round(fee / n, 2)
+        fee_rem = round(fee - (fee_base * n), 2)
+
+        for idx, s in enumerate(split_info["splits"]):
+            m_fee = round(fee_base + (fee_rem if idx == 0 else 0.0), 2)
+            fee_tx = {
+                "date": tx_date,
+                "type": "Расход",
+                "category": "Комиссии и вывод",
+                "model": s["model"],
+                "amount": m_fee,
+                "desc": f"Комиссия вывода / обнала Paxum Bybit (доля {s['model']} со сплита ${total_gross:,.2f})",
+                "author": author
+            }
+            send_tx_to_sheets(fee_tx)
 
     # 3. Отправляем развернутый и красивый отчет в Telegram
     lines = [
