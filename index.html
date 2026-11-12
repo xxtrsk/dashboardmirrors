@@ -387,8 +387,8 @@
         </div>
       </div>
 
-      <!-- Executive KPI Cards Grid -->
-      <div class="grid-summary" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 24px;">
+      <!-- Executive KPI Cards Grid (Owner Cash & Profit Focus) -->
+      <div class="grid-summary" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px;">
         <!-- 1. Физическая касса -->
         <div class="glass-card" style="padding: 18px; border-left: 3px solid #10b981; background: rgba(16, 185, 129, 0.05);">
           <div class="card-header">
@@ -419,17 +419,7 @@
           <div id="fin-kpi-escrow-sub" class="card-subtext">К 31-му: $0 | К 15-му: $0</div>
         </div>
 
-        <!-- 4. Выручка Net OnlyFans -->
-        <div class="glass-card" style="padding: 18px;">
-          <div class="card-header">
-            <span class="card-title">Выручка Net OF</span>
-            <div class="card-icon">💵</div>
-          </div>
-          <div id="fin-kpi-rev" class="card-value" style="color: var(--accent-green); font-size: 26px;">$0.00</div>
-          <div class="card-subtext">Начислено платформой к выводу</div>
-        </div>
-
-        <!-- 5. Чистая прибыль агентства -->
+        <!-- 4. Чистая прибыль агентства -->
         <div class="glass-card" style="padding: 18px; border-left: 3px solid var(--primary);">
           <div class="card-header">
             <span class="card-title">Чистая Прибыль</span>
@@ -553,6 +543,35 @@
             Фактические доли статей затрат в общем объеме расходов
           </p>
           <div id="fin-chart-donut"></div>
+        </div>
+      </div>
+
+      <!-- Операционный блок сверки: Начисления OF & Комиссии вывода -->
+      <div class="glass-card" style="padding: 18px 24px; margin-bottom: 24px; border-left: 4px solid var(--primary); background: rgba(56, 189, 248, 0.04);">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+          <div>
+            <div style="font-size: 14px; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 8px;">
+              <span>🔍 Сверка Начислений OF & Комиссий Вывода</span>
+              <span style="font-size: 10px; background: rgba(56, 189, 248, 0.15); color: var(--primary); padding: 2px 8px; border-radius: 6px; font-weight: 700;">Операционный учет</span>
+            </div>
+            <div style="font-size: 12px; color: var(--text-muted); margin-top: 3px;">
+              Служебный контроль для подсчета комиссий: начислено платформой к выводу vs потери на Paxum / Bybit P2P
+            </div>
+          </div>
+          <div style="display: flex; gap: 28px; align-items: center; flex-wrap: wrap;">
+            <div>
+              <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 600;">Выручка Net OF:</div>
+              <div id="fin-kpi-rev" style="font-size: 22px; font-weight: 800; color: var(--accent-green); font-family: var(--font-mono);">$0.00</div>
+            </div>
+            <div>
+              <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 600;">Комиссии вывода / обнала:</div>
+              <div id="fin-kpi-fees" style="font-size: 22px; font-weight: 800; color: var(--accent-rose); font-family: var(--font-mono);">$0.00</div>
+            </div>
+            <div>
+              <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 600;">Эффективная потеря:</div>
+              <div id="fin-kpi-fees-sub" style="font-size: 16px; font-weight: 700; color: var(--accent-amber); font-family: var(--font-mono);">Paxum / P2P: 0.0%</div>
+            </div>
+          </div>
         </div>
       </div>
 
