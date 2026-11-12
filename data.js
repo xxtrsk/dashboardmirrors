@@ -5,7 +5,7 @@
 
 export const availableMonths = [
   { key: '2026-11', label: 'Ноябрь 2026 (1–10 Ноя | План $16.5k)', isCurrent: true, totalDays: 30, daysPassed: 10 },
-  { key: '2026-10', label: 'Октябрь 2026 (Завершен Итог $17.3k с PP)', isCurrent: false, totalDays: 31, daysPassed: 31 },
+  { key: '2026-10', label: 'Октябрь 2026 (Завершен Итог $18.35k с PP)', isCurrent: false, totalDays: 31, daysPassed: 31 },
   { key: '2026-09', label: 'Сентябрь 2026 (Завершен Итог $17.6k с PP)', isCurrent: false, totalDays: 30, daysPassed: 30 },
   { key: '2026-08', label: 'Август 2026 (Завершен Итог $19.5k)', isCurrent: false, totalDays: 31, daysPassed: 31 },
   { key: '2026-07', label: 'Июль 2026 (Завершен)', isCurrent: false, totalDays: 31, daysPassed: 31 }
@@ -228,9 +228,9 @@ export const initialChatterWeekly = [
     week: '1–31 Окт (Итог)', 
     chatter: 'karina @sanesskio', 
     accountId: '30201', 
-    totalSales: 1246.45, 
+    totalSales: 1261.45, 
     ppvSales: 744.22, 
-    tips: 180.00, // .00 CRM + .00 PP
+    tips: 195.00, // 40.00 CRM + 155.00 PP
     messages: 2099, 
     freeMedia: 85, 
     ppvSent: 63, 
@@ -781,17 +781,17 @@ export const initialModelWeekly = [
     week: '1–31 Окт (Итог)', 
     accountId: '30201', 
     modelName: 'Eva Blush', 
-    totalRevenue: 3991.31, // ,851.31 CRM + .00 PP Karina
+    totalRevenue: 4006.31, // 3,851.31 CRM + 155.00 PP Karina
     plan: 3200.00, 
-    goalProgressPct: 124.73, 
-    goalStatusPct: 24.73, 
-    runRate: 3991.31, 
+    goalProgressPct: 125.20, 
+    goalStatusPct: 25.20, 
+    runRate: 4006.31, 
     newFans: 481, 
     spenders: 69, 
     newSpenders: 32,
     conversion: 6.65,
     ppvRev: 2885.86, 
-    tipsRev: 956.00, // .00 CRM + .00 PP
+    tipsRev: 971.00, // 816.00 CRM + 155.00 PP
     transactions: 168, 
     apc: 2.43, 
     apv: 22.92, 

@@ -191,7 +191,7 @@ function renderHeaderInfo() {
     if (state.selectedMonthKey === '2026-11') {
       cardSubtextEl.innerHTML = `Текущая выручка за ${daysPassed} дн. Ноября по всем 5 моделям (План $16.5k)`;
     } else if (state.selectedMonthKey === '2026-10') {
-      cardSubtextEl.innerHTML = `Итоговая выручка за 31 дн. Октября по всем 5 моделям <br><span style="color: var(--accent-purple); font-weight: 600;">(включая +$1,219.24 PayPal: Sunnery $987.63 + Blush $140.00 + 1lolly $91.61)</span>`;
+      cardSubtextEl.innerHTML = `Итоговая выручка за 31 дн. Октября по всем 5 моделям <br><span style="color: var(--accent-purple); font-weight: 600;">(включая +$1,234.24 PayPal: Sunnery $987.63 + Blush $155.00 + 1lolly $91.61)</span>`;
     } else if (state.selectedMonthKey === '2026-09') {
       cardSubtextEl.innerHTML = `Итоговая выручка за 30 дн. Сентября по всем моделям <br><span style="color: var(--accent-purple); font-weight: 600;">(включая +$2,515.13 PayPal: Lolly $1,813.13 + Eva $652.00 + 1lolly $50.00)</span>`;
     } else if (state.selectedMonthKey === '2026-08') {
