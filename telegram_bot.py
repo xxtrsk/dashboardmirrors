@@ -150,6 +150,7 @@ def extract_date_from_text(text: str):
     Извлекает дату задним числом из текста сообщения:
     - YYYY-MM-DD (2026-11-02)
     - DD.MM.YYYY (02.11.2026)
+    - Текстовые месяцы (2 ноября, 02 ноя)
     - DD.MM (02.11 или 2.11) -> берет текущий год
     - 'вчера' / 'позавчера'
     Возвращает (YYYY-MM-DD, очищенный_текст)
@@ -173,14 +174,28 @@ def extract_date_from_text(text: str):
         s = (s[:m_full.start()] + " " + s[m_full.end():]).strip()
         return date_val, re.sub(r"\s+", " ", s).strip()
 
-    # 3. DD.MM или DD/MM (например 02.11, 2.11)
+    # 3. Текстовые месяцы (например "2 ноября", "02 ноя")
+    month_map = {
+        "янв": 1, "фев": 2, "мар": 3, "апр": 4, "май": 5, "мая": 5,
+        "июн": 6, "июл": 7, "авг": 8, "сен": 9, "окт": 10, "ноя": 11, "дек": 12
+    }
+    m_text = re.search(r"\b(0?[1-9]|[12]\d|3[01])\s+([а-яёА-ЯЁ]{3,8})\b", s, flags=re.IGNORECASE)
+    if m_text:
+        day_n = int(m_text.group(1))
+        m_word = m_text.group(2).lower()[:3]
+        if m_word in month_map:
+            date_val = f"{y:04d}-{month_map[m_word]:02d}-{day_n:02d}"
+            s = (s[:m_text.start()] + " " + s[m_text.end():]).strip()
+            return date_val, re.sub(r"\s+", " ", s).strip()
+
+    # 4. DD.MM или DD/MM (например 02.11, 2.11)
     m_short = re.search(r"\b(0?[1-9]|[12]\d|3[01])[./](0?[1-9]|1[0-2])\b", s)
     if m_short:
         date_val = f"{y:04d}-{int(m_short.group(2)):02d}-{int(m_short.group(1)):02d}"
         s = (s[:m_short.start()] + " " + s[m_short.end():]).strip()
         return date_val, re.sub(r"\s+", " ", s).strip()
 
-    # 4. Вчера / позавчера
+    # 5. Вчера / позавчера
     if re.search(r"\bвчера\b", s, flags=re.IGNORECASE):
         date_val = (today - datetime.timedelta(days=1)).isoformat()
         s = re.sub(r"\bвчера\b", "", s, flags=re.IGNORECASE).strip()
@@ -189,6 +204,60 @@ def extract_date_from_text(text: str):
         s = re.sub(r"\bпозавчера\b", "", s, flags=re.IGNORECASE).strip()
 
     return date_val, re.sub(r"\s+", " ", s).strip()
+
+def parse_split_payout(text: str):
+    """
+    Распознает составной вывод OnlyFans по нескольким анкетам с комиссией.
+    Пример: "2500 вывод онлифанс, после комсы 2364, 1301 (sunnery) 650 (blush) 549 (1lollyhere)"
+    Возвращает dict со сплитом по анкетам или None.
+    """
+    models_patterns = [
+        (r"(?:1lolly|1лолли|1lollyhere)", "Lolly (1lollyhere)"),
+        (r"(?:sunnery|саннери|lollysunnery)", "Lolly (Lollysunnery)"),
+        (r"(?:blush|блаш|evablush)", "Eva Blush"),
+        (r"(?:pinky|пинки|evapinky|fansly|фансли)", "Eva Pinky (Fansly)"),
+        (r"(?:lila|лила|angelkiss)", "Lila (angelkiss)"),
+    ]
+
+    splits = []
+    for pat, model_name in models_patterns:
+        # Вариант 1: 1301 (sunnery) или 1301 sunnery
+        m1 = re.search(r"(\d+(?:[.,]\d+)?)\s*(?:\(\s*)?" + pat, text, flags=re.IGNORECASE)
+        # Вариант 2: sunnery: 1301 или (sunnery) 1301
+        m2 = re.search(pat + r"[\s:)-]+(\d+(?:[.,]\d+)?)", text, flags=re.IGNORECASE)
+
+        amt = None
+        if m1:
+            amt = float(m1.group(1).replace(",", "."))
+        elif m2:
+            amt = float(m2.group(1).replace(",", "."))
+        if amt and amt > 0:
+            splits.append({"model": model_name, "amount": amt})
+
+    # Считаем сплитом, только если найдено минимум 2 разные анкеты
+    if len(splits) < 2:
+        return None
+
+    # Поиск фактической суммы на руках (после комиссии) или явной комиссии
+    m_net = re.search(r"(?:после комсы|после комиссии|на руки|в кассу|получено|чистыми)[:\s]+(\d+(?:[.,]\d+)?)", text, flags=re.IGNORECASE)
+    m_fee = re.search(r"(?:комса|комиссия|fee)[:\s]+(\d+(?:[.,]\d+)?)", text, flags=re.IGNORECASE)
+
+    total_gross = sum(s["amount"] for s in splits)
+    fee = 0.0
+
+    if m_net:
+        net_received = float(m_net.group(1).replace(",", "."))
+        if net_received < total_gross:
+            fee = total_gross - net_received
+    elif m_fee:
+        fee = float(m_fee.group(1).replace(",", "."))
+
+    return {
+        "splits": splits,
+        "total_gross": total_gross,
+        "fee": fee,
+        "actual_received": total_gross - fee
+    }
 
 def detect_model(desc: str) -> str:
     d = desc.lower()
@@ -332,18 +401,78 @@ def handle_cmd_out_in(msg):
     cleaned = re.sub(r"^/(out|in)\s*", "", msg.text, flags=re.IGNORECASE).strip()
     process_amount_and_desc(msg, tx_type, cleaned)
 
+def handle_composite_split_save(msg, split_info: dict, tx_date: str, original_text: str):
+    author = msg.from_user.first_name or "Telegram"
+    total_gross = split_info["total_gross"]
+    fee = split_info["fee"]
+    actual_received = split_info["actual_received"]
+
+    # 1. Сохраняем доход отдельно по каждой модели
+    for s in split_info["splits"]:
+        m_tx = {
+            "date": tx_date,
+            "type": "Доход",
+            "category": "Выплаты OnlyFans",
+            "model": s["model"],
+            "amount": s["amount"],
+            "desc": f"Вывод OnlyFans {s['model']} (сплит на ${total_gross:,.2f})",
+            "author": author
+        }
+        send_tx_to_sheets(m_tx)
+
+    # 2. Если была комиссия - сохраняем отдельный расход
+    if fee > 0:
+        fee_tx = {
+            "date": tx_date,
+            "type": "Расход",
+            "category": "Комиссии и вывод",
+            "model": "Agency Core (Общие)",
+            "amount": fee,
+            "desc": f"Комиссия вывода / обнала Paxum Bybit (${total_gross:,.2f} -> ${actual_received:,.2f})",
+            "author": author
+        }
+        send_tx_to_sheets(fee_tx)
+
+    # 3. Отправляем развернутый и красивый отчет в Telegram
+    lines = [
+        "🔀 <b>Обнаружен и разбит составной вывод OnlyFans!</b>\n",
+        f"📅 <b>Дата:</b> {tx_date}",
+        f"💵 <b>Сумма начислений (Gross):</b> +${total_gross:,.2f}\n",
+        "<b>Разбивка по анкетам:</b>"
+    ]
+    for idx, s in enumerate(split_info["splits"], 1):
+        lines.append(f"{idx}. <b>+${s['amount']:,.2f}</b> — {s['model']}")
+
+    if fee > 0:
+        eff_fee = (fee / total_gross) * 100
+        lines.append(f"\n💳 <b>Комиссия вывода (Paxum/P2P):</b> -${fee:,.2f} (эфф. {eff_fee:.1f}%)")
+
+    lines.append(f"🏦 <b>Фактически зачислено в кассу:</b> <b>+${actual_received:,.2f}</b>\n")
+    lines.append("<i>☁️ Все операции успешно синхронизированы с Google Sheets и дашбордом!</i>")
+
+    markup = types.InlineKeyboardMarkup(row_width=1)
+    markup.add(types.InlineKeyboardButton(text="💰 Баланс кассы", callback_data="btn_balance"))
+    bot.send_message(msg.chat.id, "\n".join(lines), reply_markup=markup, parse_mode="HTML")
+
 @bot.message_handler(func=lambda m: m.text and (m.text.startswith("-") or m.text.startswith("+") or re.search(r"\b\d+(?:[.,]\d+)?\b", m.text)))
 def handle_quick_amount(msg):
     text = msg.text.strip()
-    tx_type = "Доход" if text.startswith("+") else "Расход"
-    cleaned = text.lstrip("+-").strip()
-    process_amount_and_desc(msg, tx_type, cleaned)
+    tx_type = "Расход"
+    if "+" in text or "вывод" in text.lower() or "доход" in text.lower() or "onlyfans" in text.lower():
+        tx_type = "Доход"
+    process_amount_and_desc(msg, tx_type, text)
 
 def process_amount_and_desc(msg, tx_type: str, text: str):
-    # 1. Извлекаем дату задним числом (02.11, 02.11.2026, 2026-11-02, вчера)
+    # 1. Извлекаем дату задним числом (02.11, 2 ноября, 2026-11-02, вчера)
     tx_date, clean_s = extract_date_from_text(text)
 
-    # 2. Если в очищенном тексте явно указан знак + или -
+    # 2. Проверяем составной вывод OnlyFans по нескольким моделям
+    split_info = parse_split_payout(clean_s)
+    if split_info:
+        handle_composite_split_save(msg, split_info, tx_date, clean_s)
+        return
+
+    # 3. Если в очищенном тексте явно указан знак + или -
     if clean_s.startswith("+"):
         tx_type = "Доход"
         clean_s = clean_s[1:].strip()
