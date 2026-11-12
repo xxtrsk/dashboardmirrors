@@ -477,10 +477,17 @@ def save_and_confirm(chat_id, user_id, tx_type, amount, category, model, desc, a
 def send_balance_report(chat_id):
     txs = fetch_data_from_sheets()
     if not txs:
-        bot.send_message(
-            chat_id,
-            "ℹ️ Данные в Google Таблице пока пусты или не подключен /url веб-приложения."
+        text = (
+            "🏦 <b>АКТУАЛЬНОЕ СОСТОЯНИЕ КАССЫ</b>\n"
+            "━━━━━━━━━━━━━━━━━━━━\n"
+            "💰 <b>Остаток в кассе:</b> <code>$0.00</code>\n"
+            "💵 <b>Выручка (Всего):</b> $0.00\n"
+            "💸 <b>Расходы (OPEX):</b> $0.00\n"
+            "📊 <b>Чистая маржинальность:</b> 0.0%\n"
+            "📋 <b>Всего записей в реестре:</b> 0\n\n"
+            "<i>Касса чистая ($0.00). Вносите доходы (/in) и расходы (/out).</i>"
         )
+        bot.send_message(chat_id, text, parse_mode="HTML")
         return
 
     income = sum(float(t.get("amount", 0)) for t in txs if t.get("type") == "Доход")
