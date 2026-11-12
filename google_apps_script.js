@@ -24,7 +24,7 @@
 // -------------------------------------------------------------------------
 // НАСТРОЙКИ (Заполните перед развертыванием)
 // -------------------------------------------------------------------------
-const BOT_TOKEN = "ВАШ_ТОКЕН_ОТ_BOTFATHER"; // Например: "123456789:ABCdefGhIJKlmNoPQRsTUVwxyZ"
+const BOT_TOKEN = "9068998139:AAGV1moTeBpncUXTwgMJbYh5K0pKYlUrhm8"; // @mirrorsfinancebot
 const SHEET_NAME_TX = "Транзакции";
 
 // Список Telegram ID пользователей, которым разрешено вносить траты (пустой = разрешено всем)
@@ -434,24 +434,19 @@ function detectModel(desc) {
 function detectCategory(desc, type) {
   const d = desc.toLowerCase();
   if (type === "Доход") {
-    if (d.includes("ppv") || d.includes("чат")) return "Платные сообщения (PPV / Chatting)";
-    if (d.includes("тип") || d.includes("tip") || d.includes("чаев") || d.includes("кастом")) return "Чаевые (Tips) & Кастомы";
-    if (d.includes("реклам") || d.includes("спонсор")) return "Внешняя реклама / Sponsorships";
-    return "OnlyFans Payouts (Выплаты платформы)";
+    return "Выплаты OnlyFans";
   }
 
   // Расходы
-  if (d.includes("оскар") || d.includes("oftv") || d.includes("сценари") || d.includes("монтаж")) return "Трафик: Reddit & Dating Apps";
-  if (d.includes("леон") || d.includes("sfs") || d.includes("share")) return "Трафик: Twitter / X Promo";
-  if (d.includes("анастасия") || d.includes("fyp") || d.includes("reels") || d.includes("tiktok") || d.includes("shorts")) return "Трафик: TikTok / Reels / Shorts";
-  if (d.includes("реддит") || d.includes("reddit") || d.includes("дейтинг") || d.includes("dating") || d.includes("трафик")) return "Трафик: Reddit & Dating Apps";
-  if (d.includes("чаттер") || d.includes("оператор") || d.includes("смена") || d.includes("зп")) return "Зарплаты: Чаттеры / Операторы";
-  if (d.includes("тимлид") || d.includes("баер") || d.includes("бонус")) return "Зарплаты: Тимлиды / Баеры";
-  if (d.includes("модел") || d.includes("выплата модел") || d.includes("доля")) return "Выплаты моделям (Model Share %)";
-  if (d.includes("монстр") || d.includes("onlymonster") || d.includes("infloww") || d.includes("crm") || d.includes("софт")) return "Софт: Infloww / CreatorHero / CRM";
-  if (d.includes("прокси") || d.includes("proxy") || d.includes("dolphin") || d.includes("sim") || d.includes("сервер")) return "Инфраструктура: Прокси, Dolphin, SIM";
-  if (d.includes("паксум") || d.includes("paxum") || d.includes("комисси") || d.includes("обнал") || d.includes("вывод")) return "Комиссии: Платежки / Paxum / Вывод";
-  return "Прочие операционные расходы";
+  if (d.includes("оскар") || d.includes("osckelly") || d.includes("oftv") || d.includes("сценари") || d.includes("монтаж")) return "Трафик: TikTok";
+  if (d.includes("анастасия") || d.includes("aneskagency") || d.includes("fyp") || d.includes("reels") || d.includes("tiktok") || d.includes("shorts")) return "Трафик: TikTok";
+  if (d.includes("реддит") || d.includes("reddit") || d.includes("дейтинг") || d.includes("dating")) return "Трафик: Reddit";
+  if (d.includes("леон") || d.includes("killerle0n") || d.includes("sfs") || d.includes("twitter") || d.includes("твиттер")) return "Трафик: Twitter";
+  if (d.includes("чаттер") || d.includes("оператор") || d.includes("смена") || d.includes("зп")) return "Зарплаты: Чаттеры";
+  if (d.includes("модел") || d.includes("выплата модел") || d.includes("доля")) return "Выплаты моделям";
+  if (d.includes("монстр") || d.includes("onlymonster") || d.includes("monster") || d.includes("crm") || d.includes("софт")) return "Софт: OnlyMonster";
+  if (d.includes("паксум") || d.includes("paxum") || d.includes("комисси") || d.includes("обнал") || d.includes("вывод") || d.includes("байбит") || d.includes("bybit")) return "Комиссии и вывод";
+  return "Прочие расходы";
 }
 
 // -------------------------------------------------------------------------
@@ -481,14 +476,14 @@ function sendCashBalanceReport(chatId) {
 function sendRunwayReport(chatId) {
   const msg = `📅 <b>ПЛАТЕЖНЫЙ КАЛЕНДАРЬ ОБЯЗАТЕЛЬСТВ</b>\n` +
     `━━━━━━━━━━━━━━━━━━━━\n\n` +
-    `• <b>CRM OnlyMonster:</b> $135 USDT\n` +
-    `  ⏳ <i>Срок: 2-е число каждого месяца</i>\n\n` +
-    `• <b>@osckelly (Оскар) — OFTV:</b> $175 USDT (Аванс)\n` +
-    `  ⏳ <i>Срок: 2-е число (остаток 31-го)</i>\n\n` +
-    `• <b>Анастасия (FYP-менеджер):</b> $250 USDT\n` +
-    `  ⏳ <i>Срок: Каждые 2 недели (аванс)</i>\n\n` +
-    `• <b>Леон — SFS-трафик:</b> ~$1,200 USDT\n` +
-    `  ⏳ <i>Срок: 1–5 число по сверке</i>\n\n` +
+    `• <b>OnlyMonster CRM:</b> $220 USDT\n` +
+    `  ⏳ <i>Срок: 2-е число каждого месяца (единственный софт)</i>\n\n` +
+    `• <b>@osckelly (Оскар) — OFTV:</b> $350 USDT\n` +
+    `  ⏳ <i>Условия: Аванс 175$ в начале + 175$ закрытие 31-го</i>\n\n` +
+    `• <b>@aneskagency (Анастасия) — FYP:</b> $250 USDT\n` +
+    `  ⏳ <i>Условия: Выплата по 125$ каждые 2 недели</i>\n\n` +
+    `• <b>@KillerLe0n (Леон) — SFS:</b> $580 USDT\n` +
+    `  ⏳ <i>Срок: 1–5 число месяца по сверке</i>\n\n` +
     `• <b>🔒 Модели (25%) & Чаттеры (20%):</b>\n` +
     `  ⏳ <i>Срок: 15-го (аванс) и 31-го (расчет)</i>\n\n` +
     `💡 <i>Выводы OnlyFans поступают каждый понедельник. Распределяйте транш через калькулятор сплита!</i>`;

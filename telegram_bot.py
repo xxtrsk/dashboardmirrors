@@ -1,66 +1,142 @@
 """
 =============================================================================
-MIRRORS AGENCY — TELEGRAM FINANCIAL BOT (PYTHON VERSION)
+MIRRORS AGENCY — TELEGRAM FINANCE BOT (PYTHON VERSION)
 =============================================================================
-Используется, если вы хотите запускать бота на собственном сервере / VPS
-или локально через Python.
+Бот для оперативного учета кассы, расходов, доходов и сплита агентства MIRRORS.
+Подключается напрямую к Google Apps Script Web App (к той же таблице, что и дашборд Vercel).
 
-Библиотеки:
-  pip install pyTelegramBotAPI gspread oauth2client
-
-Бот умеет:
-- Принимать команды /out, /in, /balance, /split, /runway
-- Записывать расходы и доходы в Google Таблицу через Google Sheets API
-- Отправлять интерактивные клавиатуры и мгновенные отчеты о кассе
+Запуск:
+    ./.venv/bin/python telegram_bot.py
 =============================================================================
 """
 
 import os
-import sys
 import re
+import json
+import logging
 import datetime
+import requests
 import telebot
 from telebot import types
+
+logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 
 # ---------------------------------------------------------------------------
 # КОНФИГУРАЦИЯ
 # ---------------------------------------------------------------------------
-BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "ВАШ_ТОКЕН_ОТ_BOTFATHER")
-GOOGLE_CREDS_FILE = os.getenv("GOOGLE_CREDS_FILE", "credentials.json")
-SPREADSHEET_NAME = os.getenv("SPREADSHEET_NAME", "MIRRORS_Finance")
+CONFIG_FILE = "bot_config.json"
 
-# Telegram IDs пользователей с доступом (пустой список = доступ открыт всем)
-ALLOWED_USER_IDS = []
-
-bot = telebot.TeleBot(BOT_TOKEN, parse_mode="HTML")
-
-# Попытка подключиться к Google Sheets (если есть credentials.json)
-sheet = None
-try:
-    import gspread
-    from oauth2client.service_account import ServiceAccountCredentials
-
-    if os.path.exists(GOOGLE_CREDS_FILE):
-        scope = [
-            "https://spreadsheets.google.com/feeds",
-            "https://www.googleapis.com/auth/drive"
-        ]
-        creds = ServiceAccountCredentials.from_json_keyfile_name(GOOGLE_CREDS_FILE, scope)
-        client = gspread.authorize(creds)
-        ss = client.open(SPREADSHEET_NAME)
+def load_config():
+    default_cfg = {
+        "bot_token": os.getenv("TELEGRAM_BOT_TOKEN", "9068998139:AAGV1moTeBpncUXTwgMJbYh5K0pKYlUrhm8"),
+        "gsheet_url": os.getenv("GSHEET_WEBAPP_URL", "")
+    }
+    if os.path.exists(CONFIG_FILE):
         try:
-            sheet = ss.worksheet("Транзакции")
-        except gspread.WorksheetNotFound:
-            sheet = ss.add_worksheet(title="Транзакции", rows=1000, cols=10)
-            sheet.append_row(["Дата", "Тип", "Категория", "Модель/Проект", "Сумма ($)", "Описание", "Автор"])
-        print("✅ Успешно подключено к Google Sheets:", SPREADSHEET_NAME)
-    else:
-        print("ℹ️ credentials.json не найден — бот запустится в локальном режиме")
-except Exception as e:
-    print(f"⚠️ Ошибка инициализации Google Sheets: {e}")
+            with open(CONFIG_FILE, "r", encoding="utf-8") as f:
+                saved = json.load(f)
+                default_cfg.update(saved)
+        except Exception as e:
+            logging.warning(f"Ошибка чтения {CONFIG_FILE}: {e}")
+    return default_cfg
+
+def save_config(cfg):
+    try:
+        with open(CONFIG_FILE, "w", encoding="utf-8") as f:
+            json.dump(cfg, f, ensure_ascii=False, indent=2)
+    except Exception as e:
+        logging.error(f"Ошибка сохранения {CONFIG_FILE}: {e}")
+
+CONFIG = load_config()
+bot = telebot.TeleBot(CONFIG["bot_token"], parse_mode="HTML")
+
+# Категории и Модели (синхронизированы с finance.js и dashboard)
+CATEGORIES_EXPENSE = [
+    "Трафик: TikTok",
+    "Трафик: Reddit",
+    "Трафик: Twitter",
+    "Зарплаты: Чаттеры",
+    "Выплаты моделям",
+    "Софт: OnlyMonster",
+    "Комиссии и вывод",
+    "Прочие расходы"
+]
+
+CATEGORIES_INCOME = [
+    "Выплаты OnlyFans",
+    "Прочий доход"
+]
+
+MODELS_LIST = [
+    "Lolly (Lollysunnery)",
+    "Lolly (1lollyhere)",
+    "Eva Blush",
+    "Lila (angelkiss)",
+    "Eva Pinky (Fansly)",
+    "Agency Core (Общие)"
+]
+
+CONTRACTORS = [
+    {"name": "@osckelly (Оскар) — OFTV", "amount": 350, "terms": "175$ в начале + 175$ в конце", "cat": "Трафик: TikTok"},
+    {"name": "@aneskagency (Анастасия) — FYP", "amount": 250, "terms": "125$ каждые 2 недели", "cat": "Трафик: TikTok"},
+    {"name": "OnlyMonster CRM", "amount": 220, "terms": "220$ / 2-го числа (единственный софт)", "cat": "Софт: OnlyMonster"},
+    {"name": "@KillerLe0n (Леон) — SFS", "amount": 580, "terms": "По сверке 1–5 числа", "cat": "Трафик: Twitter"}
+]
+
+# Хранилище временного состояния пошагового ввода { user_id: { ... } }
+user_sessions = {}
 
 # ---------------------------------------------------------------------------
-# ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
+# ВЗАИМОДЕЙСТВИЕ С GOOGLE APPS SCRIPT WEB APP
+# ---------------------------------------------------------------------------
+
+def send_tx_to_sheets(tx: dict) -> bool:
+    url = CONFIG.get("gsheet_url", "").strip()
+    if not url:
+        return False
+    try:
+        res = requests.post(
+            url,
+            json={"action": "addTransaction", "transaction": tx},
+            headers={"Content-Type": "text/plain;charset=utf-8"},
+            timeout=10
+        )
+        return res.status_code == 200
+    except Exception as e:
+        logging.error(f"Ошибка отправки в Sheets: {e}")
+        return False
+
+def delete_tx_from_sheets(tx: dict) -> bool:
+    url = CONFIG.get("gsheet_url", "").strip()
+    if not url:
+        return False
+    try:
+        res = requests.post(
+            url,
+            json={"action": "deleteTransaction", "transaction": tx, "deleteAllDuplicates": True},
+            headers={"Content-Type": "text/plain;charset=utf-8"},
+            timeout=10
+        )
+        return res.status_code == 200
+    except Exception as e:
+        logging.error(f"Ошибка удаления из Sheets: {e}")
+        return False
+
+def fetch_data_from_sheets() -> list:
+    url = CONFIG.get("gsheet_url", "").strip()
+    if not url:
+        return []
+    try:
+        res = requests.get(url, timeout=10)
+        if res.status_code == 200:
+            data = res.json()
+            return data.get("transactions", [])
+    except Exception as e:
+        logging.error(f"Ошибка выгрузки из Sheets: {e}")
+    return []
+
+# ---------------------------------------------------------------------------
+# ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ АВТООПРЕДЕЛЕНИЯ
 # ---------------------------------------------------------------------------
 
 def detect_model(desc: str) -> str:
@@ -71,7 +147,7 @@ def detect_model(desc: str) -> str:
         return "Eva Pinky (Fansly)"
     if "lollysunnery" in d or "саннери" in d or "sunnery" in d:
         return "Lolly (Lollysunnery)"
-    if "1lolly" in d or "лолли" in d:
+    if "1lolly" in d or "лолли" in d or "1lollyhere" in d:
         return "Lolly (1lollyhere)"
     if "lila" in d or "angelkiss" in d or "лила" in d:
         return "Lila (angelkiss)"
@@ -80,201 +156,399 @@ def detect_model(desc: str) -> str:
 def detect_category(desc: str, tx_type: str) -> str:
     d = desc.lower()
     if tx_type == "Доход":
-        if "ppv" in d or "чат" in d:
-            return "Платные сообщения (PPV / Chatting)"
-        if "тип" in d or "tip" in d or "чаев" in d or "кастом" in d:
-            return "Чаевые (Tips) & Кастомы"
-        if "реклам" in d or "спонсор" in d:
-            return "Внешняя реклама / Sponsorships"
-        return "OnlyFans Payouts (Выплаты платформы)"
+        return "Выплаты OnlyFans"
 
-    if "оскар" in d or "oftv" in d or "сценари" in d or "монтаж" in d:
-        return "Трафик: Reddit & Dating Apps"
-    if "леон" in d or "sfs" in d or "share" in d:
-        return "Трафик: Twitter / X Promo"
-    if "анастасия" in d or "fyp" in d or "reels" in d or "tiktok" in d:
-        return "Трафик: TikTok / Reels / Shorts"
-    if "реддит" in d or "reddit" in d or "дейтинг" in d or "dating" in d or "трафик" in d:
-        return "Трафик: Reddit & Dating Apps"
-    if "чаттер" in d or "оператор" in d or "смена" in d or "зп" in d:
-        return "Зарплаты: Чаттеры / Операторы"
-    if "тимлид" in d or "баер" in d or "бонус" in d:
-        return "Зарплаты: Тимлиды / Баеры"
-    if "модел" in d or "доля" in d:
-        return "Выплаты моделям (Model Share %)"
-    if "монстр" in d or "onlymonster" in d or "infloww" in d or "crm" in d or "софт" in d:
-        return "Софт: Infloww / CreatorHero / CRM"
-    if "прокси" in d or "proxy" in d or "dolphin" in d or "sim" in d:
-        return "Инфраструктура: Прокси, Dolphin, SIM"
-    if "паксум" in d or "paxum" in d or "комисси" in d or "обнал" in d or "вывод" in d:
-        return "Комиссии: Платежки / Paxum / Вывод"
-    return "Прочие операционные расходы"
-
-def get_sheet_balance() -> dict:
-    if not sheet:
-        return {"balance": 0.0, "income": 0.0, "expense": 0.0, "count": 0}
-    try:
-        rows = sheet.get_all_values()
-        if len(rows) <= 1:
-            return {"balance": 0.0, "income": 0.0, "expense": 0.0, "count": 0}
-        
-        income = 0.0
-        expense = 0.0
-        count = 0
-        for r in rows[1:]:
-            if len(r) >= 5 and r[4]:
-                try:
-                    val = float(str(r[4]).replace("$", "").replace(",", "").strip())
-                    tx_type = str(r[1]).strip().lower()
-                    if tx_type in ["доход", "in"]:
-                        income += val
-                    else:
-                        expense += val
-                    count += 1
-                except ValueError:
-                    continue
-        return {"balance": income - expense, "income": income, "expense": expense, "count": count}
-    except Exception as e:
-        print("Error reading balance:", e)
-        return {"balance": 0.0, "income": 0.0, "expense": 0.0, "count": 0}
+    if "оскар" in d or "osckelly" in d or "oftv" in d:
+        return "Трафик: TikTok"
+    if "анастасия" in d or "aneskagency" in d or "fyp" in d or "tiktok" in d or "тикток" in d:
+        return "Трафик: TikTok"
+    if "реддит" in d or "reddit" in d or "дейтинг" in d:
+        return "Трафик: Reddit"
+    if "леон" in d or "killerle0n" in d or "sfs" in d or "твиттер" in d or "twitter" in d:
+        return "Трафик: Twitter"
+    if "чаттер" in d or "оператор" in d or "зп" in d or "смена" in d or "карина" in d or "тимур" in d:
+        return "Зарплаты: Чаттеры"
+    if "модел" in d or "выплата" in d or "доля" in d:
+        return "Выплаты моделям"
+    if "монстр" in d or "monster" in d or "onlymonster" in d or "софт" in d or "crm" in d:
+        return "Софт: OnlyMonster"
+    if "паксум" in d or "paxum" in d or "комисси" in d or "вывод" in d or "обнал" in d or "байбит" in d:
+        return "Комиссии и вывод"
+    return "Прочие расходы"
 
 # ---------------------------------------------------------------------------
-# ОБРАБОТЧИКИ КОМАНД TELEGRAM
+# КЛАВИАТУРЫ
 # ---------------------------------------------------------------------------
 
-@bot.message_handler(commands=["start"])
+def get_main_keyboard():
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
+    markup.add(
+        types.KeyboardButton("💸 Внести Расход"),
+        types.KeyboardButton("💵 Внести Доход")
+    )
+    markup.add(
+        types.KeyboardButton("💰 Баланс Кассы"),
+        types.KeyboardButton("🧮 Сплит Вывода")
+    )
+    markup.add(
+        types.KeyboardButton("📅 Подрядчики"),
+        types.KeyboardButton("📋 Последние Записи")
+    )
+    return markup
+
+def get_category_keyboard(tx_type="Расход"):
+    markup = types.InlineKeyboardMarkup(row_width=2)
+    cats = CATEGORIES_EXPENSE if tx_type == "Расход" else CATEGORIES_INCOME
+    buttons = [types.InlineKeyboardButton(text=c, callback_data=f"cat:{c}") for c in cats]
+    markup.add(*buttons)
+    markup.add(types.InlineKeyboardButton(text="❌ Отмена", callback_data="cancel"))
+    return markup
+
+def get_model_keyboard():
+    markup = types.InlineKeyboardMarkup(row_width=2)
+    buttons = [types.InlineKeyboardButton(text=m, callback_data=f"model:{m}") for m in MODELS_LIST]
+    markup.add(*buttons)
+    markup.add(types.InlineKeyboardButton(text="❌ Отмена", callback_data="cancel"))
+    return markup
+
+# ---------------------------------------------------------------------------
+# КОМАНДЫ
+# ---------------------------------------------------------------------------
+
+@bot.message_handler(commands=["start", "help"])
 def cmd_start(msg):
-    welcome = (
-        "👑 <b>MIRRORS Agency Finance Bot</b>\n\n"
-        "Оперативный учет кассы, P&L и контроль платежей прямо из Telegram.\n\n"
-        "<b>Быстрые команды:</b>\n"
-        "• <code>/out 350 Оскар OFTV монтаж</code> — записать расход\n"
-        "• <code>/in 4200 Вывод OnlyFans Lolly</code> — записать доход\n"
-        "• <code>/balance</code> — актуальное состояние кассы\n"
-        "• <code>/split 8000</code> — понедельничный сплит транша\n"
-        "• <code>/runway</code> — график выплат\n\n"
-        "<i>Используйте кнопки меню ниже:</i>"
-    )
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    markup.row("💰 Баланс Кассы", "📅 Ближайшие Выплаты")
-    markup.row("🧮 Понедельничный Сплит", "📊 Сводка P&L")
-    bot.send_message(msg.chat.id, welcome, reply_markup=markup)
-
-@bot.message_handler(func=lambda m: m.text in ["💰 Баланс Кассы", "/balance", "/касса"])
-def cmd_balance(msg):
-    stats = get_sheet_balance()
-    margin = (stats["balance"] / stats["income"] * 100) if stats["income"] > 0 else 0.0
+    url_status = "🟢 Подключено" if CONFIG.get("gsheet_url") else "⚪ Не подключено (введите /url)"
     text = (
-        "🏦 <b>АКТУАЛЬНОЕ СОСТОЯНИЕ КАССЫ</b>\n"
-        "━━━━━━━━━━━━━━━━━━━━\n"
-        f"💰 <b>Остаток в кассе:</b> <code>${stats['balance']:,.2f}</code>\n"
-        f"💵 <b>Всего доходов:</b> ${stats['income']:,.2f}\n"
-        f"💸 <b>Всего расходов:</b> ${stats['expense']:,.2f}\n"
-        f"📊 <b>Чистая маржинальность:</b> {margin:.1f}%\n\n"
-        f"<i>Всего записей в Google Таблице: {stats['count']}</i>"
+        f"👑 <b>MIRRORS Agency — Финансовый Бот</b>\n\n"
+        f"Быстрый учет кассы, расходов, доходов и сплита для овнера и команды.\n\n"
+        f"<b>Статус Google Sheets:</b> {url_status}\n\n"
+        f"⚡ <b>Быстрый ввод одной строкой:</b>\n"
+        f"• <code>/out 175 Оскар OFTV монтаж</code>\n"
+        f"• <code>/out 250 Анастасия FYP</code>\n"
+        f"• <code>/out 220 OnlyMonster CRM</code>\n"
+        f"• <code>/in 4200 Вывод OnlyFans Lolly</code>\n"
+        f"• Или просто: <code>-150 Тикток</code>, <code>+4200 Лолли</code>\n\n"
+        f"<i>Или используйте кнопки меню ниже:</i>"
     )
-    bot.send_message(msg.chat.id, text)
+    bot.send_message(msg.chat.id, text, reply_markup=get_main_keyboard())
 
-@bot.message_handler(func=lambda m: m.text in ["📅 Ближайшие Выплаты", "/runway", "/план"])
-def cmd_runway(msg):
-    text = (
-        "📅 <b>ПЛАТЕЖНЫЙ КАЛЕНДАРЬ ОБЯЗАТЕЛЬСТВ</b>\n"
-        "━━━━━━━━━━━━━━━━━━━━\n\n"
-        "• <b>CRM OnlyMonster:</b> $135 USDT\n"
-        "  ⏳ <i>Срок: 2-е число каждого месяца</i>\n\n"
-        "• <b>@osckelly (Оскар) — OFTV:</b> $175 USDT (Аванс)\n"
-        "  ⏳ <i>Срок: 2-е число (остаток 175$ 31-го)</i>\n\n"
-        "• <b>Анастасия (FYP-менеджер):</b> $250 USDT\n"
-        "  ⏳ <i>Срок: Каждые 2 недели (аванс)</i>\n\n"
-        "• <b>Леон — SFS-трафик:</b> ~$1,200 USDT\n"
-        "  ⏳ <i>Срок: 1–5 число по сверке</i>\n\n"
-        "• <b>🔒 Модели (25%) & Чаттеры (20%):</b>\n"
-        "  ⏳ <i>Срок: 15-го (аванс) и 31-го (расчет)</i>\n\n"
-        "💡 <i>Выводы OnlyFans поступают каждый понедельник.</i>"
+@bot.message_handler(commands=["url"])
+def cmd_set_url(msg):
+    parts = msg.text.split(maxsplit=1)
+    if len(parts) > 1 and parts[1].strip().startswith("https://script.google.com"):
+        CONFIG["gsheet_url"] = parts[1].strip()
+        save_config(CONFIG)
+        bot.send_message(
+            msg.chat.id,
+            f"✅ <b>Google Apps Script Web App успешно подключен!</b>\n\nURL сохранен. Все новые операции моментально синхронизируются с таблицей и дашбордом на Vercel."
+        )
+    else:
+        current = CONFIG.get("gsheet_url", "не задан")
+        bot.send_message(
+            msg.chat.id,
+            f"🔗 <b>Привязка Google Sheets:</b>\n\n"
+            f"Текущий URL: <code>{current}</code>\n\n"
+            f"Чтобы подключить таблицу, отправьте команду:\n"
+            f"<code>/url ВАШ_URL_APPS_SCRIPT</code>"
+        )
+
+# ---------------------------------------------------------------------------
+# ВНЕСЕНИЕ ОПЕРАЦИЙ (КНОПКИ И ТЕКСТ)
+# ---------------------------------------------------------------------------
+
+@bot.message_handler(func=lambda m: m.text in ["💸 Внести Расход", "💵 Внести Доход"])
+def handle_menu_add(msg):
+    tx_type = "Расход" if "Расход" in msg.text else "Доход"
+    user_sessions[msg.from_user.id] = {"type": tx_type, "step": "await_amount"}
+    icon = "💸" if tx_type == "Расход" else "💵"
+    bot.send_message(
+        msg.chat.id,
+        f"{icon} <b>Внесение: {tx_type}</b>\n\nНапишите сумму ($) или сумму с описанием:\n"
+        f"Например: <code>175 Оскар аванс</code> или просто <code>175</code>",
+        reply_markup=types.ForceReply()
     )
-    bot.send_message(msg.chat.id, text)
 
-@bot.message_handler(func=lambda m: m.text.startswith("/split") or m.text == "🧮 Понедельничный Сплит")
-def cmd_split(msg):
-    parts = msg.text.split()
-    if len(parts) < 2:
-        bot.send_message(msg.chat.id, "🧮 Отправьте команду в формате: <code>/split 8000</code>")
-        return
-    try:
-        payout = float(parts[1])
-    except ValueError:
-        bot.send_message(msg.chat.id, "⚠️ Укажите число: <code>/split 8000</code>")
-        return
+@bot.message_handler(commands=["out", "in"])
+def handle_cmd_out_in(msg):
+    is_out = msg.text.startswith("/out")
+    tx_type = "Расход" if is_out else "Доход"
+    cleaned = re.sub(r"^/(out|in)\s*", "", msg.text, flags=re.IGNORECASE).strip()
+    process_amount_and_desc(msg, tx_type, cleaned)
 
-    models = round(payout * 0.25)
-    chatters = round(payout * 0.20)
-    traffic = 950
-    profit = max(0, round(payout - models - chatters - traffic))
+@bot.message_handler(func=lambda m: m.text and (m.text.startswith("-") or m.text.startswith("+") or re.match(r"^\d+", m.text)))
+def handle_quick_amount(msg):
+    text = msg.text.strip()
+    tx_type = "Доход" if text.startswith("+") else "Расход"
+    cleaned = text.lstrip("+-").strip()
+    process_amount_and_desc(msg, tx_type, cleaned)
 
-    text = (
-        f"🧮 <b>ПОНЕДЕЛЬНИЧНЫЙ СПЛИТ ВЫВОДА OF</b>\n"
-        f"📥 Сумма транша: <b>${payout:,.0f}</b>\n"
-        f"━━━━━━━━━━━━━━━━━━━━\n\n"
-        f"🔒 <b>Фонд Моделей (25%):</b> ${models:,.0f}\n"
-        f"<i>Копилка на 15 и 31 число</i>\n\n"
-        f"🔒 <b>Фонд Чаттеров (20%):</b> ${chatters:,.0f}\n"
-        f"<i>Зарплатный фонд на 15 и 31 число</i>\n\n"
-        f"⚡ <b>Трафик & Софт недели:</b> ${traffic:,.0f}\n"
-        f"<i>Оскар, Леон, Анастасия, CRM Monster</i>\n\n"
-        f"🟢 <b>Свободный буфер / Профит:</b> <b>${profit:,.0f}</b>\n"
-        f"━━━━━━━━━━━━━━━━━━━━\n"
-        f"💡 <i>Оставьте свободный буфер на счету кассы для непредвиденных трат.</i>"
-    )
-    bot.send_message(msg.chat.id, text)
-
-@bot.message_handler(func=lambda m: m.text.lower().startswith(("/out", "расход", "-")))
-def handle_expense(msg):
-    save_tx(msg, "Расход")
-
-@bot.message_handler(func=lambda m: m.text.lower().startswith(("/in", "доход", "+")))
-def handle_income(msg):
-    save_tx(msg, "Доход")
-
-def save_tx(msg, default_type):
-    text = msg.text
-    # Удаляем ключевое слово
-    cleaned = re.sub(r"^(/\w+|расход|доход|[+-])\s*", "", text, flags=re.IGNORECASE).strip()
-    match = re.match(r"^(\d+(?:[.,]\d+)?)", cleaned)
+def process_amount_and_desc(msg, tx_type: str, text: str):
+    match = re.match(r"^(\d+(?:[.,]\d+)?)(?:\s*(.*))?$", text)
     if not match:
-        bot.send_message(msg.chat.id, f"⚠️ Не удалось определить сумму.\nПример: <code>/{default_type.lower()[:3]} 350 Оскар OFTV</code>")
+        bot.send_message(
+            msg.chat.id,
+            f"⚠️ Укажите сумму числом. Пример: <code>150 TikTok</code> или <code>/out 250</code>"
+        )
         return
 
     amount = float(match.group(1).replace(",", "."))
-    desc = cleaned[match.end():].strip() or ("Операционный расход" if default_type == "Расход" else "Доход")
-    author = f"@{msg.from_user.username}" if msg.from_user.username else msg.from_user.first_name
+    if amount <= 0:
+        bot.send_message(msg.chat.id, "⚠️ Сумма должна быть больше 0.")
+        return
 
-    model = detect_model(desc)
-    cat = detect_category(desc, default_type)
-    today = datetime.date.today().isoformat()
+    desc = (match.group(2) or "").strip()
+    uid = msg.from_user.id
 
-    if sheet:
-        try:
-            sheet.append_row([today, default_type, cat, model, amount, desc, author])
-        except Exception as e:
-            bot.send_message(msg.chat.id, f"⚠️ Ошибка записи в Google Sheets: {e}")
+    if desc:
+        # Автоопределение категории и модели
+        cat = detect_category(desc, tx_type)
+        model = detect_model(desc)
+        save_and_confirm(msg.chat.id, uid, tx_type, amount, cat, model, desc, msg.from_user.first_name)
+    else:
+        # Интерактивный режим по кнопкам
+        user_sessions[uid] = {
+            "type": tx_type,
+            "amount": amount,
+            "desc": desc,
+            "step": "choose_category"
+        }
+        icon = "💸" if tx_type == "Расход" else "💵"
+        bot.send_message(
+            msg.chat.id,
+            f"{icon} <b>Сумма: ${amount:,.2f}</b> ({tx_type})\n\nВыберите категорию:",
+            reply_markup=get_category_keyboard(tx_type)
+        )
+
+# ---------------------------------------------------------------------------
+# CALLBACK QUERY (ИНЛАЙН КНОПКИ)
+# ---------------------------------------------------------------------------
+
+@bot.callback_query_handler(func=lambda call: True)
+def handle_callbacks(call):
+    uid = call.from_user.id
+    data = call.data
+
+    if data == "cancel":
+        user_sessions.pop(uid, None)
+        bot.edit_message_text("❌ Внесение отменено.", call.message.chat.id, call.message.message_id)
+        return
+
+    # Шаг 1: Выбор категории
+    if data.startswith("cat:"):
+        cat = data.split("cat:", 1)[1]
+        session = user_sessions.get(uid)
+        if not session:
+            bot.answer_callback_query(call.id, "Сессия истекла. Начните заново.")
             return
 
-    stats = get_sheet_balance()
-    icon = "💵" if default_type == "Доход" else "💸"
-    sign = "+" if default_type == "Доход" else "-"
+        session["category"] = cat
+        session["step"] = "choose_model"
 
-    reply = (
-        f"✅ <b>Операция успешно записана в Google Таблицу!</b>\n"
-        f"{icon} <b>{default_type}:</b> {sign}${amount:,.2f}\n"
-        f"📂 <b>Категория:</b> {cat}\n"
+        bot.edit_message_text(
+            f"📂 Категория: <b>{cat}</b>\nСумма: <b>${session['amount']:,.2f}</b>\n\nТеперь выберите модель / проект:",
+            call.message.chat.id,
+            call.message.message_id,
+            reply_markup=get_model_keyboard()
+        )
+        bot.answer_callback_query(call.id)
+        return
+
+    # Шаг 2: Выбор модели
+    if data.startswith("model:"):
+        model = data.split("model:", 1)[1]
+        session = user_sessions.get(uid)
+        if not session:
+            bot.answer_callback_query(call.id, "Сессия истекла.")
+            return
+
+        tx_type = session["type"]
+        amount = session["amount"]
+        cat = session["category"]
+        desc = session.get("desc") or f"{cat} ({model})"
+        author = call.from_user.first_name or "Telegram"
+
+        user_sessions.pop(uid, None)
+        save_and_confirm(call.message.chat.id, uid, tx_type, amount, cat, model, desc, author, edit_msg_id=call.message.message_id)
+        bot.answer_callback_query(call.id)
+        return
+
+    # Быстрая оплата подрядчика
+    if data.startswith("pay_contractor:"):
+        c_idx = int(data.split(":")[1])
+        c = CONTRACTORS[c_idx]
+        user_sessions[uid] = {
+            "type": "Расход",
+            "amount": float(c["amount"]),
+            "category": c["cat"],
+            "model": "Agency Core (Общие)",
+            "desc": f"Выплата: {c['name']}"
+        }
+        save_and_confirm(
+            call.message.chat.id,
+            uid,
+            "Расход",
+            float(c["amount"]),
+            c["cat"],
+            "Agency Core (Общие)",
+            f"Выплата: {c['name']}",
+            call.from_user.first_name or "Telegram",
+            edit_msg_id=call.message.message_id
+        )
+        bot.answer_callback_query(call.id, "Выплата внесена!")
+        return
+
+def save_and_confirm(chat_id, user_id, tx_type, amount, category, model, desc, author, edit_msg_id=None):
+    today_str = datetime.date.today().isoformat()
+    new_tx = {
+        "date": today_str,
+        "type": tx_type,
+        "category": category,
+        "model": model,
+        "amount": amount,
+        "desc": desc,
+        "author": author
+    }
+
+    # Отправка в Google Sheets
+    synced = send_tx_to_sheets(new_tx)
+
+    sync_badge = "☁️ Синхронизировано с Google Sheets & Vercel" if synced else "⚠️ Сохранено (требуется подключение /url)"
+    icon = "💸" if tx_type == "Расход" else "💵"
+    sign = "-" if tx_type == "Расход" else "+"
+
+    msg_text = (
+        f"✅ <b>Операция успешно записана!</b>\n\n"
+        f"{icon} <b>{tx_type}:</b> {sign}${amount:,.2f}\n"
+        f"📂 <b>Категория:</b> {category}\n"
         f"👑 <b>Модель:</b> {model}\n"
         f"📝 <b>Описание:</b> {desc}\n"
-        f"👤 <b>Автор:</b> {author}\n\n"
-        f"━━━━━━━━━━━━━━━━━━━━\n"
-        f"💰 <b>АКТУАЛЬНЫЙ ОСТАТОК КАССЫ:</b> <code>${stats['balance']:,.2f}</code>"
+        f"👤 <b>Автор:</b> {author}\n"
+        f"📅 <b>Дата:</b> {today_str}\n\n"
+        f"<i>{sync_badge}</i>"
     )
-    bot.send_message(msg.chat.id, reply)
 
+    if edit_msg_id:
+        try:
+            bot.edit_message_text(msg_text, chat_id, edit_msg_id)
+        except Exception:
+            bot.send_message(chat_id, msg_text)
+    else:
+        bot.send_message(chat_id, msg_text)
+
+# ---------------------------------------------------------------------------
+# ОТЧЕТЫ И СТАТИСТИКА
+# ---------------------------------------------------------------------------
+
+@bot.message_handler(func=lambda m: m.text in ["💰 Баланс Кассы", "/balance", "/касса"])
+def report_balance(msg):
+    txs = fetch_data_from_sheets()
+    if not txs:
+        bot.send_message(
+            msg.chat.id,
+            "ℹ️ Данные в Google Таблице пока пусты или не подключен /url веб-приложения."
+        )
+        return
+
+    income = sum(float(t.get("amount", 0)) for t in txs if t.get("type") == "Доход")
+    expense = sum(float(t.get("amount", 0)) for t in txs if t.get("type") == "Расход")
+    balance = income - expense
+    margin = (balance / income * 100) if income > 0 else 0
+
+    text = (
+        f"🏦 <b>АКТУАЛЬНОЕ СОСТОЯНИЕ КАССЫ</b>\n"
+        f"━━━━━━━━━━━━━━━━━━━━\n"
+        f"💰 <b>Остаток в кассе:</b> <code>${balance:,.2f}</code>\n"
+        f"💵 <b>Выручка (Всего):</b> ${income:,.2f}\n"
+        f"💸 <b>Расходы (OPEX):</b> ${expense:,.2f}\n"
+        f"📊 <b>Чистая маржинальность:</b> {margin:.1f}%\n"
+        f"📋 <b>Всего записей в реестре:</b> {len(txs)}\n\n"
+        f"<i>Данные онлайн из Google Sheets & Dashboard</i>"
+    )
+    bot.send_message(msg.chat.id, text)
+
+@bot.message_handler(func=lambda m: m.text == "🧮 Сплит Вывода" or m.text.startswith("/split"))
+def report_split(msg):
+    parts = msg.text.split()
+    amount = 0.0
+    if len(parts) > 1:
+        try:
+            amount = float(parts[1].replace(",", "."))
+        except ValueError:
+            pass
+
+    if amount <= 0:
+        bot.send_message(
+            msg.chat.id,
+            "🧮 <b>Понедельничный Сплит-Калькулятор</b>\n\n"
+            "Укажите сумму поступившего вывода OnlyFans:\n"
+            "Например: <code>/split 8500</code>"
+        )
+        return
+
+    models_share = amount * 0.25
+    chatters_share = amount * 0.20
+    traffic_target = 950.0  # Недельный бюджет трафика
+    profit = max(0.0, amount - models_share - chatters_share - traffic_target)
+
+    text = (
+        f"🧮 <b>Сплит транша OnlyFans: ${amount:,.2f}</b>\n"
+        f"━━━━━━━━━━━━━━━━━━━━\n\n"
+        f"🔒 <b>Фонд Моделей (25%):</b> ${models_share:,.2f}\n"
+        f"<i>(Накапливается на 15 и 31 число)</i>\n\n"
+        f"🔒 <b>Фонд Чаттеров (20%):</b> ${chatters_share:,.2f}\n"
+        f"<i>(Накапливается на выплаты смен)</i>\n\n"
+        f"⚡ <b>Недельный трафик & софт:</b> ${traffic_target:,.2f}\n"
+        f"<i>(TikTok, Reddit, OnlyMonster CRM)</i>\n\n"
+        f"🟢 <b>Свободный буфер / Чистая прибыль:</b> <b>${profit:,.2f}</b>\n"
+        f"━━━━━━━━━━━━━━━━━━━━\n"
+        f"💡 <i>Свободный буфер остается на счету агентства для покрытия кассовых разрывов.</i>"
+    )
+    bot.send_message(msg.chat.id, text)
+
+@bot.message_handler(func=lambda m: m.text in ["📅 Подрядчики", "/contractors", "/runway"])
+def report_contractors(msg):
+    text = (
+        f"📅 <b>РЕЕСТР ПОДРЯДЧИКОВ И ПОДПИСОК</b>\n"
+        f"━━━━━━━━━━━━━━━━━━━━\n\n"
+    )
+    markup = types.InlineKeyboardMarkup(row_width=1)
+    for idx, c in enumerate(CONTRACTORS):
+        text += (
+            f"• <b>{c['name']}</b>\n"
+            f"  💰 Ставка: <b>${c['amount']} USDT</b> / месяц\n"
+            f"  ⏳ Условия: <i>{c['terms']}</i>\n\n"
+        )
+        markup.add(types.InlineKeyboardButton(text=f"💸 Оплатить: {c['name']} (${c['amount']})", callback_data=f"pay_contractor:{idx}"))
+
+    bot.send_message(msg.chat.id, text, reply_markup=markup)
+
+@bot.message_handler(func=lambda m: m.text in ["📋 Последние Записи", "/recent", "/last"])
+def report_recent(msg):
+    txs = fetch_data_from_sheets()
+    if not txs:
+        bot.send_message(msg.chat.id, "Записей пока нет.")
+        return
+
+    recent = txs[:5]
+    text = "📋 <b>ПОСЛЕДНИЕ 5 ОПЕРАЦИЙ:</b>\n━━━━━━━━━━━━━━━━━━━━\n\n"
+    for t in recent:
+        icon = "💵" if t.get("type") == "Доход" else "💸"
+        sign = "+" if t.get("type") == "Доход" else "-"
+        text += (
+            f"{icon} <b>{sign}${float(t.get('amount', 0)):,.2f}</b> — {t.get('category')}\n"
+            f"👑 {t.get('model')} | 📅 {t.get('date')}\n"
+            f"📝 <i>{t.get('desc', '—')}</i>\n\n"
+        )
+
+    bot.send_message(msg.chat.id, text)
+
+# ---------------------------------------------------------------------------
+# ЗАПУСК
+# ---------------------------------------------------------------------------
 if __name__ == "__main__":
-    print("🚀 MIRRORS Finance Telegram Bot запускается...")
-    bot.infinity_polling()
+    print("=" * 60)
+    print("🚀 MIRRORS FINANCE BOT УСПЕШНО ЗАПУЩЕН!")
+    print(f"🤖 Bot: @mirrorsfinancebot (Token: {CONFIG['bot_token'][:15]}...)")
+    print(f"📊 WebApp URL: {CONFIG.get('gsheet_url') or 'не задан (используйте /url)'}")
+    print("=" * 60)
+    bot.infinity_polling(skip_pending=True)
