@@ -196,14 +196,14 @@ def detect_category(desc: str, tx_type: str) -> str:
 # ---------------------------------------------------------------------------
 
 def get_main_keyboard():
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
-    markup.add(
-        types.KeyboardButton("💸 Внести Расход"),
-        types.KeyboardButton("💵 Внести Доход")
-    )
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, is_persistent=True, row_width=2)
     markup.add(
         types.KeyboardButton("💰 Баланс Кассы"),
         types.KeyboardButton("🧮 Сплит Вывода")
+    )
+    markup.add(
+        types.KeyboardButton("💸 Внести Расход"),
+        types.KeyboardButton("💵 Внести Доход")
     )
     markup.add(
         types.KeyboardButton("📅 Подрядчики"),
@@ -245,7 +245,7 @@ def cmd_start(msg):
         f"• Или просто: <code>-150 Тикток</code>, <code>+4200 Лолли</code>\n\n"
         f"<i>Или используйте кнопки меню ниже:</i>"
     )
-    bot.send_message(msg.chat.id, text, reply_markup=get_main_keyboard())
+    bot.send_message(msg.chat.id, text, reply_markup=get_main_keyboard(), parse_mode="HTML")
 
 @bot.message_handler(commands=["url"])
 def cmd_set_url(msg):
@@ -487,7 +487,7 @@ def send_balance_report(chat_id):
             "📋 <b>Всего записей в реестре:</b> 0\n\n"
             "<i>Касса чистая ($0.00). Вносите доходы (/in) и расходы (/out).</i>"
         )
-        bot.send_message(chat_id, text, parse_mode="HTML")
+        bot.send_message(chat_id, text, reply_markup=get_main_keyboard(), parse_mode="HTML")
         return
 
     income = sum(float(t.get("amount", 0)) for t in txs if t.get("type") == "Доход")
@@ -505,7 +505,7 @@ def send_balance_report(chat_id):
         f"📋 <b>Всего записей в реестре:</b> {len(txs)}\n\n"
         f"<i>Данные онлайн из Google Sheets & Dashboard</i>"
     )
-    bot.send_message(chat_id, text)
+    bot.send_message(chat_id, text, reply_markup=get_main_keyboard(), parse_mode="HTML")
 
 @bot.message_handler(func=lambda m: m.text in ["💰 Баланс Кассы", "/balance", "/касса"])
 def report_balance(msg):
@@ -526,7 +526,9 @@ def report_split(msg):
             msg.chat.id,
             "🧮 <b>Понедельничный Сплит-Калькулятор</b>\n\n"
             "Укажите сумму поступившего вывода OnlyFans:\n"
-            "Например: <code>/split 8500</code>"
+            "Например: <code>/split 8500</code>",
+            reply_markup=get_main_keyboard(),
+            parse_mode="HTML"
         )
         return
 
@@ -545,10 +547,10 @@ def report_split(msg):
         f"⚡ <b>Недельный трафик & софт:</b> ${traffic_target:,.2f}\n"
         f"<i>(TikTok, Reddit, OnlyMonster CRM)</i>\n\n"
         f"🟢 <b>Свободный буфер / Чистая прибыль:</b> <b>${profit:,.2f}</b>\n"
-        f"━━━━━━━━━━━━━━━━━━━━\n"
+        f"━━━━━━━━━━━━━━━━━━━━\n\n"
         f"💡 <i>Свободный буфер остается на счету агентства для покрытия кассовых разрывов.</i>"
     )
-    bot.send_message(msg.chat.id, text)
+    bot.send_message(msg.chat.id, text, reply_markup=get_main_keyboard(), parse_mode="HTML")
 
 @bot.message_handler(func=lambda m: m.text in ["📅 Подрядчики", "/contractors", "/runway"])
 def report_contractors(msg):
@@ -571,7 +573,7 @@ def report_contractors(msg):
 def report_recent(msg):
     txs = fetch_data_from_sheets()
     if not txs:
-        bot.send_message(msg.chat.id, "Записей пока нет.")
+        bot.send_message(msg.chat.id, "Записей пока нет.", reply_markup=get_main_keyboard())
         return
 
     recent = txs[:5]
@@ -585,10 +587,18 @@ def report_recent(msg):
             f"📝 <i>{t.get('desc', '—')}</i>\n\n"
         )
 
-    bot.send_message(msg.chat.id, text)
+    bot.send_message(msg.chat.id, text, reply_markup=get_main_keyboard(), parse_mode="HTML")
 
-# ---------------------------------------------------------------------------
-# ЗАПУСК
+@bot.message_handler(func=lambda m: True)
+def handle_any_other(msg):
+    text = (
+        "💡 Используйте постоянные кнопки меню внизу экрана или быстрые команды:\n\n"
+        "• <code>/balance</code> — 💰 Баланс кассы\n"
+        "• <code>/out 175 Оскар OFTV</code> — 💸 Внести расход\n"
+        "• <code>/in 4200 Lolly</code> — 💵 Внести доход\n"
+        "• <code>/split 8500</code> — 🧮 Сплит OnlyFans"
+    )
+    bot.send_message(msg.chat.id, text, reply_markup=get_main_keyboard(), parse_mode="HTML")
 # ---------------------------------------------------------------------------
 if __name__ == "__main__":
     print("=" * 60)
@@ -596,4 +606,16 @@ if __name__ == "__main__":
     print(f"🤖 Bot: @mirrorsfinancebot (Token: {CONFIG['bot_token'][:15]}...)")
     print(f"📊 WebApp URL: {CONFIG.get('gsheet_url') or 'не задан (используйте /url)'}")
     print("=" * 60)
+    try:
+        bot.set_my_commands([
+            types.BotCommand("balance", "💰 Баланс кассы и остаток"),
+            types.BotCommand("split", "🧮 Сплит вывода"),
+            types.BotCommand("out", "💸 Внести расход"),
+            types.BotCommand("in", "💵 Внести доход"),
+            types.BotCommand("contractors", "📅 Подрядчики"),
+            types.BotCommand("recent", "📋 Последние записи"),
+            types.BotCommand("start", "👑 Главное меню и кнопки"),
+        ])
+    except Exception as e:
+        logging.warning(f"Ошибка регистрации команд: {e}")
     bot.infinity_polling(skip_pending=True)
