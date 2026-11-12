@@ -855,16 +855,32 @@ export function initFinanceModule() {
 
     // 3. Свободная касса овнера (Safe Cash)
     const contractorsDue = totalContractorsRemaining || 0;
-    const safeCash = cashBalance - escrowDue - contractorsDue;
+    let safeCash = 0;
+    let isDeficit = false;
+
+    if (cashBalance <= 0) {
+      safeCash = 0;
+      isDeficit = false;
+    } else {
+      safeCash = cashBalance - escrowDue - contractorsDue;
+      isDeficit = safeCash < 0;
+    }
+
     if (elSafeCash) {
       elSafeCash.textContent = `$${safeCash.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-      elSafeCash.style.color = safeCash >= 0 ? '#34d399' : 'var(--accent-rose)';
+      elSafeCash.style.color = isDeficit ? 'var(--accent-rose)' : '#34d399';
     }
     if (elSafeCashSub) {
-      elSafeCashSub.textContent = safeCash >= 0 
-        ? 'Доступно к выводу без риска разрыва' 
-        : `Дефицит -$${Math.abs(Math.round(safeCash)).toLocaleString()}! Не выводить дивиденды`;
-      elSafeCashSub.style.color = safeCash >= 0 ? 'var(--text-muted)' : 'var(--accent-rose)';
+      if (cashBalance <= 0) {
+        elSafeCashSub.textContent = 'Касса пуста: ожидание пополнения';
+        elSafeCashSub.style.color = 'var(--text-muted)';
+      } else if (!isDeficit) {
+        elSafeCashSub.textContent = 'Доступно к выводу без риска разрыва';
+        elSafeCashSub.style.color = 'var(--text-muted)';
+      } else {
+        elSafeCashSub.textContent = `Дефицит -$${Math.abs(Math.round(safeCash)).toLocaleString()}! Не выводить дивиденды`;
+        elSafeCashSub.style.color = 'var(--accent-rose)';
+      }
     }
 
     // 4. Выручка Net OnlyFans
@@ -1269,6 +1285,30 @@ export function initFinanceModule() {
       ? (escrowData.totalEscrowRemaining !== undefined ? escrowData.totalEscrowRemaining : 0) 
       : 0;
     const totalObligations = contractorsDue + totalEscrow;
+
+    // Спокойное нейтральное состояние при нулевой кассе
+    if (cashBalance <= 0) {
+      alertContainer.innerHTML = `
+        <div style="background: rgba(56, 189, 248, 0.05); border: 1px solid rgba(56, 189, 248, 0.2); border-radius: var(--radius-sm); padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <span style="font-size: 22px;">⚖️</span>
+            <div>
+              <div style="font-weight: 700; color: var(--text-main); font-size: 14px;">
+                Касса ожидает пополнения: внесите остаток Bybit или первый вывод OnlyFans
+              </div>
+              <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">
+                Запланировано обязательств по графику на месяц: <strong style="color: var(--primary); font-family: var(--font-mono);">$${contractorsDue.toLocaleString()}</strong> (Оскар, Анастасия, софт, Леон)
+              </div>
+            </div>
+          </div>
+          <div style="font-size: 12px; color: var(--text-muted); font-family: var(--font-mono);">
+            Баланс кассы: <strong style="color: var(--text-main);">$0.00</strong>
+          </div>
+        </div>
+      `;
+      return;
+    }
+
     const safeCash = cashBalance - totalObligations;
 
     // Прогноз кассы к 31-му числу (Cash Flow Forecast)
