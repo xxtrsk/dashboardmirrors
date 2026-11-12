@@ -246,10 +246,7 @@ def detect_category(desc: str, tx_type: str) -> str:
 
 def get_main_keyboard():
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, is_persistent=True, row_width=2)
-    markup.add(
-        types.KeyboardButton("💰 Баланс Кассы"),
-        types.KeyboardButton("🧮 Сплит Вывода")
-    )
+    markup.add(types.KeyboardButton("💰 Баланс Кассы"))
     markup.add(
         types.KeyboardButton("💸 Внести Расход"),
         types.KeyboardButton("💵 Внести Доход")
@@ -486,14 +483,6 @@ def handle_callbacks(call):
         bot.answer_callback_query(call.id)
         return
 
-    if data == "btn_split":
-        bot.send_message(
-            call.message.chat.id,
-            "🧮 Отправьте команду в формате: <code>/split СУММА</code>\nНапример: <code>/split 8500</code>"
-        )
-        bot.answer_callback_query(call.id)
-        return
-
 def save_and_confirm(chat_id, user_id, tx_type, amount, category, model, desc, author, edit_msg_id=None, tx_date=None):
     tx_date_str = tx_date or datetime.date.today().isoformat()
     new_tx = {
@@ -524,10 +513,9 @@ def save_and_confirm(chat_id, user_id, tx_type, amount, category, model, desc, a
         f"<i>{sync_badge}</i>"
     )
 
-    markup = types.InlineKeyboardMarkup(row_width=2)
+    markup = types.InlineKeyboardMarkup(row_width=1)
     markup.add(
-        types.InlineKeyboardButton(text="💰 Баланс кассы", callback_data="btn_balance"),
-        types.InlineKeyboardButton(text="🧮 Сплит", callback_data="btn_split")
+        types.InlineKeyboardButton(text="💰 Баланс кассы", callback_data="btn_balance")
     )
 
     if edit_msg_id:
@@ -579,47 +567,6 @@ def send_balance_report(chat_id):
 def report_balance(msg):
     send_balance_report(msg.chat.id)
 
-@bot.message_handler(func=lambda m: m.text == "🧮 Сплит Вывода" or m.text.startswith("/split"))
-def report_split(msg):
-    parts = msg.text.split()
-    amount = 0.0
-    if len(parts) > 1:
-        try:
-            amount = float(parts[1].replace(",", "."))
-        except ValueError:
-            pass
-
-    if amount <= 0:
-        bot.send_message(
-            msg.chat.id,
-            "🧮 <b>Понедельничный Сплит-Калькулятор</b>\n\n"
-            "Укажите сумму поступившего вывода OnlyFans:\n"
-            "Например: <code>/split 8500</code>",
-            reply_markup=get_main_keyboard(),
-            parse_mode="HTML"
-        )
-        return
-
-    models_share = amount * 0.25
-    chatters_share = amount * 0.20
-    traffic_target = 950.0  # Недельный бюджет трафика
-    profit = max(0.0, amount - models_share - chatters_share - traffic_target)
-
-    text = (
-        f"🧮 <b>Сплит транша OnlyFans: ${amount:,.2f}</b>\n"
-        f"━━━━━━━━━━━━━━━━━━━━\n\n"
-        f"🔒 <b>Фонд Моделей (25%):</b> ${models_share:,.2f}\n"
-        f"<i>(Накапливается на 15 и 31 число)</i>\n\n"
-        f"🔒 <b>Фонд Чаттеров (20%):</b> ${chatters_share:,.2f}\n"
-        f"<i>(Накапливается на выплаты смен)</i>\n\n"
-        f"⚡ <b>Недельный трафик & софт:</b> ${traffic_target:,.2f}\n"
-        f"<i>(TikTok, Reddit, OnlyMonster CRM)</i>\n\n"
-        f"🟢 <b>Свободный буфер / Чистая прибыль:</b> <b>${profit:,.2f}</b>\n"
-        f"━━━━━━━━━━━━━━━━━━━━\n\n"
-        f"💡 <i>Свободный буфер остается на счету агентства для покрытия кассовых разрывов.</i>"
-    )
-    bot.send_message(msg.chat.id, text, reply_markup=get_main_keyboard(), parse_mode="HTML")
-
 @bot.message_handler(func=lambda m: m.text in ["📅 Подрядчики", "/contractors", "/runway"])
 def report_contractors(msg):
     text = (
@@ -663,8 +610,7 @@ def handle_any_other(msg):
         "💡 Используйте постоянные кнопки меню внизу экрана или быстрые команды:\n\n"
         "• <code>/balance</code> — 💰 Баланс кассы\n"
         "• <code>/out 175 Оскар OFTV</code> — 💸 Внести расход\n"
-        "• <code>/in 4200 Lolly</code> — 💵 Внести доход\n"
-        "• <code>/split 8500</code> — 🧮 Сплит OnlyFans"
+        "• <code>/in 4200 Lolly</code> — 💵 Внести доход"
     )
     bot.send_message(msg.chat.id, text, reply_markup=get_main_keyboard(), parse_mode="HTML")
 # ---------------------------------------------------------------------------
@@ -677,7 +623,6 @@ if __name__ == "__main__":
     try:
         bot.set_my_commands([
             types.BotCommand("balance", "💰 Баланс кассы и остаток"),
-            types.BotCommand("split", "🧮 Сплит вывода"),
             types.BotCommand("out", "💸 Внести расход"),
             types.BotCommand("in", "💵 Внести доход"),
             types.BotCommand("contractors", "📅 Подрядчики"),
