@@ -141,16 +141,24 @@ def fetch_data_from_sheets() -> list:
 
 def detect_model(desc: str) -> str:
     d = desc.lower()
-    if "blush" in d or "блаш" in d or "eva blush" in d:
-        return "Eva Blush"
-    if "pinky" in d or "fansly" in d or "eva pinky" in d:
-        return "Eva Pinky (Fansly)"
-    if "lollysunnery" in d or "саннери" in d or "sunnery" in d:
-        return "Lolly (Lollysunnery)"
-    if "1lolly" in d or "лолли" in d or "1lollyhere" in d:
+    # 1. 1lolly (вторая анкета)
+    if "1lolly" in d or "1лолли" in d or "1lollyhere" in d:
         return "Lolly (1lollyhere)"
+    # 2. Основная Lolly
+    if "lolly" in d or "лолли" in d or "sunnery" in d or "саннери" in d:
+        return "Lolly (Lollysunnery)"
+    # 3. Eva Blush
+    if "blush" in d or "блаш" in d or "eva blush" in d or "ева блаш" in d:
+        return "Eva Blush"
+    # 4. Eva Pinky
+    if "pinky" in d or "eva pinky" in d or "пинки" in d or "fansly" in d:
+        return "Eva Pinky (Fansly)"
+    # 5. Lila
     if "lila" in d or "angelkiss" in d or "лила" in d:
         return "Lila (angelkiss)"
+    # 6. Если просто Eva / Ева
+    if "eva" in d or "ева" in d:
+        return "Eva Blush"
     return "Agency Core (Общие)"
 
 def detect_category(desc: str, tx_type: str) -> str:
@@ -158,21 +166,22 @@ def detect_category(desc: str, tx_type: str) -> str:
     if tx_type == "Доход":
         return "Выплаты OnlyFans"
 
-    if "оскар" in d or "osckelly" in d or "oftv" in d:
+    # Расходы
+    if "оскар" in d or "osckelly" in d or "oftv" in d or "монтаж" in d or "сценари" in d:
         return "Трафик: TikTok"
     if "анастасия" in d or "aneskagency" in d or "fyp" in d or "tiktok" in d or "тикток" in d:
         return "Трафик: TikTok"
-    if "реддит" in d or "reddit" in d or "дейтинг" in d:
+    if "реддит" in d or "reddit" in d or "дейтинг" in d or "dating" in d:
         return "Трафик: Reddit"
     if "леон" in d or "killerle0n" in d or "sfs" in d or "твиттер" in d or "twitter" in d:
         return "Трафик: Twitter"
     if "чаттер" in d or "оператор" in d or "зп" in d or "смена" in d or "карина" in d or "тимур" in d:
         return "Зарплаты: Чаттеры"
-    if "модел" in d or "выплата" in d or "доля" in d:
+    if "модел" in d or "выплата модел" in d or "доля" in d:
         return "Выплаты моделям"
     if "монстр" in d or "monster" in d or "onlymonster" in d or "софт" in d or "crm" in d:
         return "Софт: OnlyMonster"
-    if "паксум" in d or "paxum" in d or "комисси" in d or "вывод" in d or "обнал" in d or "байбит" in d:
+    if "паксум" in d or "paxum" in d or "комисси" in d or "вывод" in d or "обнал" in d or "байбит" in d or "bybit" in d:
         return "Комиссии и вывод"
     return "Прочие расходы"
 
@@ -397,6 +406,20 @@ def handle_callbacks(call):
         bot.answer_callback_query(call.id, "Выплата внесена!")
         return
 
+    # Запрос баланса из инлайн-кнопки
+    if data == "btn_balance":
+        send_balance_report(call.message.chat.id)
+        bot.answer_callback_query(call.id)
+        return
+
+    if data == "btn_split":
+        bot.send_message(
+            call.message.chat.id,
+            "🧮 Отправьте команду в формате: <code>/split СУММА</code>\nНапример: <code>/split 8500</code>"
+        )
+        bot.answer_callback_query(call.id)
+        return
+
 def save_and_confirm(chat_id, user_id, tx_type, amount, category, model, desc, author, edit_msg_id=None):
     today_str = datetime.date.today().isoformat()
     new_tx = {
@@ -412,7 +435,7 @@ def save_and_confirm(chat_id, user_id, tx_type, amount, category, model, desc, a
     # Отправка в Google Sheets
     synced = send_tx_to_sheets(new_tx)
 
-    sync_badge = "☁️ Синхронизировано с Google Sheets & Vercel" if synced else "⚠️ Сохранено (требуется подключение /url)"
+    sync_badge = "☁️ Синхронизировано с Google Sheets & Vercel" if synced else "⚠️ Сохранено локально (привяжите /url)"
     icon = "💸" if tx_type == "Расход" else "💵"
     sign = "-" if tx_type == "Расход" else "+"
 
@@ -427,24 +450,29 @@ def save_and_confirm(chat_id, user_id, tx_type, amount, category, model, desc, a
         f"<i>{sync_badge}</i>"
     )
 
+    markup = types.InlineKeyboardMarkup(row_width=2)
+    markup.add(
+        types.InlineKeyboardButton(text="💰 Баланс кассы", callback_data="btn_balance"),
+        types.InlineKeyboardButton(text="🧮 Сплит", callback_data="btn_split")
+    )
+
     if edit_msg_id:
         try:
-            bot.edit_message_text(msg_text, chat_id, edit_msg_id)
+            bot.edit_message_text(msg_text, chat_id, edit_msg_id, reply_markup=markup)
         except Exception:
-            bot.send_message(chat_id, msg_text)
+            bot.send_message(chat_id, msg_text, reply_markup=markup)
     else:
-        bot.send_message(chat_id, msg_text)
+        bot.send_message(chat_id, msg_text, reply_markup=markup)
 
 # ---------------------------------------------------------------------------
 # ОТЧЕТЫ И СТАТИСТИКА
 # ---------------------------------------------------------------------------
 
-@bot.message_handler(func=lambda m: m.text in ["💰 Баланс Кассы", "/balance", "/касса"])
-def report_balance(msg):
+def send_balance_report(chat_id):
     txs = fetch_data_from_sheets()
     if not txs:
         bot.send_message(
-            msg.chat.id,
+            chat_id,
             "ℹ️ Данные в Google Таблице пока пусты или не подключен /url веб-приложения."
         )
         return
@@ -464,7 +492,11 @@ def report_balance(msg):
         f"📋 <b>Всего записей в реестре:</b> {len(txs)}\n\n"
         f"<i>Данные онлайн из Google Sheets & Dashboard</i>"
     )
-    bot.send_message(msg.chat.id, text)
+    bot.send_message(chat_id, text)
+
+@bot.message_handler(func=lambda m: m.text in ["💰 Баланс Кассы", "/balance", "/касса"])
+def report_balance(msg):
+    send_balance_report(msg.chat.id)
 
 @bot.message_handler(func=lambda m: m.text == "🧮 Сплит Вывода" or m.text.startswith("/split"))
 def report_split(msg):
