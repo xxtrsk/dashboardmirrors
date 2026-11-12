@@ -60,11 +60,33 @@ function cleanAmount(val) {
 }
 
 /**
- * Обработка GET-запроса: Выгрузка транзакций в JSON для веб-дашборда Vercel
+ * Обработка GET-запроса: Выгрузка транзакций или удаление через GET
  */
 function doGet(e) {
   try {
     const sheet = getOrCreateTransactionsSheet();
+
+    // 1. УДАЛЕНИЕ ЧЕРЕЗ GET ЗАПРОС (Мгновенно, без CORS блокировок браузера)
+    if (e && e.parameter && e.parameter.action === "deleteTransaction") {
+      return executeDelete(sheet, e.parameter);
+    }
+
+    // 2. ОЧИСТКА БАГНУТЫХ 100K ТРАНЗАКЦИЙ ЧЕРЕЗ GET
+    if (e && e.parameter && e.parameter.action === "deleteBuggy100k") {
+      const data = sheet.getDataRange().getValues();
+      let deleted = 0;
+      for (let i = data.length - 1; i >= 1; i--) {
+        const row = data[i];
+        const rAmount = cleanAmount(row[4]);
+        const rModel = String(row[3] || "").toLowerCase();
+        if (rAmount >= 90000 || (rModel.includes("lolly") && rAmount >= 50000)) {
+          sheet.deleteRow(i + 1);
+          deleted++;
+        }
+      }
+      return createJsonResponse({ status: "ok", message: `Deleted ${deleted} rows`, deletedCount: deleted });
+    }
+
     const data = sheet.getDataRange().getValues();
     
     // Если таблица пустая или только заголовок
@@ -113,6 +135,48 @@ function doGet(e) {
 }
 
 /**
+ * Надежная функция физического удаления строк из Google Таблицы
+ */
+function executeDelete(sheet, target) {
+  const data = sheet.getDataRange().getValues();
+  let deletedCount = 0;
+  const targetAmount = cleanAmount(target.amount);
+  const targetModel = String(target.model || "").trim().toLowerCase();
+  const targetDate = String(target.date || "").trim();
+  const targetRowIndex = Number(target.rowIndex || target.id || 0);
+  const deleteAll = String(target.deleteAllDuplicates || target.deleteAll) === "true" || target.deleteAllDuplicates === true;
+
+  // Удаляем строки снизу вверх
+  for (let i = data.length - 1; i >= 1; i--) {
+    const row = data[i];
+    const rDate = (row[0] instanceof Date) 
+      ? Utilities.formatDate(row[0], Session.getScriptTimeZone(), "yyyy-MM-dd") 
+      : String(row[0] || "").trim();
+    const rAmount = cleanAmount(row[4]);
+    const rModel = String(row[3] || "").trim().toLowerCase();
+
+    const isExactIndex = (targetRowIndex > 0 && targetRowIndex === i);
+    const isFieldMatch = (
+      Math.abs(rAmount - targetAmount) < 0.01 &&
+      (targetModel === "" || rModel.includes(targetModel) || targetModel.includes(rModel)) &&
+      (targetDate === "" || rDate === targetDate || rDate.includes(targetDate) || targetDate.includes(rDate))
+    );
+
+    if (isExactIndex || isFieldMatch) {
+      sheet.deleteRow(i + 1);
+      deletedCount++;
+      if (!deleteAll && !isExactIndex) break;
+    }
+  }
+
+  return createJsonResponse({ 
+    status: "ok", 
+    message: `Deleted ${deletedCount} rows`, 
+    deletedCount: deletedCount 
+  });
+}
+
+/**
  * Обработка POST-запроса: Входящие сообщения от Telegram Webhook или веб-дашборда
  */
 function doPost(e) {
@@ -142,43 +206,7 @@ function doPost(e) {
 
     // 1. УДАЛЕНИЕ ОПЕРАЦИИ (из веб-дашборда)
     if (payload.action === "deleteTransaction") {
-      const tx = payload.transaction || {};
-      const data = sheet.getDataRange().getValues();
-      let deletedCount = 0;
-      const targetAmount = cleanAmount(tx.amount);
-      const targetModel = String(tx.model || "").trim().toLowerCase();
-      const targetDate = String(tx.date || "").trim();
-      const targetRowIndex = Number(payload.rowIndex || tx.id);
-      const deleteAll = payload.deleteAllDuplicates === true;
-
-      // Удаляем строки снизу вверх
-      for (let i = data.length - 1; i >= 1; i--) {
-        const row = data[i];
-        const rDate = (row[0] instanceof Date) 
-          ? Utilities.formatDate(row[0], Session.getScriptTimeZone(), "yyyy-MM-dd") 
-          : String(row[0] || "").trim();
-        const rAmount = cleanAmount(row[4]);
-        const rModel = String(row[3] || "").trim().toLowerCase();
-
-        const isExactIndex = (targetRowIndex > 0 && targetRowIndex === i);
-        const isFieldMatch = (
-          Math.abs(rAmount - targetAmount) < 0.01 &&
-          (targetModel === "" || rModel === targetModel || rModel.includes(targetModel) || targetModel.includes(rModel)) &&
-          (targetDate === "" || rDate === targetDate || rDate.includes(targetDate) || targetDate.includes(rDate))
-        );
-
-        if (isExactIndex || isFieldMatch) {
-          sheet.deleteRow(i + 1);
-          deletedCount++;
-          if (!deleteAll && !isExactIndex) break;
-        }
-      }
-
-      return createJsonResponse({ 
-        status: "ok", 
-        message: `Deleted ${deletedCount} rows`, 
-        deletedCount: deletedCount 
-      });
+      return executeDelete(sheet, payload.transaction || payload);
     }
 
     // 2. ОЧИСТКА ДУБЛИКАТОВ

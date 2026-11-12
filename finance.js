@@ -302,9 +302,17 @@ class FinanceManager {
     }
     this.saveTransactions();
 
-    // Отправляем команду удаления в Google Sheets
+    // Отправляем команду удаления в Google Sheets (одновременно GET и POST для 100% гарантии доставки)
     const gsheetUrl = this.loadGSheetUrl();
     if (gsheetUrl && targetTx) {
+      const getDelUrl = `${gsheetUrl}${gsheetUrl.includes('?') ? '&' : '?'}action=deleteTransaction&amount=${encodeURIComponent(targetTx.amount)}&model=${encodeURIComponent(targetTx.model || '')}&date=${encodeURIComponent(targetTx.date || '')}&desc=${encodeURIComponent(targetTx.desc || '')}&deleteAll=${deleteAllDuplicates}&rowIndex=${encodeURIComponent(targetTx.id || 0)}&t=${Date.now()}`;
+      
+      // 1. Надежный GET-запрос (обходит CORS и preflight)
+      try {
+        fetch(getDelUrl, { mode: 'no-cors' }).catch(() => {});
+      } catch (e) {}
+
+      // 2. POST-запрос с полным телом
       try {
         fetch(gsheetUrl, {
           method: 'POST',
@@ -313,6 +321,10 @@ class FinanceManager {
           body: JSON.stringify({ 
             action: 'deleteTransaction', 
             transaction: targetTx,
+            amount: targetTx.amount,
+            model: targetTx.model,
+            date: targetTx.date,
+            desc: targetTx.desc,
             rowIndex: targetTx.id,
             deleteAllDuplicates: deleteAllDuplicates
           })
