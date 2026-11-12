@@ -73,7 +73,6 @@ MODELS_LIST = [
     "Eva Blush",
     "Lila (angelkiss)",
     "Eva Pinky (Fansly)",
-    "Polina",
     "Agency Core (Общие)"
 ]
 
@@ -208,10 +207,7 @@ def detect_model(desc: str) -> str:
     # 5. Lila
     if "lila" in d or "angelkiss" in d or "лила" in d:
         return "Lila (angelkiss)"
-    # 6. Polina / Полина
-    if "полин" in d or "polina" in d or "паулин" in d:
-        return "Polina"
-    # 7. Если просто Eva / Ева
+    # 6. Если просто Eva / Ева
     if "eva" in d or "ева" in d:
         return "Eva Blush"
     return "Agency Core (Общие)"

@@ -28,7 +28,6 @@ export const FINANCE_MODELS = [
   'Eva Blush',
   'Lila (angelkiss)',
   'Eva Pinky (Fansly)',
-  'Polina',
   'Agency Core (Общие)'
 ];
 
@@ -142,6 +141,8 @@ class FinanceManager {
     // 1. Блокируем любую аномальную 100k / >=90k транзакцию навсегда
     if (amt >= 90000) return true;
     if (t.model && t.model.toLowerCase().includes('lolly') && t.type === 'Доход' && amt >= 50000) return true;
+    // Удаленная анкета Polina
+    if (t.model && t.model.toLowerCase().includes('polina')) return true;
 
     // 2. Черный список ранее удаленных операций
     const sig = `${t.date}_${t.type}_${t.category}_${t.model}_${amt.toFixed(2)}_${(t.desc || '').trim()}`;
@@ -908,8 +909,11 @@ export function initFinanceModule() {
                 ${badgeText}
               </span>
             </div>
-            <div style="font-size: 13px; font-family: var(--font-mono); color: var(--text-muted);">
-              Факт: <strong style="color: var(--text-main);">$${b.fact.toLocaleString()}</strong> / План: <strong style="color: var(--primary);">$${b.plan.toLocaleString()}</strong>
+            <div style="font-size: 13px; font-family: var(--font-mono); color: var(--text-muted); display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+              <span>Факт: <strong style="color: var(--text-main);">$${b.fact.toLocaleString()}</strong></span>
+              <span>/</span>
+              <span style="color: var(--text-dim);">План $:</span>
+              <input type="number" class="input-budget-plan" data-group="${b.group}" value="${b.plan}" step="50" min="0" style="width: 85px; padding: 3px 6px; font-size: 13px; font-family: var(--font-mono); font-weight: 700; background: #07090e; color: var(--primary); border: 1px solid rgba(56, 189, 248, 0.4); border-radius: 4px; text-align: right;" title="Измените число и нажмите Enter или кликните вне поля" />
               (<span style="color: ${statusColor}; font-weight: 700;">${b.pct.toFixed(1)}%</span>)
             </div>
           </div>
@@ -919,6 +923,18 @@ export function initFinanceModule() {
         </div>
       `;
     }).join('');
+
+    // Интерактивное редактирование лимитов бюджетов пользователем
+    container.querySelectorAll('.input-budget-plan').forEach(input => {
+      input.addEventListener('change', (e) => {
+        const group = e.target.dataset.group;
+        const newPlan = parseFloat(e.target.value) || 0;
+        manager.budgets[group] = newPlan;
+        manager.saveBudgets();
+        renderAll();
+        showToast(`💾 План бюджета «${group}» обновлен: $${newPlan.toLocaleString()}`);
+      });
+    });
   }
 
   function renderUnitEconomics(txs) {
