@@ -424,6 +424,8 @@ class FinanceManager {
     let expense = 0;
     let trafficExpense = 0;
     let chatterExpense = 0;
+    let modelPayouts = 0;
+    let withdrawalFees = 0;
 
     txList.forEach(t => {
       const amt = Number(t.amount) || 0;
@@ -431,11 +433,16 @@ class FinanceManager {
         income += amt;
       } else if (t.type === 'Расход') {
         expense += amt;
-        if (t.category.startsWith('Трафик')) {
+        const cat = (t.category || '').toLowerCase();
+        const desc = (t.desc || '').toLowerCase();
+        if (cat.startsWith('трафик')) {
           trafficExpense += amt;
-        }
-        if (t.category.includes('Чаттеры') || t.category.includes('Операторы')) {
+        } else if (cat.includes('чаттер') || cat.includes('оператор')) {
           chatterExpense += amt;
+        } else if (cat.includes('модел')) {
+          modelPayouts += amt;
+        } else if (cat.includes('комисси') || cat.includes('вывод') || desc.includes('комисси') || desc.includes('вывод') || desc.includes('paxum') || desc.includes('bybit')) {
+          withdrawalFees += amt;
         }
       }
     });
@@ -443,8 +450,82 @@ class FinanceManager {
     const netProfit = income - expense;
     const netMargin = income > 0 ? (netProfit / income) * 100 : 0;
     const roas = trafficExpense > 0 ? (income / trafficExpense) : 0;
+    const effectiveFeePct = income > 0 ? (withdrawalFees / income) * 100 : 0;
 
-    return { income, expense, netProfit, netMargin, trafficExpense, chatterExpense, roas };
+    return { income, expense, netProfit, netMargin, trafficExpense, chatterExpense, modelPayouts, withdrawalFees, effectiveFeePct, roas };
+  }
+
+  // Расчет зарплатного резерва (Эскроу) по периодам:
+  // Период 1 (1-15 число): выплата 31-го числа
+  // Период 2 (16-31 число): выплата 15-го числа след. месяца
+  // Ставки: Модели 25%, Чаттеры 20% (Итого 45%)
+  calculatePayrollEscrow(txList = this.getFiltered()) {
+    let p1Income = 0;
+    let p2Income = 0;
+    let modelsPaid = 0;
+    let chattersPaid = 0;
+
+    txList.forEach(t => {
+      const amt = Number(t.amount) || 0;
+      if (t.type === 'Доход') {
+        const day = parseInt((t.date || '').split('-')[2], 10) || 1;
+        if (day <= 15) {
+          p1Income += amt;
+        } else {
+          p2Income += amt;
+        }
+      } else if (t.type === 'Расход') {
+        const cat = (t.category || '').toLowerCase();
+        if (cat.includes('модел')) {
+          modelsPaid += amt;
+        } else if (cat.includes('чаттер') || cat.includes('оператор')) {
+          chattersPaid += amt;
+        }
+      }
+    });
+
+    // Начисления Период 1 (1-15) к выплате 31-го
+    const p1ModelsDue = p1Income * 0.25;
+    const p1ChattersDue = p1Income * 0.20;
+    const p1TotalDue = p1ModelsDue + p1ChattersDue;
+
+    // Начисления Период 2 (16-31) к выплате 15-го след. месяца
+    const p2ModelsDue = p2Income * 0.25;
+    const p2ChattersDue = p2Income * 0.20;
+    const p2TotalDue = p2ModelsDue + p2ChattersDue;
+
+    // Списание фактических выплат: сначала гасим Период 1, затем Период 2
+    const p1ModelsPaidApplied = Math.min(p1ModelsDue, modelsPaid);
+    const p2ModelsPaidApplied = Math.min(p2ModelsDue, Math.max(0, modelsPaid - p1ModelsDue));
+
+    const p1ChattersPaidApplied = Math.min(p1ChattersDue, chattersPaid);
+    const p2ChattersPaidApplied = Math.min(p2ChattersDue, Math.max(0, chattersPaid - p1ChattersDue));
+
+    const p1ModelsRemaining = Math.max(0, p1ModelsDue - p1ModelsPaidApplied);
+    const p1ChattersRemaining = Math.max(0, p1ChattersDue - p1ChattersPaidApplied);
+    const p1Remaining = p1ModelsRemaining + p1ChattersRemaining;
+
+    const p2ModelsRemaining = Math.max(0, p2ModelsDue - p2ModelsPaidApplied);
+    const p2ChattersRemaining = Math.max(0, p2ChattersDue - p2ChattersPaidApplied);
+    const p2Remaining = p2ModelsRemaining + p2ChattersRemaining;
+
+    const totalEscrowRemaining = p1Remaining + p2Remaining;
+
+    return {
+      p1Income,
+      p2Income,
+      p1ModelsDue,
+      p1ChattersDue,
+      p1TotalDue,
+      p1Remaining,
+      p2ModelsDue,
+      p2ChattersDue,
+      p2TotalDue,
+      p2Remaining,
+      modelsPaid,
+      chattersPaid,
+      totalEscrowRemaining
+    };
   }
 
   mapCategoryToBudgetGroup(cat) {
@@ -513,6 +594,11 @@ export function initFinanceModule() {
     if (!txCatSelect) return;
     const cats = type === 'Доход' ? FINANCE_INCOME_CATS : FINANCE_EXPENSE_CATS;
     txCatSelect.innerHTML = cats.map(c => `<option value="${c}">${c}</option>`).join('');
+
+    const feeGroup = document.getElementById('finance-fee-group');
+    if (feeGroup) {
+      feeGroup.style.display = type === 'Доход' ? 'block' : 'none';
+    }
   }
 
   txTypeRadios.forEach(radio => {
@@ -541,6 +627,8 @@ export function initFinanceModule() {
     const amount = document.getElementById('finance-tx-amount')?.value;
     const model = document.getElementById('finance-tx-model')?.value;
     const desc = document.getElementById('finance-tx-desc')?.value;
+    const feeInput = document.getElementById('finance-tx-fee');
+    const fee = feeInput ? parseFloat(feeInput.value) || 0 : 0;
 
     if (!amount || Number(amount) <= 0) {
       alert('Укажите корректную сумму операции.');
@@ -548,14 +636,28 @@ export function initFinanceModule() {
     }
 
     manager.addTransaction({ date, type, category, amount, model, desc });
+
+    // Автоматическая фиксация комиссии вывода/обнала при внесении дохода
+    if (type === 'Доход' && fee > 0) {
+      manager.addTransaction({
+        date,
+        type: 'Расход',
+        category: 'Комиссии и вывод',
+        amount: fee,
+        model,
+        desc: `Комиссия вывода / обнала (${desc || model})`
+      });
+    }
+
     formAddTx.reset();
+    if (feeInput) feeInput.value = '';
     updateCategoryDropdown('Расход');
     const today = new Date().toISOString().split('T')[0];
     const dateInput = document.getElementById('finance-tx-date');
     if (dateInput) dateInput.value = today;
 
     renderAll();
-    showToast('✅ Финансовая операция добавлена!');
+    showToast(fee > 0 ? `✅ Доход ($${amount}) и комиссия ($${fee}) записаны!` : '✅ Финансовая операция добавлена!');
   });
 
   // Excel Export via SheetJS
@@ -697,34 +799,71 @@ export function initFinanceModule() {
     }
   });
 
-  function renderKPIs(metrics, cashBalance = 0) {
+  function renderKPIs(metrics, cashBalance = 0, escrowData = null, totalContractorsRemaining = 0) {
     const elCash = document.getElementById('fin-kpi-cash-balance');
+    const elSafeCash = document.getElementById('fin-kpi-safe-cash');
+    const elSafeCashSub = document.getElementById('fin-kpi-safe-cash-sub');
+    const elEscrow = document.getElementById('fin-kpi-escrow');
+    const elEscrowSub = document.getElementById('fin-kpi-escrow-sub');
     const elRev = document.getElementById('fin-kpi-rev');
-    const elExp = document.getElementById('fin-kpi-exp');
+    const elFees = document.getElementById('fin-kpi-fees');
+    const elFeesSub = document.getElementById('fin-kpi-fees-sub');
     const elNet = document.getElementById('fin-kpi-net');
     const elMargin = document.getElementById('fin-kpi-margin');
-    const elRoas = document.getElementById('fin-kpi-roas');
 
+    // 1. Физическая касса (на руках)
     if (elCash) {
       elCash.textContent = `$${cashBalance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
       elCash.style.color = cashBalance >= 0 ? '#34d399' : 'var(--accent-rose)';
     }
 
+    // 2. Зарплатный резерв (Эскроу к 31-му и к 15-му)
+    const escrowDue = escrowData ? escrowData.totalEscrowRemaining : 0;
+    const p1Due = escrowData ? escrowData.p1Remaining : 0;
+    const p2Due = escrowData ? escrowData.p2Remaining : 0;
+
+    if (elEscrow) {
+      elEscrow.textContent = `$${escrowDue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      elEscrow.style.color = escrowDue > 0 ? '#fbbf24' : 'var(--accent-green)';
+    }
+    if (elEscrowSub) {
+      elEscrowSub.textContent = `К 31-му: $${Math.round(p1Due).toLocaleString()} | К 15-му: $${Math.round(p2Due).toLocaleString()}`;
+    }
+
+    // 3. Свободная касса овнера (Safe Cash)
+    const contractorsDue = totalContractorsRemaining || 0;
+    const safeCash = cashBalance - escrowDue - contractorsDue;
+    if (elSafeCash) {
+      elSafeCash.textContent = `$${safeCash.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      elSafeCash.style.color = safeCash >= 0 ? '#34d399' : 'var(--accent-rose)';
+    }
+    if (elSafeCashSub) {
+      elSafeCashSub.textContent = safeCash >= 0 
+        ? 'Доступно к выводу без риска разрыва' 
+        : `Дефицит -$${Math.abs(Math.round(safeCash)).toLocaleString()}! Не выводить дивиденды`;
+      elSafeCashSub.style.color = safeCash >= 0 ? 'var(--text-muted)' : 'var(--accent-rose)';
+    }
+
+    // 4. Выручка Net OnlyFans
     if (elRev) elRev.textContent = `$${metrics.income.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-    if (elExp) elExp.textContent = `$${metrics.expense.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-    
+
+    // 5. Комиссии вывода & обнала
+    if (elFees) {
+      elFees.textContent = `$${metrics.withdrawalFees.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    }
+    if (elFeesSub) {
+      elFeesSub.textContent = `Paxum / P2P | Эфф. комса: ${metrics.effectiveFeePct.toFixed(1)}%`;
+    }
+
+    // 6. Чистая прибыль агентства
     if (elNet) {
       elNet.textContent = `$${metrics.netProfit.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-      elNet.style.color = metrics.netProfit >= 0 ? 'var(--accent-green)' : 'var(--accent-rose)';
+      elNet.style.color = metrics.netProfit >= 0 ? 'var(--primary)' : 'var(--accent-rose)';
     }
 
     if (elMargin) {
       elMargin.textContent = `${metrics.netMargin.toFixed(1)}%`;
       elMargin.style.color = metrics.netMargin >= 30 ? 'var(--accent-green)' : (metrics.netMargin > 0 ? 'var(--accent-amber)' : 'var(--accent-rose)');
-    }
-
-    if (elRoas) {
-      elRoas.textContent = `${metrics.roas.toFixed(2)}x`;
     }
   }
 
@@ -1055,34 +1194,40 @@ export function initFinanceModule() {
 
   let userOverrodePayout = false;
 
-  function renderRunwayAlert(cashBalance, remainingLiabilities, totalContractorsRemaining) {
+  function renderRunwayAlert(cashBalance, escrowData, totalContractorsRemaining) {
     const alertContainer = document.getElementById('fin-runway-alert');
     if (!alertContainer) return;
 
     // Реальный остаток к выплате подрядчикам с учетом уже внесенных авансов/траншей
-    const contractorsDue = totalContractorsRemaining !== undefined ? totalContractorsRemaining : (350 + 250 + 220 + 580);
-    const modelsRem = remainingLiabilities?.modelsRemaining || 0;
-    const chattersRem = remainingLiabilities?.chattersRemaining || 0;
-    const totalShortTermDue = contractorsDue + modelsRem + chattersRem;
-    const gap = cashBalance - totalShortTermDue;
+    const contractorsDue = totalContractorsRemaining !== undefined ? totalContractorsRemaining : 0;
+    const p1Due = escrowData ? (escrowData.p1Remaining !== undefined ? escrowData.p1Remaining : 0) : 0;
+    const p2Due = escrowData ? (escrowData.p2Remaining !== undefined ? escrowData.p2Remaining : 0) : 0;
+    const totalEscrow = escrowData 
+      ? (escrowData.totalEscrowRemaining !== undefined ? escrowData.totalEscrowRemaining : ((escrowData.modelsRemaining || 0) + (escrowData.chattersRemaining || 0))) 
+      : 0;
+    const totalObligations = contractorsDue + totalEscrow;
+    const safeCash = cashBalance - totalObligations;
 
-    if (gap >= 0) {
+    if (safeCash >= 0) {
       alertContainer.innerHTML = `
         <div style="background: rgba(52, 211, 153, 0.08); border: 1px solid var(--accent-green); border-radius: var(--radius-sm); padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
           <div style="display: flex; align-items: center; gap: 12px;">
             <span style="font-size: 24px;">🟢</span>
             <div>
-              <div style="font-weight: 700; color: var(--accent-green); font-size: 14px;">Безопасный Runway: Касса полностью покрывает все ближайшие обязательства</div>
+              <div style="font-weight: 700; color: var(--accent-green); font-size: 14px;">Безопасный Runway: Касса полностью покрывает все зарплаты и обязательства</div>
               <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">
-                В кассе: <strong style="color: var(--text-main);">$${cashBalance.toLocaleString('en-US', { minimumFractionDigits: 2 })}</strong> | Обязательства к доплате (Подрядчики: $${contractorsDue.toLocaleString()}, Долг моделям: $${modelsRem.toLocaleString()}, Чаттерам: $${chattersRem.toLocaleString()}): <strong style="color: var(--primary);">$${totalShortTermDue.toLocaleString()}</strong>
+                В кассе: <strong style="color: var(--text-main);">$${cashBalance.toLocaleString('en-US', { minimumFractionDigits: 2 })}</strong> | 
+                Резерв к 31-му: <strong style="color: #fbbf24;">$${Math.round(p1Due).toLocaleString()}</strong> | 
+                Резерв к 15-му: <strong style="color: #fbbf24;">$${Math.round(p2Due).toLocaleString()}</strong> | 
+                Подрядчики: <strong style="color: var(--primary);">$${contractorsDue.toLocaleString()}</strong>
               </div>
             </div>
           </div>
           <div style="text-align: right;">
             <div style="font-family: var(--font-mono); font-weight: 800; font-size: 16px; color: var(--accent-green);">
-              Запас кассы: +$${gap.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+              Свободная касса: +$${safeCash.toLocaleString('en-US', { minimumFractionDigits: 2 })}
             </div>
-            <div style="font-size: 10px; color: var(--text-muted);">Риска кассового разрыва нет</div>
+            <div style="font-size: 10px; color: var(--text-muted);">Доступно к выводу овнером без риска разрыва</div>
           </div>
         </div>
       `;
@@ -1094,15 +1239,17 @@ export function initFinanceModule() {
             <div>
               <div style="font-weight: 700; color: var(--accent-rose); font-size: 14px;">Внимание: Риск кассового разрыва перед ближайшими выплатами!</div>
               <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">
-                В кассе: <strong style="color: var(--text-main);">$${cashBalance.toLocaleString('en-US', { minimumFractionDigits: 2 })}</strong> | Обязательства к доплате: <strong style="color: var(--accent-rose);">$${totalShortTermDue.toLocaleString()}</strong> (Подрядчики: $${contractorsDue.toLocaleString()}, Долг моделям/чаттерам: $${(modelsRem + chattersRem).toLocaleString()})
+                В кассе: <strong style="color: var(--text-main);">$${cashBalance.toLocaleString('en-US', { minimumFractionDigits: 2 })}</strong> | 
+                Обязательства к выплате: <strong style="color: var(--accent-rose);">$${totalObligations.toLocaleString()}</strong> 
+                (Резерв зарплат: $${totalEscrow.toLocaleString()} [к 31-му: $${Math.round(p1Due).toLocaleString()}, к 15-му: $${Math.round(p2Due).toLocaleString()}], Подрядчики: $${contractorsDue.toLocaleString()})
               </div>
             </div>
           </div>
           <div style="text-align: right;">
             <div style="font-family: var(--font-mono); font-weight: 800; font-size: 16px; color: var(--accent-rose);">
-              Дефицит: -$${Math.abs(gap).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+              Дефицит: -$${Math.abs(safeCash).toLocaleString('en-US', { minimumFractionDigits: 2 })}
             </div>
-            <div style="font-size: 10px; color: var(--text-muted);">Дождитесь понедельничного вывода OnlyFans!</div>
+            <div style="font-size: 10px; color: var(--text-muted);">Не выводите дивиденды до закрытия выплат!</div>
           </div>
         </div>
       `;
@@ -1328,19 +1475,20 @@ export function initFinanceModule() {
     const metrics = manager.calculateMetrics(txs);
     const budgets = manager.calculateBudgetsProgress(txs);
     const cashBalance = manager.calculateCashBalance();
+    const escrowData = manager.calculatePayrollEscrow(txs);
 
-    renderKPIs(metrics, cashBalance);
+    // Подрядчики: расчет статуса оплат (100% / 50% / 0%)
+    const contractorsStatus = renderContractorsRunway(txs);
+
+    renderKPIs(metrics, cashBalance, escrowData, contractorsStatus?.totalContractorsRemaining);
     renderBudgets(budgets);
     renderUnitEconomics(txs);
     renderTransactionsTable(txs);
     renderCharts(txs);
     
-    // Подрядчики: расчет статуса оплат (100% / 50% / 0%)
-    const contractorsStatus = renderContractorsRunway(txs);
-
     // Синхронизация сплита и показ индикатора кассового разрыва
-    const remaining = calculateAndRenderSplit(txs, metrics);
-    renderRunwayAlert(cashBalance, remaining, contractorsStatus?.totalContractorsRemaining);
+    calculateAndRenderSplit(txs, metrics);
+    renderRunwayAlert(cashBalance, escrowData, contractorsStatus?.totalContractorsRemaining);
   }
 
   // Initial Run

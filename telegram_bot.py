@@ -355,12 +355,25 @@ def process_amount_and_desc(msg, tx_type: str, text: str):
         tx_type = "Расход"
         clean_s = clean_s[1:].strip()
 
-    # 3. Ищем сумму числом
+    # 3. Извлекаем комиссию вывода или сумму фактического получения
+    fee = 0.0
+    rec_val = None
+    m_fee = re.search(r"\b(?:fee|ком|комса|комиссия)[:\s]+(\d+(?:[.,]\d+)?)\b", clean_s, flags=re.IGNORECASE)
+    if m_fee:
+        fee = float(m_fee.group(1).replace(",", "."))
+        clean_s = (clean_s[:m_fee.start()] + " " + clean_s[m_fee.end():]).strip()
+    else:
+        m_rec = re.search(r"\b(?:rec|received|получено)[:\s]+(\d+(?:[.,]\d+)?)\b", clean_s, flags=re.IGNORECASE)
+        if m_rec:
+            rec_val = float(m_rec.group(1).replace(",", "."))
+            clean_s = (clean_s[:m_rec.start()] + " " + clean_s[m_rec.end():]).strip()
+
+    # 4. Ищем основную сумму числом
     match = re.search(r"\b(\d+(?:[.,]\d+)?)\b", clean_s)
     if not match:
         bot.send_message(
             msg.chat.id,
-            "⚠️ Укажите сумму числом. Пример: <code>150 TikTok</code> или <code>+2384 02.11 вывод оф полина</code>",
+            "⚠️ Укажите сумму числом. Пример: <code>150 TikTok</code> или <code>+2384 02.11 вывод оф полина</code> (можно с комиссией: <code>+8000 fee 250</code>)",
             reply_markup=get_main_keyboard(),
             parse_mode="HTML"
         )
@@ -371,6 +384,9 @@ def process_amount_and_desc(msg, tx_type: str, text: str):
         bot.send_message(msg.chat.id, "⚠️ Сумма должна быть больше 0.", reply_markup=get_main_keyboard())
         return
 
+    if rec_val is not None and rec_val < amount:
+        fee = amount - rec_val
+
     # Описание - весь текст за вычетом найденной суммы
     desc = (clean_s[:match.start()] + " " + clean_s[match.end():]).strip()
     desc = re.sub(r"\s+", " ", desc)
@@ -380,7 +396,7 @@ def process_amount_and_desc(msg, tx_type: str, text: str):
         # Автоопределение категории и модели
         cat = detect_category(desc, tx_type)
         model = detect_model(desc)
-        save_and_confirm(msg.chat.id, uid, tx_type, amount, cat, model, desc, msg.from_user.first_name, tx_date=tx_date)
+        save_and_confirm(msg.chat.id, uid, tx_type, amount, cat, model, desc, msg.from_user.first_name, tx_date=tx_date, fee=fee)
     else:
         # Интерактивный режим по кнопкам
         user_sessions[uid] = {
@@ -388,6 +404,7 @@ def process_amount_and_desc(msg, tx_type: str, text: str):
             "amount": amount,
             "desc": desc,
             "date": tx_date,
+            "fee": fee,
             "step": "choose_category"
         }
         icon = "💸" if tx_type == "Расход" else "💵"
@@ -445,10 +462,11 @@ def handle_callbacks(call):
         cat = session["category"]
         desc = session.get("desc") or f"{cat} ({model})"
         author = call.from_user.first_name or "Telegram"
+        fee = session.get("fee", 0.0)
 
         tx_date = session.get("date")
         user_sessions.pop(uid, None)
-        save_and_confirm(call.message.chat.id, uid, tx_type, amount, cat, model, desc, author, edit_msg_id=call.message.message_id, tx_date=tx_date)
+        save_and_confirm(call.message.chat.id, uid, tx_type, amount, cat, model, desc, author, edit_msg_id=call.message.message_id, tx_date=tx_date, fee=fee)
         bot.answer_callback_query(call.id)
         return
 
@@ -483,7 +501,7 @@ def handle_callbacks(call):
         bot.answer_callback_query(call.id)
         return
 
-def save_and_confirm(chat_id, user_id, tx_type, amount, category, model, desc, author, edit_msg_id=None, tx_date=None):
+def save_and_confirm(chat_id, user_id, tx_type, amount, category, model, desc, author, edit_msg_id=None, tx_date=None, fee=0.0):
     tx_date_str = tx_date or datetime.date.today().isoformat()
     new_tx = {
         "date": tx_date_str,
@@ -495,23 +513,51 @@ def save_and_confirm(chat_id, user_id, tx_type, amount, category, model, desc, a
         "author": author
     }
 
-    # Отправка в Google Sheets
+    # Отправка основной операции в Google Sheets
     synced = send_tx_to_sheets(new_tx)
 
-    sync_badge = "☁️ Синхронизировано с Google Sheets & Vercel" if synced else "⚠️ Сохранено локально (привяжите /url)"
+    fee_synced = True
+    if tx_type == "Доход" and fee > 0:
+        fee_tx = {
+            "date": tx_date_str,
+            "type": "Расход",
+            "category": "Комиссии и вывод",
+            "model": model,
+            "amount": fee,
+            "desc": f"Комиссия вывода / обнала ({desc or model})",
+            "author": author
+        }
+        fee_synced = send_tx_to_sheets(fee_tx)
+
+    sync_badge = "☁️ Синхронизировано с Google Sheets & Vercel" if (synced and fee_synced) else "⚠️ Сохранено локально (привяжите /url)"
     icon = "💸" if tx_type == "Расход" else "💵"
     sign = "-" if tx_type == "Расход" else "+"
 
-    msg_text = (
-        f"✅ <b>Операция успешно записана!</b>\n\n"
-        f"{icon} <b>{tx_type}:</b> {sign}${amount:,.2f}\n"
-        f"📂 <b>Категория:</b> {category}\n"
-        f"👑 <b>Модель:</b> {model}\n"
-        f"📝 <b>Описание:</b> {desc}\n"
-        f"👤 <b>Автор:</b> {author}\n"
-        f"📅 <b>Дата:</b> {tx_date_str}\n\n"
-        f"<i>{sync_badge}</i>"
-    )
+    if tx_type == "Доход" and fee > 0:
+        actual_received = amount - fee
+        msg_text = (
+            f"✅ <b>Операция успешно записана!</b>\n\n"
+            f"💵 <b>Доход (Net OF):</b> +${amount:,.2f}\n"
+            f"💳 <b>Комиссия вывода:</b> -${fee:,.2f}\n"
+            f"🏦 <b>Фактически в кассу:</b> +${actual_received:,.2f}\n"
+            f"📂 <b>Категория:</b> {category}\n"
+            f"👑 <b>Модель:</b> {model}\n"
+            f"📝 <b>Описание:</b> {desc}\n"
+            f"👤 <b>Автор:</b> {author}\n"
+            f"📅 <b>Дата:</b> {tx_date_str}\n\n"
+            f"<i>{sync_badge}</i>"
+        )
+    else:
+        msg_text = (
+            f"✅ <b>Операция успешно записана!</b>\n\n"
+            f"{icon} <b>{tx_type}:</b> {sign}${amount:,.2f}\n"
+            f"📂 <b>Категория:</b> {category}\n"
+            f"👑 <b>Модель:</b> {model}\n"
+            f"📝 <b>Описание:</b> {desc}\n"
+            f"👤 <b>Автор:</b> {author}\n"
+            f"📅 <b>Дата:</b> {tx_date_str}\n\n"
+            f"<i>{sync_badge}</i>"
+        )
 
     markup = types.InlineKeyboardMarkup(row_width=1)
     markup.add(
@@ -536,9 +582,12 @@ def send_balance_report(chat_id):
         text = (
             "🏦 <b>АКТУАЛЬНОЕ СОСТОЯНИЕ КАССЫ</b>\n"
             "━━━━━━━━━━━━━━━━━━━━\n"
-            "💰 <b>Остаток в кассе:</b> <code>$0.00</code>\n"
-            "💵 <b>Выручка (Всего):</b> $0.00\n"
-            "💸 <b>Расходы (OPEX):</b> $0.00\n"
+            "💰 <b>Физическая касса (на руках):</b> <code>$0.00</code>\n"
+            "🟢 <b>Свободная касса (Safe Cash):</b> <code>$0.00</code>\n"
+            "🔒 <b>Зарплатный резерв (Эскроу):</b> <code>$0.00</code>\n\n"
+            "💵 <b>Выручка Net OF:</b> $0.00\n"
+            "💸 <b>Расходы OPEX:</b> $0.00\n"
+            "💳 <b>Комиссии вывода:</b> $0.00\n"
             "📊 <b>Чистая маржинальность:</b> 0.0%\n"
             "📋 <b>Всего записей в реестре:</b> 0\n\n"
             "<i>Касса чистая ($0.00). Вносите доходы (/in) и расходы (/out).</i>"
@@ -549,16 +598,93 @@ def send_balance_report(chat_id):
     income = sum(float(t.get("amount", 0)) for t in txs if t.get("type") == "Доход")
     expense = sum(float(t.get("amount", 0)) for t in txs if t.get("type") == "Расход")
     balance = income - expense
-    margin = (balance / income * 100) if income > 0 else 0
+    net_margin = (balance / income * 100) if income > 0 else 0
+
+    # Комиссии вывода & обнала
+    withdrawal_fees = 0.0
+    for t in txs:
+        if t.get("type") == "Расход":
+            amt = float(t.get("amount", 0))
+            cat = str(t.get("category", "")).lower()
+            desc = str(t.get("desc", "")).lower()
+            if any(k in cat or k in desc for k in ["комисси", "вывод", "paxum", "bybit", "обнал"]):
+                withdrawal_fees += amt
+
+    effective_fee = (withdrawal_fees / income * 100) if income > 0 else 0.0
+
+    # Расчет зарплатного резерва (Эскроу) по периодам:
+    # Период 1 (1–15 число) -> выплата 31-го числа
+    # Период 2 (16–31 число) -> выплата 15-го числа следующего месяца
+    # Доли: Модели 25%, Чаттеры 20% (Итого 45%)
+    p1_income = 0.0
+    p2_income = 0.0
+    models_paid = 0.0
+    chatters_paid = 0.0
+
+    for t in txs:
+        amt = float(t.get("amount", 0))
+        if t.get("type") == "Доход":
+            date_str = str(t.get("date", ""))
+            day = int(date_str.split("-")[2]) if "-" in date_str and len(date_str.split("-")) >= 3 else 1
+            if day <= 15:
+                p1_income += amt
+            else:
+                p2_income += amt
+        elif t.get("type") == "Расход":
+            cat = str(t.get("category", "")).lower()
+            if "модел" in cat:
+                models_paid += amt
+            elif "чаттер" in cat or "оператор" in cat:
+                chatters_paid += amt
+
+    # Начисления (45% от Net OF)
+    p1_due = p1_income * 0.45
+    p2_due = p2_income * 0.45
+    total_payroll_paid = models_paid + chatters_paid
+
+    p1_paid = min(p1_due, total_payroll_paid)
+    p1_remaining = max(0.0, p1_due - p1_paid)
+    p2_paid = min(p2_due, max(0.0, total_payroll_paid - p1_due))
+    p2_remaining = max(0.0, p2_due - p2_paid)
+    total_escrow = p1_remaining + p2_remaining
+
+    # Подрядчики к доплате
+    contractors_due = 0.0
+    for c in CONTRACTORS:
+        c_name_lower = c["name"].lower()
+        paid_c = sum(
+            float(t.get("amount", 0)) for t in txs 
+            if t.get("type") == "Расход" and (c_name_lower in str(t.get("desc", "")).lower() or c["cat"].lower() in str(t.get("category", "")).lower())
+        )
+        rem_c = max(0.0, float(c["amount"]) - paid_c)
+        contractors_due += rem_c
+
+    # Свободная касса овнера
+    safe_cash = balance - total_escrow - contractors_due
+    safe_icon = "🟢" if safe_cash >= 0 else "🚨"
+    safe_note = (
+        "<i>🟢 Доступно к выводу овнером без риска разрыва кассы</i>" 
+        if safe_cash >= 0 
+        else "<i>⚠️ Дефицит кассы! Не выводите дивиденды до закрытия выплат</i>"
+    )
 
     text = (
-        f"🏦 <b>АКТУАЛЬНОЕ СОСТОЯНИЕ КАССЫ</b>\n"
+        f"🏦 <b>СОСТОЯНИЕ КАССЫ & РЕЗЕРВОВ MIRRORS</b>\n"
         f"━━━━━━━━━━━━━━━━━━━━\n"
-        f"💰 <b>Остаток в кассе:</b> <code>${balance:,.2f}</code>\n"
-        f"💵 <b>Выручка (Всего):</b> ${income:,.2f}\n"
-        f"💸 <b>Расходы (OPEX):</b> ${expense:,.2f}\n"
-        f"📊 <b>Чистая маржинальность:</b> {margin:.1f}%\n"
-        f"📋 <b>Всего записей в реестре:</b> {len(txs)}\n\n"
+        f"💰 <b>Физическая касса (на руках):</b> <code>${balance:,.2f}</code>\n\n"
+        f"🔒 <b>Зарплатный резерв (Эскроу):</b> <code>${total_escrow:,.2f}</code>\n"
+        f"   ├ <i>К 31-му (период 1–15):</i> ${p1_remaining:,.2f}\n"
+        f"   └ <i>К 15-му (период 16–31):</i> ${p2_remaining:,.2f}\n\n"
+        f"📅 <b>Подрядчики к доплате:</b> ${contractors_due:,.2f}\n"
+        f"━━━━━━━━━━━━━━━━━━━━\n"
+        f"{safe_icon} <b>СВОБОДНАЯ КАССА (Safe Cash):</b> <code>${safe_cash:,.2f}</code>\n"
+        f"{safe_note}\n\n"
+        f"📊 <b>ФИНАНСОВЫЙ СРЕЗ:</b>\n"
+        f"💵 <b>Выручка Net OF:</b> ${income:,.2f}\n"
+        f"💸 <b>Расходы OPEX:</b> ${expense:,.2f}\n"
+        f"💳 <b>Комиссии вывода & обнала:</b> ${withdrawal_fees:,.2f} ({effective_fee:.1f}%)\n"
+        f"🏆 <b>Чистая прибыль:</b> ${balance:,.2f} ({net_margin:.1f}%)\n"
+        f"📋 <b>Записей в реестре:</b> {len(txs)}\n\n"
         f"<i>Данные онлайн из Google Sheets & Dashboard</i>"
     )
     bot.send_message(chat_id, text, reply_markup=get_main_keyboard(), parse_mode="HTML")
