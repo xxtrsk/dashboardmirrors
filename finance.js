@@ -1256,151 +1256,6 @@ export function initFinanceModule() {
     }
   }
 
-  function calculateAndRenderSplit(txs, metrics) {
-    const inputPayout = document.getElementById('split-input-payout');
-    const inputTrafficPlan = document.getElementById('split-traffic-plan-input');
-    const elModels = document.getElementById('split-res-models');
-    const elModelsPaid = document.getElementById('split-models-paid');
-    const elModelsRemaining = document.getElementById('split-models-remaining');
-    const elChatters = document.getElementById('split-res-chatters');
-    const elChattersPaid = document.getElementById('split-chatters-paid');
-    const elChattersRemaining = document.getElementById('split-chatters-remaining');
-    const elTraffic = document.getElementById('split-res-traffic');
-    const elTrafficVariance = document.getElementById('split-traffic-variance');
-    const elProfit = document.getElementById('split-res-profit');
-    const syncBadge = document.getElementById('split-sync-badge');
-
-    if (!inputPayout) return { modelsRemaining: 0, chattersRemaining: 0 };
-
-    // Если пользователь вручную не вводил прогнозную сумму, синхронизируем с реальной выручкой из кассы
-    if (!userOverrodePayout) {
-      inputPayout.value = Math.round(metrics.income) || 0;
-      if (syncBadge) {
-        syncBadge.textContent = '● Синхронизировано';
-        syncBadge.style.color = 'var(--accent-green)';
-        syncBadge.style.background = 'rgba(52, 211, 153, 0.12)';
-      }
-    } else {
-      if (syncBadge) {
-        syncBadge.textContent = '✎ Ручной ввод (прогноз)';
-        syncBadge.style.color = 'var(--accent-amber)';
-        syncBadge.style.background = 'rgba(251, 191, 36, 0.12)';
-      }
-    }
-
-    const payout = parseFloat(inputPayout.value) || 0;
-
-    // Подсчитываем реальные выплаты из транзакций
-    let modelsPaid = 0;
-    let chattersPaid = 0;
-    let trafficFact = 0;
-    let otherOpex = 0;
-
-    txs.forEach(t => {
-      if (t.type === 'Расход') {
-        const amt = Number(t.amount) || 0;
-        if (t.category.includes('Выплаты моделям')) {
-          modelsPaid += amt;
-        } else if (t.category.includes('Чаттеры') || t.category.includes('Операторы')) {
-          chattersPaid += amt;
-        } else if (t.category.startsWith('Трафик')) {
-          trafficFact += amt;
-        } else {
-          otherOpex += amt;
-        }
-      }
-    });
-
-    // Начисления по финансовой модели: Модели 25%, Чаттеры 20%
-    const modelsDueTotal = Math.round(payout * 0.25);
-    const modelsRemaining = Math.max(0, modelsDueTotal - modelsPaid);
-
-    const chattersDueTotal = Math.round(payout * 0.20);
-    const chattersRemaining = Math.max(0, chattersDueTotal - chattersPaid);
-
-    // Бюджет по трафику (+- 0)
-    const trafficPlan = parseFloat(inputTrafficPlan?.value) || 8500;
-    const trafficDelta = trafficPlan - trafficFact;
-
-    let trafficVarianceText = '⚖️ ±$0 (В нуле)';
-    let trafficVarianceColor = 'var(--text-main)';
-
-    if (Math.abs(trafficDelta) < 10) {
-      trafficVarianceText = '⚖️ ±$0 (В нуле — бюджет освоен точно)';
-      trafficVarianceColor = 'var(--text-main)';
-    } else if (trafficDelta > 0) {
-      trafficVarianceText = `🟢 В запасе: +$${Math.round(trafficDelta).toLocaleString()} (из $${trafficPlan.toLocaleString()})`;
-      trafficVarianceColor = 'var(--accent-green)';
-    } else {
-      trafficVarianceText = `🔴 Перерасход: превышение на -$${Math.round(Math.abs(trafficDelta)).toLocaleString()}`;
-      trafficVarianceColor = 'var(--accent-rose)';
-    }
-
-    // Чистый профит агентства (55% от вала за вычетом трафика и опекса)
-    const profitBuffer = Math.round(payout - modelsDueTotal - chattersDueTotal - trafficFact - otherOpex);
-
-    // Обновляем DOM
-    if (elModels) elModels.textContent = `$${modelsDueTotal.toLocaleString()}`;
-    if (elModelsPaid) elModelsPaid.textContent = `$${modelsPaid.toLocaleString()}`;
-    if (elModelsRemaining) {
-      elModelsRemaining.textContent = `$${modelsRemaining.toLocaleString()}`;
-      elModelsRemaining.style.color = modelsRemaining > 0 ? '#fbbf24' : 'var(--accent-green)';
-    }
-
-    if (elChatters) elChatters.textContent = `$${chattersDueTotal.toLocaleString()}`;
-    if (elChattersPaid) elChattersPaid.textContent = `$${chattersPaid.toLocaleString()}`;
-    if (elChattersRemaining) {
-      elChattersRemaining.textContent = `$${chattersRemaining.toLocaleString()}`;
-      elChattersRemaining.style.color = chattersRemaining > 0 ? '#38bdf8' : 'var(--accent-green)';
-    }
-
-    if (elTraffic) elTraffic.textContent = `$${trafficFact.toLocaleString()}`;
-    if (elTrafficVariance) {
-      elTrafficVariance.textContent = trafficVarianceText;
-      elTrafficVariance.style.color = trafficVarianceColor;
-    }
-
-    if (elProfit) {
-      elProfit.textContent = `$${profitBuffer.toLocaleString()}`;
-      elProfit.style.color = profitBuffer >= 0 ? 'var(--accent-green)' : 'var(--accent-rose)';
-    }
-
-    return { modelsRemaining, chattersRemaining };
-  }
-
-  function setupLiveSplitCalculator() {
-    const inputPayout = document.getElementById('split-input-payout');
-    const btnUseActual = document.getElementById('btn-split-use-actual');
-    const inputTrafficPlan = document.getElementById('split-traffic-plan-input');
-
-    inputPayout?.addEventListener('input', () => {
-      userOverrodePayout = true;
-      const txs = manager.getFiltered();
-      const metrics = manager.calculateMetrics(txs);
-      const remaining = calculateAndRenderSplit(txs, metrics);
-      const cashBalance = manager.calculateCashBalance();
-      renderRunwayAlert(cashBalance, remaining);
-    });
-
-    btnUseActual?.addEventListener('click', () => {
-      userOverrodePayout = false;
-      const txs = manager.getFiltered();
-      const metrics = manager.calculateMetrics(txs);
-      const remaining = calculateAndRenderSplit(txs, metrics);
-      const cashBalance = manager.calculateCashBalance();
-      renderRunwayAlert(cashBalance, remaining);
-      showToast('⚡ Сплит синхронизирован с реальной выручкой из кассы!');
-    });
-
-    inputTrafficPlan?.addEventListener('input', () => {
-      const txs = manager.getFiltered();
-      const metrics = manager.calculateMetrics(txs);
-      const remaining = calculateAndRenderSplit(txs, metrics);
-      const cashBalance = manager.calculateCashBalance();
-      renderRunwayAlert(cashBalance, remaining);
-    });
-  }
-
   // Google Sheets UI & Sync handlers
   function updateGsheetUI() {
     const savedUrl = manager.loadGSheetUrl();
@@ -1486,8 +1341,7 @@ export function initFinanceModule() {
     renderTransactionsTable(txs);
     renderCharts(txs);
     
-    // Синхронизация сплита и показ индикатора кассового разрыва
-    calculateAndRenderSplit(txs, metrics);
+    // Показ индикатора кассового разрыва и безопасного Runway
     renderRunwayAlert(cashBalance, escrowData, contractorsStatus?.totalContractorsRemaining);
   }
 
@@ -1496,7 +1350,6 @@ export function initFinanceModule() {
   const dateInput = document.getElementById('finance-tx-date');
   if (dateInput) dateInput.value = today;
 
-  setupLiveSplitCalculator();
   updateGsheetUI();
   renderAll();
 

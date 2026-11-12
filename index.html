@@ -479,96 +479,13 @@
           <!-- Rendered dynamically -->
         </div>
 
-        <!-- 2 Columns: Left = Payment Cards, Right = Monday Split Calculator -->
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 20px;">
-          <!-- Left: Contractors & Recurring Outflows -->
-          <div>
-            <div style="font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.05em;">
-              Ближайшие выплаты подрядчикам & софт:
-            </div>
-            <div id="fin-contractors-runway" style="display: flex; flex-direction: column; gap: 10px;">
-              <!-- Rendered dynamically -->
-            </div>
+        <!-- Contractors & Recurring Outflows -->
+        <div>
+          <div style="font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.05em;">
+            Ближайшие выплаты подрядчикам & софт (график траншей):
           </div>
-
-          <!-- Right: Monday Split Calculator & Debt Ledger -->
-          <div style="background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 18px; display: flex; flex-direction: column; justify-content: space-between;">
-            <div>
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                <span style="font-size: 14px; font-weight: 700; color: var(--text-main);">
-                  🧮 Сплит Выручки & Обязательства (Live)
-                </span>
-                <span id="split-sync-badge" style="font-size: 11px; color: var(--accent-green); font-family: var(--font-mono); font-weight: 700; background: rgba(52, 211, 153, 0.12); padding: 2px 8px; border-radius: 8px;">
-                  ● Синхронизировано
-                </span>
-              </div>
-              <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 14px;">
-                Автоматически считает начисления моделям (25%), чаттерам (20%), сверяет с уже выплаченными суммами и контролирует баланс бюджета трафика (±0):
-              </p>
-
-              <div style="margin-bottom: 14px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                  <label style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">
-                    Выручка для расчета ($)
-                  </label>
-                  <button id="btn-split-use-actual" class="btn-action" style="padding: 2px 8px; font-size: 10px; background: rgba(56, 189, 248, 0.15); border-color: var(--primary); color: var(--primary); cursor: pointer;" title="Сбросить на реальную выручку из транзакций">
-                    ⚡ Факт из кассы
-                  </button>
-                </div>
-                <input type="number" id="split-input-payout" value="0" step="100" class="custom-select" style="width: 100%; padding: 10px 14px; font-size: 18px; font-family: var(--font-mono); font-weight: 700; background: #07090e; color: var(--accent-green); border-color: var(--accent-green);" />
-              </div>
-
-              <div style="display: flex; flex-direction: column; gap: 8px; font-size: 13px;">
-                <!-- Models Split -->
-                <div style="padding: 10px 12px; background: rgba(255, 255, 255, 0.02); border-radius: 6px; border-left: 3px solid #fbbf24;">
-                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                    <span>🔒 <strong>Доля Моделей (25%)</strong></span>
-                    <strong id="split-res-models" style="font-family: var(--font-mono); font-size: 15px; color: #fbbf24;">$0</strong>
-                  </div>
-                  <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted);">
-                    <span>Выплачено по факту: <span id="split-models-paid" style="color: var(--text-main); font-weight: 600;">$0</span></span>
-                    <span>Остаток долга: <strong id="split-models-remaining" style="color: #fbbf24;">$0</strong></span>
-                  </div>
-                </div>
-
-                <!-- Chatters Split -->
-                <div style="padding: 10px 12px; background: rgba(255, 255, 255, 0.02); border-radius: 6px; border-left: 3px solid #38bdf8;">
-                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                    <span>🔒 <strong>Зарплаты Чаттеров (20%)</strong></span>
-                    <strong id="split-res-chatters" style="font-family: var(--font-mono); font-size: 15px; color: #38bdf8;">$0</strong>
-                  </div>
-                  <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted);">
-                    <span>Выплачено по факту: <span id="split-chatters-paid" style="color: var(--text-main); font-weight: 600;">$0</span></span>
-                    <span>Остаток долга: <strong id="split-chatters-remaining" style="color: #38bdf8;">$0</strong></span>
-                  </div>
-                </div>
-
-                <!-- Traffic Budget Balance (+- 0) -->
-                <div style="padding: 10px 12px; background: rgba(255, 255, 255, 0.02); border-radius: 6px; border-left: 3px solid #f87171;">
-                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                    <div style="display: flex; align-items: center; gap: 6px;">
-                      <span>🎯 <strong>Трафик (План vs Факт)</strong></span>
-                      <span style="font-size: 10px; color: var(--text-muted);">План $:</span>
-                      <input type="number" id="split-traffic-plan-input" value="8500" step="500" style="width: 65px; padding: 2px 4px; font-size: 11px; font-family: var(--font-mono); background: #07090e; color: #fff; border: 1px solid var(--border-color); border-radius: 4px;" title="План бюджета на трафик" />
-                    </div>
-                    <strong id="split-res-traffic" style="font-family: var(--font-mono); font-size: 15px; color: #f87171;">$0</strong>
-                  </div>
-                  <div style="display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: var(--text-muted); margin-top: 4px;">
-                    <span>Баланс бюджета:</span>
-                    <span id="split-traffic-variance" style="font-family: var(--font-mono); font-weight: 700;">⚖️ ±$0 (В нуле)</span>
-                  </div>
-                </div>
-
-                <!-- Net Profit Buffer -->
-                <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background: rgba(52, 211, 153, 0.08); border-radius: 6px; border-left: 3px solid var(--accent-green);">
-                  <div>
-                    <strong>Чистая Прибыль Агентства (Net)</strong>
-                    <div style="font-size: 11px; color: var(--text-muted);">55% вала минус фактический трафик и опекс</div>
-                  </div>
-                  <strong id="split-res-profit" style="font-family: var(--font-mono); font-size: 16px; color: var(--accent-green);">$0</strong>
-                </div>
-              </div>
-            </div>
+          <div id="fin-contractors-runway" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 12px;">
+            <!-- Rendered dynamically -->
           </div>
         </div>
       </div>
