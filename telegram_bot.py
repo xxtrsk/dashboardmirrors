@@ -55,6 +55,7 @@ CATEGORIES_EXPENSE = [
     "Трафик: TikTok",
     "Трафик: Reddit",
     "Трафик: Twitter",
+    "Выплаты: PayPal",
     "Зарплаты: Чаттеры",
     "Выплаты моделям",
     "Софт: OnlyMonster",
@@ -77,10 +78,10 @@ MODELS_LIST = [
 ]
 
 CONTRACTORS = [
-    {"name": "@osckelly (Оскар) — OFTV", "amount": 350, "terms": "175$ в начале + 175$ в конце", "cat": "Трафик: TikTok"},
-    {"name": "@aneskagency (Анастасия) — FYP", "amount": 250, "terms": "125$ каждые 2 недели", "cat": "Трафик: TikTok"},
-    {"name": "OnlyMonster CRM", "amount": 220, "terms": "220$ / 2-го числа (единственный софт)", "cat": "Софт: OnlyMonster"},
-    {"name": "@KillerLe0n (Леон) — SFS", "amount": 580, "terms": "По сверке 1–5 числа", "cat": "Трафик: Twitter"}
+    {"name": "@osckelly (Оскар) — OFTV", "amount": 350, "terms": "175$ в начале + 175$ в конце (Lollysunnery)", "cat": "Трафик: TikTok", "model": "Lolly (Lollysunnery)"},
+    {"name": "@aneskagency (Анастасия) — FYP", "amount": 250, "terms": "125$ каждые 2 недели (Fansly)", "cat": "Трафик: TikTok", "model": "Eva Pinky (Fansly)"},
+    {"name": "OnlyMonster CRM", "amount": 220, "terms": "220$ / 2-го числа (единственный софт)", "cat": "Софт: OnlyMonster", "model": "Agency Core (Общие)"},
+    {"name": "@KillerLe0n (Леон) — SFS", "amount": 580, "terms": "По сверке 1–5 числа (1lolly & Eva Blush)", "cat": "Трафик: Twitter", "model": "Eva Blush"}
 ]
 
 # Хранилище временного состояния пошагового ввода { user_id: { ... } }
@@ -261,6 +262,19 @@ def parse_split_payout(text: str):
 
 def detect_model(desc: str) -> str:
     d = desc.lower()
+    # 0. Подрядчики трафика с жесткой привязкой к анкетам:
+    # Оскар (OFTV) -> Lollysunnery
+    if "оскар" in d or "osckelly" in d or "oftv" in d:
+        return "Lolly (Lollysunnery)"
+    # ФУП менеджер (Анастасия / FYP) -> Fansly (Eva Pinky)
+    if "анастасия" in d or "aneskagency" in d or "fyp" in d or "фуп" in d:
+        return "Eva Pinky (Fansly)"
+    # Леон SFS (постфактум фанаты на 1lollyhere и Eva Blush)
+    if "леон" in d or "killerle0n" in d or "sfs" in d or "сфс" in d:
+        if "1lolly" in d or "1лолли" in d:
+            return "Lolly (1lollyhere)"
+        return "Eva Blush"
+
     # 1. 1lolly (вторая анкета Lolly)
     if "1lolly" in d or "1лолли" in d or "1lollyhere" in d:
         return "Lolly (1lollyhere)"
@@ -287,6 +301,8 @@ def detect_category(desc: str, tx_type: str) -> str:
         return "Выплаты OnlyFans"
 
     # Расходы
+    if "paypal" in d or "пейпал" in d or "пайпал" in d or re.search(r"\bpp\b|\bпп\b", d):
+        return "Выплаты: PayPal"
     if "оскар" in d or "osckelly" in d or "oftv" in d or "монтаж" in d or "сценари" in d:
         return "Трафик: TikTok"
     if "анастасия" in d or "aneskagency" in d or "fyp" in d or "tiktok" in d or "тикток" in d:
@@ -618,11 +634,12 @@ def handle_callbacks(call):
     if data.startswith("pay_contractor:"):
         c_idx = int(data.split(":")[1])
         c = CONTRACTORS[c_idx]
+        target_model = c.get("model", "Agency Core (Общие)")
         user_sessions[uid] = {
             "type": "Расход",
             "amount": float(c["amount"]),
             "category": c["cat"],
-            "model": "Agency Core (Общие)",
+            "model": target_model,
             "desc": f"Выплата: {c['name']}"
         }
         save_and_confirm(
@@ -631,12 +648,12 @@ def handle_callbacks(call):
             "Расход",
             float(c["amount"]),
             c["cat"],
-            "Agency Core (Общие)",
+            target_model,
             f"Выплата: {c['name']}",
             call.from_user.first_name or "Telegram",
             edit_msg_id=call.message.message_id
         )
-        bot.answer_callback_query(call.id, "Выплата внесена!")
+        bot.answer_callback_query(call.id, f"Выплата внесена ({target_model})!")
         return
 
     # Запрос баланса из инлайн-кнопки

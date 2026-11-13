@@ -43,14 +43,14 @@ export const CONTRACTOR_SCHEDULE = [
   {
     id: 'osckelly',
     name: '@osckelly (Оскар) — OFTV',
-    role: 'Сценарии, монтаж, выгрузка контента на платформу',
-    terms: '350 USDT / месяц (4 сценария). Аванс 175$ в начале + 175$ закрытие в конце',
+    role: 'Сценарии, монтаж, выгрузка контента на OFTV для Lollysunnery',
+    terms: '350 USDT / месяц (4 сценария). Аванс 175$ в начале + 175$ закрытие в конце (Lollysunnery)',
     dueDateStr: '2-е число (175$) и 31-е (175$)',
     defaultAmount: 350,
     installments: 2,
     installmentAmount: 175,
     keywords: ['оскар', 'osckelly', 'oftv'],
-    model: 'Agency Core (Общие)',
+    model: 'Lolly (Lollysunnery)',
     category: 'Трафик: TikTok',
     warning: '⚠️ Проверить отгрузку сценариев перед выплатой 2-й части (175 USDT)!',
     urgencyColor: 'var(--accent-amber)',
@@ -59,14 +59,14 @@ export const CONTRACTOR_SCHEDULE = [
   {
     id: 'aneskagency',
     name: '@aneskagency (Анастасия) — FYP',
-    role: 'FYP продвижение и закупка трафика',
-    terms: '250 USDT / месяц на анкету. Выплата 2 раза в месяц (по 125$ каждые 2 недели)',
+    role: 'FYP продвижение и закупка трафика для Fansly (Eva Pinky)',
+    terms: '250 USDT / месяц на анкету Fansly. Выплата 2 раза в месяц (по 125$ каждые 2 недели)',
     dueDateStr: 'Каждые 2 недели вперед (по 125$)',
     defaultAmount: 250,
     installments: 2,
     installmentAmount: 125,
-    keywords: ['анастасия', 'aneskagency', 'fyp'],
-    model: 'Agency Core (Общие)',
+    keywords: ['анастасия', 'aneskagency', 'fyp', 'фуп'],
+    model: 'Eva Pinky (Fansly)',
     category: 'Трафик: TikTok',
     warning: '🔵 Предоплата на 2 недели вперед. Оплачивать после понедельничного вывода.',
     urgencyColor: 'var(--primary)',
@@ -91,16 +91,16 @@ export const CONTRACTOR_SCHEDULE = [
   {
     id: 'killerleon',
     name: '@KillerLe0n (Леон) — SFS',
-    role: 'SFS трафик на всех анкетах с SFS',
-    terms: '0.4$ / фанат. Оплата по факту месяца в первых числах (1-5) по сверке',
+    role: 'SFS трафик (0.4$ / фанат) постфактум на страницах 1lollyhere и Eva Blush',
+    terms: '0.4$ / фанат постфактум на 1lollyhere и Eva Blush. Оплата 1-5 числа по сверке',
     dueDateStr: '1–5 числа месяца',
     defaultAmount: 580,
     installments: 1,
     installmentAmount: 580,
-    keywords: ['леон', 'killerle0n', 'sfs'],
-    model: 'Agency Core (Общие)',
+    keywords: ['леон', 'killerle0n', 'sfs', 'сфс'],
+    model: 'Eva Blush',
     category: 'Трафик: Twitter',
-    warning: '🟢 Оплата по сверке после первого понедельничного вывода OF.',
+    warning: '🟢 Оплата по сверке после первого понедельничного вывода OF (1lolly & Eva Blush).',
     urgencyColor: 'var(--accent-green)',
     urgencyBadge: 'По сверке (1–5 число)'
   }
@@ -1299,16 +1299,22 @@ export function initFinanceModule() {
         const inputVal = prompt(`Внести выплату для ${c.name}\nУкажите сумму ($):`, suggest);
         if (inputVal && parseFloat(inputVal) > 0) {
           const amt = parseFloat(inputVal);
+          let targetModel = c.model;
+          if (c.id === 'killerleon') {
+            const chooseEva = confirm(`Оплата Леону (SFS):\nНажмите OK — отнести расход на Eva Blush\nОтмена — отнести на Lolly (1lollyhere)`);
+            targetModel = chooseEva ? 'Eva Blush' : 'Lolly (1lollyhere)';
+          }
+
           manager.addTransaction({
             date: new Date().toISOString().split('T')[0],
             type: 'Расход',
             category: c.category,
             amount: amt,
-            model: c.model,
+            model: targetModel,
             desc: `Выплата: ${c.name} (${amt >= c.defaultAmount ? 'Полная оплата' : 'Транш/Аванс'})`
           });
           renderAll();
-          showToast(`✅ Выплата ${c.name} ($${amt}) внесена в расход!`);
+          showToast(`✅ Выплата ${c.name} ($${amt}) внесена в расход (${targetModel})!`);
         }
       });
     });
