@@ -527,13 +527,15 @@ class FinanceManager {
 
     const p1ModelsRemaining = Math.max(0, p1ModelsDue - p1ModelsPaidApplied);
     const p1ChattersRemaining = Math.max(0, p1ChattersDue - p1ChattersPaidApplied);
-    const p1Remaining = p1ModelsRemaining + p1ChattersRemaining;
+    const p1RemainingCalculated = p1ModelsRemaining + p1ChattersRemaining;
+    const p1Remaining = 0; // Заморозка на 31 число временно отключена по запросу овнера
 
     const p2ModelsRemaining = Math.max(0, p2ModelsDue - p2ModelsPaidApplied);
     const p2ChattersRemaining = Math.max(0, p2ChattersDue - p2ChattersPaidApplied);
     const p2Remaining = p2ModelsRemaining + p2ChattersRemaining;
 
-    const totalEscrowRemaining = p1Remaining + p2Remaining;
+    // В резерве удерживаем только период к 15-му числу (заморозка на 31-е число отключена)
+    const totalEscrowRemaining = p2Remaining;
 
     return {
       p1Income,
@@ -542,6 +544,7 @@ class FinanceManager {
       p1ChattersDue,
       p1TotalDue,
       p1Remaining,
+      p1RemainingCalculated,
       p2ModelsDue,
       p2ChattersDue,
       p2TotalDue,
@@ -846,9 +849,8 @@ export function initFinanceModule() {
       elCash.style.color = cashBalance >= 0 ? '#34d399' : 'var(--accent-rose)';
     }
 
-    // 2. Зарплатный резерв (Эскроу к 31-му и к 15-му)
+    // 2. Зарплатный резерв (Эскроу к 15-му числу, заморозка на 31-е отключена)
     const escrowDue = escrowData ? escrowData.totalEscrowRemaining : 0;
-    const p1Due = escrowData ? escrowData.p1Remaining : 0;
     const p2Due = escrowData ? escrowData.p2Remaining : 0;
 
     if (elEscrow) {
@@ -856,7 +858,7 @@ export function initFinanceModule() {
       elEscrow.style.color = escrowDue > 0 ? '#fbbf24' : 'var(--accent-green)';
     }
     if (elEscrowSub) {
-      elEscrowSub.textContent = `К 31-му: $${Math.round(p1Due).toLocaleString()} | К 15-му: $${Math.round(p2Due).toLocaleString()}`;
+      elEscrowSub.textContent = `К 15-му: $${Math.round(p2Due).toLocaleString()} (заморозка на 31-е отключена)`;
     }
 
     // 3. Свободная касса овнера (Safe Cash)
@@ -1362,9 +1364,6 @@ export function initFinanceModule() {
 
     const safeCash = cashBalance - totalObligations;
 
-    // Прогноз кассы к 31-му числу (Cash Flow Forecast)
-    const forecast31stMinBalance = cashBalance - p1Due - (contractorsDue * 0.5);
-
     alertContainer.innerHTML = `
       <div style="background: ${safeCash >= 0 ? 'rgba(52, 211, 153, 0.08)' : 'rgba(239, 68, 68, 0.12)'}; border: 1px solid ${safeCash >= 0 ? 'var(--accent-green)' : 'var(--accent-rose)'}; border-radius: var(--radius-sm); padding: 16px 20px; display: flex; flex-direction: column; gap: 12px;">
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
@@ -1376,7 +1375,6 @@ export function initFinanceModule() {
               </div>
               <div style="font-size: 12px; color: var(--text-muted); margin-top: 3px;">
                 В кассе на Bybit: <strong style="color: var(--text-main); font-family: var(--font-mono);">$${cashBalance.toLocaleString('en-US', { minimumFractionDigits: 2 })}</strong> | 
-                Резерв к 31-му: <strong style="color: #fbbf24; font-family: var(--font-mono);">$${Math.round(p1Due).toLocaleString()}</strong> | 
                 Резерв к 15-му: <strong style="color: #fbbf24; font-family: var(--font-mono);">$${Math.round(p2Due).toLocaleString()}</strong> | 
                 Подрядчики: <strong style="color: var(--primary); font-family: var(--font-mono);">$${contractorsDue.toLocaleString()}</strong>
               </div>
@@ -1392,10 +1390,10 @@ export function initFinanceModule() {
           </div>
         </div>
 
-        <!-- 30-Day Cash Flow Forecast Mini-Bar -->
+        <!-- Cash Flow Bar -->
         <div style="background: rgba(0, 0, 0, 0.25); border-radius: 6px; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: var(--text-muted); flex-wrap: wrap; gap: 8px;">
-          <span>📈 <strong>Cash Flow Forecast:</strong> Ожидаемый остаток кассы после закрытия выплат 31-го: <strong style="color: ${forecast31stMinBalance >= 0 ? 'var(--accent-green)' : 'var(--accent-rose)'}; font-family: var(--font-mono);">$${Math.round(forecast31stMinBalance).toLocaleString()}</strong></span>
-          <span>📅 Выплаты: 1–15 число ➔ 31-го | 16–31 число ➔ 15-го</span>
+          <span>📈 <strong>Cash Flow:</strong> Заморозка на 31-е число отключена | Резерв удерживается только к 15-му числу</span>
+          <span>📅 Выплаты: 15-го числа</span>
         </div>
       </div>
     `;

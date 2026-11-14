@@ -804,10 +804,11 @@ def send_balance_report(chat_id):
     total_payroll_paid = models_paid + chatters_paid
 
     p1_paid = min(p1_due, total_payroll_paid)
-    p1_remaining = max(0.0, p1_due - p1_paid)
+    p1_remaining_calc = max(0.0, p1_due - p1_paid)
+    p1_remaining = 0.0  # Заморозка на 31 число временно отключена по запросу овнера
     p2_paid = min(p2_due, max(0.0, total_payroll_paid - p1_due))
     p2_remaining = max(0.0, p2_due - p2_paid)
-    total_escrow = p1_remaining + p2_remaining
+    total_escrow = p2_remaining  # Удерживаем в резерве только период к 15-му числу
 
     # Подрядчики к доплате
     contractors_due = 0.0
@@ -834,8 +835,7 @@ def send_balance_report(chat_id):
         f"━━━━━━━━━━━━━━━━━━━━\n"
         f"💰 <b>Физическая касса (на руках):</b> <code>${balance:,.2f}</code>\n\n"
         f"🔒 <b>Зарплатный резерв (Эскроу):</b> <code>${total_escrow:,.2f}</code>\n"
-        f"   ├ <i>К 31-му (период 1–15):</i> ${p1_remaining:,.2f}\n"
-        f"   └ <i>К 15-му (период 16–31):</i> ${p2_remaining:,.2f}\n\n"
+        f"   └ <i>К 15-му (период 16–31):</i> ${p2_remaining:,.2f} (заморозка на 31-е отключена)\n\n"
         f"📅 <b>Подрядчики к доплате:</b> ${contractors_due:,.2f}\n"
         f"━━━━━━━━━━━━━━━━━━━━\n"
         f"{safe_icon} <b>СВОБОДНАЯ КАССА (Safe Cash):</b> <code>${safe_cash:,.2f}</code>\n"
