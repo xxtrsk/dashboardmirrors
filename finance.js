@@ -6,6 +6,8 @@ const STORAGE_KEY_BUDGET = 'mirrors_finance_budgets_v2';
 const STORAGE_KEY_GSHEET_URL = 'mirrors_finance_gsheet_url_v1';
 const STORAGE_KEY_DELETED = 'mirrors_deleted_tx_signatures_v1';
 
+export const DEFAULT_GSHEET_URL = 'https://script.google.com/macros/s/AKfycbxoYKuPxOrq_L4LsoUrQCStPnzv3XqQpgLCjf7ICmoa103pSThavtHVPBihTbiFo8FA6Q/exec';
+
 export const FINANCE_INCOME_CATS = [
   'Выплаты OnlyFans',
   'Прочий доход'
@@ -197,9 +199,11 @@ class FinanceManager {
 
   loadGSheetUrl() {
     try {
-      return localStorage.getItem(STORAGE_KEY_GSHEET_URL) || '';
+      const stored = localStorage.getItem(STORAGE_KEY_GSHEET_URL);
+      if (stored && stored.trim() !== '') return stored.trim();
+      return DEFAULT_GSHEET_URL;
     } catch (e) {
-      return '';
+      return DEFAULT_GSHEET_URL;
     }
   }
 
@@ -1509,8 +1513,14 @@ export function initFinanceModule() {
     } catch (e) {}
   }
 
-  // Автосинхронизация при старте, если URL был сохранен ранее
-  if (manager.loadGSheetUrl()) {
+  // Автосинхронизация при старте
+  const initialGsheetUrl = manager.loadGSheetUrl();
+  if (initialGsheetUrl) {
+    if (badgeGsheet && manager.transactions.length === 0) {
+      badgeGsheet.textContent = '⏳ Загрузка данных из Google Таблицы...';
+      badgeGsheet.style.background = 'rgba(56, 189, 248, 0.15)';
+      badgeGsheet.style.color = 'var(--primary)';
+    }
     manager.syncWithGoogleSheets().then(res => {
       if (res.success) {
         renderAll();
@@ -1520,9 +1530,9 @@ export function initFinanceModule() {
   }
 
   // 🔄 Live Auto-Sync: автоматическое обновление при переключении на вкладку
-  async function triggerAutoSync() {
+  async function triggerAutoSync(force = false) {
     const now = Date.now();
-    if (now - lastSyncTime < 15000) return; // Не чаще чем раз в 15 секунд
+    if (!force && (now - lastSyncTime < 10000)) return; // Не чаще чем раз в 10 секунд
     if (manager.loadGSheetUrl()) {
       lastSyncTime = now;
       const res = await manager.syncWithGoogleSheets();
@@ -1531,6 +1541,15 @@ export function initFinanceModule() {
         updateGsheetUI();
       }
     }
+  }
+
+  // Мгновенная синхронизация и перерисовка при клике на вкладку "P&L & Чистая Прибыль"
+  const tabFinanceBtn = document.querySelector('.tab-btn[data-tab="tab-finance"]');
+  if (tabFinanceBtn) {
+    tabFinanceBtn.addEventListener('click', () => {
+      renderAll();
+      triggerAutoSync(true);
+    });
   }
 
   document.addEventListener('visibilitychange', () => {
