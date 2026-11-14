@@ -1,6 +1,6 @@
 // MIRRORS Financial P&L Engine & Budgeting System (Plan vs Fact)
 // Compatible with Vercel Static Hosting & Client-side XLSX export/import
-import { initialModelWeekly } from './data.js';
+import { initialModelWeekly, initialChatterWeekly } from './data.js';
 
 const STORAGE_KEY_TX = 'mirrors_finance_transactions_v2';
 const STORAGE_KEY_BUDGET = 'mirrors_finance_budgets_v2';
@@ -830,6 +830,163 @@ class FinanceManager {
       totalExpenses,
       groups,
       detailedList
+    };
+  }
+
+  // 4. Аудит честности начислений и выплат (Антифрод: Модели 25%, Чаттеры 20%, Агентство 55%)
+  calculatePayrollAudit(selectedPeriod = this.selectedPeriod, txList = this.getFiltered()) {
+    const modelRec = this.calculateModelEarningsReconciliation(selectedPeriod, txList);
+
+    let totalModelPlanAll = 0;
+    let totalModelPaidAll = 0;
+    let totalChatterPlanAll = 0;
+    let totalChatterPaidAll = 0;
+    let totalAgencyShareAll = 0;
+    let overpaymentCount = 0;
+    let totalOverpaidAmount = 0;
+
+    const modelAuditList = modelRec.models.map(m => {
+      const earned = m.totalEarned;
+      const modelPlan = earned * 0.25;
+      const chatterPlan = earned * 0.20;
+      const agencyShare = earned * 0.55;
+
+      const modelPaidTxs = txList.filter(t => {
+        if (t.type !== 'Расход') return false;
+        const cat = (t.category || '').toLowerCase();
+        const desc = (t.desc || '').toLowerCase();
+        const isModelCat = cat.includes('модел');
+        if (!isModelCat && !desc.includes('выплата модел')) return false;
+        if (t.model === m.name) return true;
+        const low = (t.model || '').toLowerCase();
+        return m.matchKeys.some(k => low.includes(k) || desc.includes(k));
+      });
+      const modelPaid = modelPaidTxs.reduce((s, t) => s + (Number(t.amount) || 0), 0);
+
+      const chatterPaidTxs = txList.filter(t => {
+        if (t.type !== 'Расход') return false;
+        const cat = (t.category || '').toLowerCase();
+        const desc = (t.desc || '').toLowerCase();
+        const isChatterCat = cat.includes('чаттер') || cat.includes('зарплат');
+        if (!isChatterCat && !desc.includes('чаттер')) return false;
+        if (t.model === m.name) return true;
+        const low = (t.model || '').toLowerCase();
+        return m.matchKeys.some(k => low.includes(k) || desc.includes(k));
+      });
+      const chatterPaid = chatterPaidTxs.reduce((s, t) => s + (Number(t.amount) || 0), 0);
+
+      const totalTeamPlan = modelPlan + chatterPlan;
+      const totalTeamPaid = modelPaid + chatterPaid;
+      const teamDelta = totalTeamPaid - totalTeamPlan;
+
+      if (teamDelta > 5) {
+        overpaymentCount++;
+        totalOverpaidAmount += teamDelta;
+      }
+
+      totalModelPlanAll += modelPlan;
+      totalModelPaidAll += modelPaid;
+      totalChatterPlanAll += chatterPlan;
+      totalChatterPaidAll += chatterPaid;
+      totalAgencyShareAll += agencyShare;
+
+      let statusBadge = '';
+      if (teamDelta > 5) {
+        statusBadge = `<span style="font-size: 11px; padding: 3px 8px; border-radius: 8px; background: rgba(239, 68, 68, 0.15); color: var(--accent-rose); font-weight: 700; border: 1px solid var(--accent-rose);">🔴 Переплата! +$${teamDelta.toFixed(2)}</span>`;
+      } else if (totalTeamPaid === 0 && totalTeamPlan > 0) {
+        statusBadge = `<span style="font-size: 11px; padding: 3px 8px; border-radius: 8px; background: rgba(245, 158, 11, 0.15); color: var(--accent-amber); font-weight: 700; border: 1px solid rgba(245, 158, 11, 0.3);">🟡 В резерве: $${Math.round(totalTeamPlan)}</span>`;
+      } else if (totalTeamPaid > 0 && totalTeamPaid < totalTeamPlan - 5) {
+        statusBadge = `<span style="font-size: 11px; padding: 3px 8px; border-radius: 8px; background: rgba(56, 189, 248, 0.15); color: var(--primary); font-weight: 700; border: 1px solid rgba(56, 189, 248, 0.3);">⚡ Аванс (Остаток: $${Math.round(totalTeamPlan - totalTeamPaid)})</span>`;
+      } else {
+        statusBadge = `<span style="font-size: 11px; padding: 3px 8px; border-radius: 8px; background: rgba(52, 211, 153, 0.15); color: var(--accent-green); font-weight: 700; border: 1px solid rgba(52, 211, 153, 0.3);">🟢 Честно 100%</span>`;
+      }
+
+      return {
+        ...m,
+        earned,
+        modelPlan,
+        modelPaid,
+        modelDelta: modelPaid - modelPlan,
+        chatterPlan,
+        chatterPaid,
+        chatterDelta: chatterPaid - chatterPlan,
+        agencyShare,
+        totalTeamPlan,
+        totalTeamPaid,
+        teamDelta,
+        statusBadge
+      };
+    });
+
+    // Персонально по чаттерам
+    const chattersMap = {};
+    const crmChatters = (initialChatterWeekly || []).filter(r => {
+      if (selectedPeriod === 'all') return true;
+      return r.monthKey === selectedPeriod;
+    });
+
+    crmChatters.forEach(r => {
+      const name = r.chatter || 'Неизвестный чаттер';
+      if (!chattersMap[name]) {
+        chattersMap[name] = {
+          name,
+          accounts: new Set(),
+          totalSales: 0
+        };
+      }
+      if (r.accountId) chattersMap[name].accounts.add(r.accountId);
+      chattersMap[name].totalSales += (Number(r.totalSales) || 0);
+    });
+
+    const chatterAuditList = Object.values(chattersMap).map(c => {
+      const dueAmount = c.totalSales * 0.20;
+      const normName = c.name.toLowerCase();
+
+      const matchingTxs = txList.filter(t => {
+        if (t.type !== 'Расход') return false;
+        const desc = (t.desc || '').toLowerCase();
+        const cat = (t.category || '').toLowerCase();
+        if (!cat.includes('чаттер') && !cat.includes('зарплат') && !desc.includes('чаттер')) return false;
+        return desc.includes(normName) || (normName.includes('тимур') && desc.includes('тимур')) || (normName.includes('karina') && desc.includes('карин'));
+      });
+
+      const paidAmount = matchingTxs.reduce((s, t) => s + (Number(t.amount) || 0), 0);
+      const delta = paidAmount - dueAmount;
+
+      let statusBadge = '';
+      if (delta > 5) {
+        statusBadge = `<span style="font-size: 11px; padding: 3px 8px; border-radius: 8px; background: rgba(239, 68, 68, 0.15); color: var(--accent-rose); font-weight: 700; border: 1px solid var(--accent-rose);">🔴 Переплата +$${delta.toFixed(2)}</span>`;
+      } else if (paidAmount === 0 && dueAmount > 0) {
+        statusBadge = `<span style="font-size: 11px; padding: 3px 8px; border-radius: 8px; background: rgba(245, 158, 11, 0.15); color: var(--accent-amber); font-weight: 700; border: 1px solid rgba(245, 158, 11, 0.3);">🟡 К выплате $${Math.round(dueAmount)} (15-го)</span>`;
+      } else if (paidAmount > 0 && paidAmount < dueAmount - 5) {
+        statusBadge = `<span style="font-size: 11px; padding: 3px 8px; border-radius: 8px; background: rgba(56, 189, 248, 0.15); color: var(--primary); font-weight: 700;">⚡ Выплачено $${paidAmount.toFixed(0)} из $${dueAmount.toFixed(0)}</span>`;
+      } else {
+        statusBadge = `<span style="font-size: 11px; padding: 3px 8px; border-radius: 8px; background: rgba(52, 211, 153, 0.15); color: var(--accent-green); font-weight: 700; border: 1px solid rgba(52, 211, 153, 0.3);">🟢 Честно (Сходится)</span>`;
+      }
+
+      return {
+        name: c.name,
+        accountsList: Array.from(c.accounts),
+        totalSales: c.totalSales,
+        dueAmount,
+        paidAmount,
+        delta,
+        statusBadge
+      };
+    }).sort((a, b) => b.totalSales - a.totalSales);
+
+    return {
+      period: selectedPeriod,
+      models: modelAuditList,
+      chatters: chatterAuditList,
+      totalModelPlanAll,
+      totalModelPaidAll,
+      totalChatterPlanAll,
+      totalChatterPaidAll,
+      totalAgencyShareAll,
+      overpaymentCount,
+      totalOverpaidAmount,
+      isClean: overpaymentCount === 0
     };
   }
 }
@@ -1929,6 +2086,194 @@ export function initFinanceModule() {
     }
   }
 
+  // 4. Аудит честности выплат (Антифрод: Модели 25%, Чаттеры 20%, Агентство 55%)
+  function renderPayrollAudit(auditData) {
+    const badge = document.getElementById('fin-audit-badge');
+    const kpiGrid = document.getElementById('fin-audit-kpi-grid');
+    const tbodyModels = document.getElementById('fin-tbody-audit-models');
+    const tbodyChatters = document.getElementById('fin-tbody-audit-chatters');
+
+    if (badge) {
+      if (auditData.isClean) {
+        badge.textContent = '🟢 Начисления строго по формуле (Переплат нет)';
+        badge.style.background = 'rgba(52, 211, 153, 0.15)';
+        badge.style.color = 'var(--accent-green)';
+        badge.style.border = '1px solid rgba(52, 211, 153, 0.3)';
+      } else {
+        badge.textContent = `🚨 Обнаружено переплат: +$${auditData.totalOverpaidAmount.toFixed(2)}!`;
+        badge.style.background = 'rgba(239, 68, 68, 0.15)';
+        badge.style.color = 'var(--accent-rose)';
+        badge.style.border = '1px solid var(--accent-rose)';
+      }
+    }
+
+    if (kpiGrid) {
+      kpiGrid.innerHTML = `
+        <div style="background: rgba(236, 72, 153, 0.05); border: 1px solid rgba(236, 72, 153, 0.25); border-radius: var(--radius-sm); padding: 14px 16px;">
+          <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: #ec4899; font-weight: 700; margin-bottom: 4px;">
+            👑 Фонд Моделей (25%)
+          </div>
+          <div style="font-size: 20px; font-weight: 800; font-family: var(--font-heading); color: #ec4899;">
+            $${auditData.totalModelPlanAll.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+          </div>
+          <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">
+            Выплачено: <strong style="color: var(--text-main); font-family: var(--font-mono);">$${auditData.totalModelPaidAll.toFixed(2)}</strong> | Строго 25% от Net
+          </div>
+        </div>
+
+        <div style="background: rgba(168, 85, 247, 0.05); border: 1px solid rgba(168, 85, 247, 0.25); border-radius: var(--radius-sm); padding: 14px 16px;">
+          <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: #a855f7; font-weight: 700; margin-bottom: 4px;">
+            👥 Фонд Чаттеров (20%)
+          </div>
+          <div style="font-size: 20px; font-weight: 800; font-family: var(--font-heading); color: #a855f7;">
+            $${auditData.totalChatterPlanAll.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+          </div>
+          <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">
+            Выплачено: <strong style="color: var(--text-main); font-family: var(--font-mono);">$${auditData.totalChatterPaidAll.toFixed(2)}</strong> | Зарплатный пул
+          </div>
+        </div>
+
+        <div style="background: rgba(56, 189, 248, 0.05); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: var(--radius-sm); padding: 14px 16px;">
+          <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--primary); font-weight: 700; margin-bottom: 4px;">
+            💼 Маржа Агентства (55%)
+          </div>
+          <div style="font-size: 20px; font-weight: 800; font-family: var(--font-heading); color: var(--primary);">
+            $${auditData.totalAgencyShareAll.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+          </div>
+          <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">
+            Пул агентства на трафик, софт и прибыль
+          </div>
+        </div>
+
+        <div style="background: ${auditData.isClean ? 'rgba(52, 211, 153, 0.05)' : 'rgba(239, 68, 68, 0.08)'}; border: 1px solid ${auditData.isClean ? 'rgba(52, 211, 153, 0.25)' : 'var(--accent-rose)'}; border-radius: var(--radius-sm); padding: 14px 16px;">
+          <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: ${auditData.isClean ? 'var(--accent-green)' : 'var(--accent-rose)'}; font-weight: 700; margin-bottom: 4px;">
+            🛡️ Контроль Честности (Антифрод)
+          </div>
+          <div style="font-size: 18px; font-weight: 800; font-family: var(--font-heading); color: ${auditData.isClean ? 'var(--accent-green)' : 'var(--accent-rose)'};">
+            ${auditData.isClean ? '0 нарушений (Чисто)' : `⚠️ Переплата +$${auditData.totalOverpaidAmount.toFixed(2)}`}
+          </div>
+          <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">
+            ${auditData.isClean ? 'Ни один доллар не переплачен' : 'Обнаружено превышение бюджета!'}
+          </div>
+        </div>
+      `;
+    }
+
+    // Таблица по Анкетам
+    if (tbodyModels) {
+      const rowsHtml = auditData.models.map(m => `
+        <tr>
+          <td style="font-weight: 700; color: var(--text-main); font-size: 13px;">${m.name}</td>
+          <td style="font-family: var(--font-mono); font-weight: 700; color: var(--accent-green); font-size: 13px;">$${m.earned.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
+          <td style="font-family: var(--font-mono); font-size: 13px; color: #ec4899;">$${m.modelPlan.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
+          <td style="font-family: var(--font-mono); font-size: 13px; color: ${m.modelPaid > 0 ? 'var(--text-main)' : 'var(--text-dim)'};">$${m.modelPaid.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
+          <td style="font-family: var(--font-mono); font-size: 13px; color: #a855f7;">$${m.chatterPlan.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
+          <td style="font-family: var(--font-mono); font-size: 13px; color: ${m.chatterPaid > 0 ? 'var(--text-main)' : 'var(--text-dim)'};">$${m.chatterPaid.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
+          <td style="font-family: var(--font-mono); font-size: 13px; color: var(--primary);">$${m.agencyShare.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
+          <td style="font-family: var(--font-mono); font-size: 12px; font-weight: 700; color: ${m.teamDelta > 5 ? 'var(--accent-rose)' : 'var(--text-muted)'};">
+            ${m.teamDelta > 0 ? '+' : ''}$${m.teamDelta.toFixed(2)}
+          </td>
+          <td>${m.statusBadge}</td>
+        </tr>
+      `).join('');
+
+      const totalDeltaAll = (auditData.totalModelPaidAll + auditData.totalChatterPaidAll) - (auditData.totalModelPlanAll + auditData.totalChatterPlanAll);
+      const totalEarnedAll = auditData.models.reduce((s, m) => s + m.earned, 0);
+
+      const totalRowHtml = `
+        <tr style="border-top: 2px solid var(--border-color); background: rgba(255, 255, 255, 0.03); font-weight: 800;">
+          <td style="color: var(--text-main); font-size: 13px;">ИТОГО АГЕНТСТВО</td>
+          <td style="font-family: var(--font-mono); color: var(--accent-green); font-size: 14px;">$${totalEarnedAll.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
+          <td style="font-family: var(--font-mono); color: #ec4899; font-size: 14px;">$${auditData.totalModelPlanAll.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
+          <td style="font-family: var(--font-mono); font-size: 14px;">$${auditData.totalModelPaidAll.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
+          <td style="font-family: var(--font-mono); color: #a855f7; font-size: 14px;">$${auditData.totalChatterPlanAll.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
+          <td style="font-family: var(--font-mono); font-size: 14px;">$${auditData.totalChatterPaidAll.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
+          <td style="font-family: var(--font-mono); color: var(--primary); font-size: 14px;">$${auditData.totalAgencyShareAll.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
+          <td style="font-family: var(--font-mono); font-size: 12px; color: ${totalDeltaAll > 5 ? 'var(--accent-rose)' : 'var(--accent-green)'};">
+            ${totalDeltaAll > 0 ? '+' : ''}$${totalDeltaAll.toFixed(2)}
+          </td>
+          <td><span style="font-size: 11px; color: var(--accent-green); font-weight: 700;">🟢 Аудит формулы</span></td>
+        </tr>
+      `;
+
+      tbodyModels.innerHTML = rowsHtml + totalRowHtml;
+    }
+
+    // Таблица по Чаттерам
+    if (tbodyChatters) {
+      if (!auditData.chatters || auditData.chatters.length === 0) {
+        tbodyChatters.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-dim); padding: 18px;">Нет данных по продажам чаттеров за выбранный период</td></tr>`;
+      } else {
+        const chatterRowsHtml = auditData.chatters.map(c => `
+          <tr>
+            <td style="font-weight: 700; color: var(--text-main); font-size: 13px;">${c.name}</td>
+            <td style="font-size: 12px; color: var(--primary);">
+              ${c.accountsList.length > 0 ? c.accountsList.map(a => `<span style="display: inline-block; padding: 2px 6px; border-radius: 6px; background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.2); margin-right: 4px; font-size: 11px; font-family: var(--font-mono);">ID: ${a}</span>`).join('') : '—'}
+            </td>
+            <td style="font-family: var(--font-mono); font-size: 13px;">$${c.totalSales.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
+            <td style="font-family: var(--font-mono); font-weight: 700; color: #a855f7; font-size: 13px;">$${c.dueAmount.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
+            <td style="font-family: var(--font-mono); font-weight: 700; color: var(--primary); font-size: 13px;">$${c.paidAmount.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
+            <td style="font-family: var(--font-mono); font-size: 12px; font-weight: 700; color: ${c.delta > 5 ? 'var(--accent-rose)' : 'var(--text-muted)'};">
+              ${c.delta > 0 ? '+' : ''}$${c.delta.toFixed(2)}
+            </td>
+            <td>${c.statusBadge}</td>
+          </tr>
+        `).join('');
+
+        const totalSalesChatters = auditData.chatters.reduce((s, c) => s + c.totalSales, 0);
+        const totalDueChatters = auditData.chatters.reduce((s, c) => s + c.dueAmount, 0);
+        const totalPaidChatters = auditData.chatters.reduce((s, c) => s + c.paidAmount, 0);
+        const totalDeltaChatters = totalPaidChatters - totalDueChatters;
+
+        const totalChatterRowHtml = `
+          <tr style="border-top: 2px solid var(--border-color); background: rgba(255, 255, 255, 0.03); font-weight: 800;">
+            <td style="color: var(--text-main); font-size: 13px;">ИТОГО ЧАТТЕРЫ</td>
+            <td style="font-size: 12px; color: var(--text-muted);">${auditData.chatters.length} сотрудников</td>
+            <td style="font-family: var(--font-mono); font-size: 14px;">$${totalSalesChatters.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
+            <td style="font-family: var(--font-mono); color: #a855f7; font-size: 14px;">$${totalDueChatters.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
+            <td style="font-family: var(--font-mono); color: var(--primary); font-size: 14px;">$${totalPaidChatters.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
+            <td style="font-family: var(--font-mono); font-size: 12px; color: ${totalDeltaChatters > 5 ? 'var(--accent-rose)' : 'var(--accent-green)'};">
+              ${totalDeltaChatters > 0 ? '+' : ''}$${totalDeltaChatters.toFixed(2)}
+            </td>
+            <td><span style="font-size: 11px; color: var(--accent-green); font-weight: 700;">🟢 Сверка 20%</span></td>
+          </tr>
+        `;
+
+        tbodyChatters.innerHTML = chatterRowsHtml + totalChatterRowHtml;
+      }
+    }
+  }
+
+  // Setup tab switcher for Anti-Fraud section
+  const btnAuditTabModels = document.getElementById('fin-audit-tab-models');
+  const btnAuditTabChatters = document.getElementById('fin-audit-tab-chatters');
+  const containerAuditModels = document.getElementById('fin-audit-container-models');
+  const containerAuditChatters = document.getElementById('fin-audit-container-chatters');
+
+  if (btnAuditTabModels && btnAuditTabChatters && containerAuditModels && containerAuditChatters) {
+    btnAuditTabModels.addEventListener('click', () => {
+      btnAuditTabModels.style.background = 'rgba(168, 85, 247, 0.25)';
+      btnAuditTabModels.style.color = '#c084fc';
+      btnAuditTabModels.style.borderColor = '#a855f7';
+      btnAuditTabChatters.style.background = 'transparent';
+      btnAuditTabChatters.style.color = 'var(--text-muted)';
+      btnAuditTabChatters.style.borderColor = 'transparent';
+      containerAuditModels.style.display = 'block';
+      containerAuditChatters.style.display = 'none';
+    });
+
+    btnAuditTabChatters.addEventListener('click', () => {
+      btnAuditTabChatters.style.background = 'rgba(168, 85, 247, 0.25)';
+      btnAuditTabChatters.style.color = '#c084fc';
+      btnAuditTabChatters.style.borderColor = '#a855f7';
+      btnAuditTabModels.style.background = 'transparent';
+      btnAuditTabModels.style.color = 'var(--text-muted)';
+      btnAuditTabModels.style.borderColor = 'transparent';
+      containerAuditModels.style.display = 'none';
+      containerAuditChatters.style.display = 'block';
+    });
+  }
+
 
   // Google Sheets UI & Sync handlers
   function updateGsheetUI() {
@@ -2027,6 +2372,11 @@ export function initFinanceModule() {
 
     renderCashReconciliation(cashReconciliation);
     renderModelEarningsReconciliation(modelReconciliation, manager.selectedPeriod);
+    
+    // Аудит честности выплат (Антифрод: Модели 25%, Чаттеры 20%, Агентство 55%)
+    const payrollAudit = manager.calculatePayrollAudit(manager.selectedPeriod, txs);
+    renderPayrollAudit(payrollAudit);
+
     renderDetailedExpenses(detailedExpenses);
 
     // Показ индикатора кассового разрыва и безопасного Runway
