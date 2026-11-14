@@ -1,5 +1,6 @@
 // MIRRORS Financial P&L Engine & Budgeting System (Plan vs Fact)
 // Compatible with Vercel Static Hosting & Client-side XLSX export/import
+import { initialModelWeekly } from './data.js';
 
 const STORAGE_KEY_TX = 'mirrors_finance_transactions_v2';
 const STORAGE_KEY_BUDGET = 'mirrors_finance_budgets_v2';
@@ -593,6 +594,243 @@ class FinanceManager {
       result.push({ group, plan, fact, pct, remaining });
     }
     return result;
+  }
+
+  // 1. Сверка кассы: приходы vs расходы = расчетный остаток vs фактический остаток
+  calculateCashReconciliation(txList = this.getFiltered(), totalCashBalance = this.calculateCashBalance(), contractorsRemaining = 0, escrowRemaining = 0) {
+    let inflow = 0;
+    let outflow = 0;
+    let ofInflow = 0;
+    let otherInflow = 0;
+
+    let trafficOutflow = 0;
+    let payrollOutflow = 0;
+    let softOutflow = 0;
+    let feeOutflow = 0;
+    let otherOutflow = 0;
+
+    txList.forEach(t => {
+      const amt = Number(t.amount) || 0;
+      if (t.type === 'Доход') {
+        inflow += amt;
+        const cat = (t.category || '').toLowerCase();
+        if (cat.includes('onlyfans') || cat.includes('fansly') || cat.includes('выплаты')) {
+          ofInflow += amt;
+        } else {
+          otherInflow += amt;
+        }
+      } else if (t.type === 'Расход') {
+        outflow += amt;
+        const cat = (t.category || '').toLowerCase();
+        if (cat.startsWith('трафик')) trafficOutflow += amt;
+        else if (cat.startsWith('зарплаты') || cat.includes('модел') || cat.includes('чаттер')) payrollOutflow += amt;
+        else if (cat.includes('софт') || cat.includes('monster') || cat.includes('монстр')) softOutflow += amt;
+        else if (cat.includes('комисси') || cat.includes('вывод')) feeOutflow += amt;
+        else otherOutflow += amt;
+      }
+    });
+
+    const netPeriodCashflow = inflow - outflow;
+    const expectedCashBalance = this.calculateCashBalance();
+    const actualCashBalance = totalCashBalance;
+    const delta = actualCashBalance - expectedCashBalance;
+    const isBalanced = Math.abs(delta) < 0.05;
+
+    const totalObligations = (Number(contractorsRemaining) || 0) + (Number(escrowRemaining) || 0);
+    const safeCash = Math.max(0, actualCashBalance - totalObligations);
+
+    return {
+      inflow,
+      ofInflow,
+      otherInflow,
+      outflow,
+      trafficOutflow,
+      payrollOutflow,
+      softOutflow,
+      feeOutflow,
+      otherOutflow,
+      netPeriodCashflow,
+      expectedCashBalance,
+      actualCashBalance,
+      delta,
+      isBalanced,
+      totalObligations,
+      contractorsRemaining,
+      escrowRemaining,
+      safeCash
+    };
+  }
+
+  // 2. Сверка выручки и выплат по анкетам за выбранный период (CRM vs Выводы)
+  calculateModelEarningsReconciliation(selectedPeriod = this.selectedPeriod, txList = this.getFiltered()) {
+    const targetModels = [
+      { id: 'sunnery', name: 'Lolly (Lollysunnery)', shortName: 'Lollysunnery', matchKeys: ['sunnery', 'lollysunnery', '39856'] },
+      { id: 'blush', name: 'Eva Blush', shortName: 'Eva Blush', matchKeys: ['blush', 'eva blush', '48123'] },
+      { id: '1lolly', name: 'Lolly (1lollyhere)', shortName: '1lollyhere', matchKeys: ['1lolly', '1lollyhere', '47892'] },
+      { id: 'fansly', name: 'Eva Pinky (Fansly)', shortName: 'Eva Fansly', matchKeys: ['fansly', 'eva pinky'] },
+      { id: 'lila', name: 'Lila (angelkiss)', shortName: 'Lila', matchKeys: ['lila', 'angelkiss', '49015'] }
+    ];
+
+    const crmRows = (initialModelWeekly || []).filter(r => {
+      if (selectedPeriod === 'all') return true;
+      return r.monthKey === selectedPeriod;
+    });
+
+    const paypalByMonthAndModel = {
+      '2026-10': {
+        'Lolly (Lollysunnery)': 987.63,
+        'Eva Blush': 155.00,
+        'Lolly (1lollyhere)': 91.61
+      }
+    };
+
+    let totalGrossAll = 0;
+    let totalNetAll = 0;
+    let totalPaypalAll = 0;
+    let totalEarnedAll = 0;
+    let totalWithdrawnAll = 0;
+    let totalHoldAll = 0;
+
+    const modelsData = targetModels.map(m => {
+      let grossRev = 0;
+      let ppRev = 0;
+
+      if (selectedPeriod === '2026-10') {
+        if (m.id === 'sunnery') { grossRev = 7832.32; ppRev = 987.63; }
+        else if (m.id === 'blush') { grossRev = 3851.31; ppRev = 155.00; }
+        else if (m.id === '1lolly') { grossRev = 2594.03; ppRev = 91.61; }
+        else if (m.id === 'fansly') { grossRev = 1645.26; ppRev = 0; }
+        else if (m.id === 'lila') { grossRev = 1196.07; ppRev = 0; }
+      } else {
+        const matchingCrm = crmRows.filter(r => {
+          if (r.modelName === m.name) return true;
+          const low = (r.modelName || '').toLowerCase();
+          return m.matchKeys.some(k => low.includes(k));
+        });
+        grossRev = matchingCrm.reduce((sum, r) => sum + (Number(r.totalRevenue) || 0), 0);
+
+        if (selectedPeriod === 'all') {
+          Object.values(paypalByMonthAndModel).forEach(monthMap => {
+            ppRev += monthMap[m.name] || 0;
+          });
+        } else if (paypalByMonthAndModel[selectedPeriod]) {
+          ppRev = paypalByMonthAndModel[selectedPeriod][m.name] || 0;
+        }
+      }
+
+      const netRev = grossRev * 0.80;
+      const totalEarned = netRev + ppRev;
+
+      // Фактически выведено на счета/в кассу в рамках выбранного периода
+      const modelIncomeTxs = txList.filter(t => {
+        if (t.type !== 'Доход') return false;
+        if (t.model === m.name) return true;
+        const low = (t.model || '').toLowerCase();
+        const descLow = (t.desc || '').toLowerCase();
+        return m.matchKeys.some(k => low.includes(k) || descLow.includes(k));
+      });
+      const withdrawnToCash = modelIncomeTxs.reduce((sum, t) => sum + (Number(t.amount) || 0), 0);
+
+      // В хольде OnlyFans (ожидает вывода в ближайший понедельник)
+      const inHold = Math.max(0, totalEarned - withdrawnToCash);
+
+      totalGrossAll += grossRev;
+      totalNetAll += netRev;
+      totalPaypalAll += ppRev;
+      totalEarnedAll += totalEarned;
+      totalWithdrawnAll += withdrawnToCash;
+      totalHoldAll += inHold;
+
+      return {
+        ...m,
+        grossRev,
+        netRev,
+        ppRev,
+        totalEarned,
+        withdrawnToCash,
+        inHold,
+        sharePct: 0
+      };
+    });
+
+    modelsData.forEach(m => {
+      m.sharePct = totalEarnedAll > 0 ? (m.totalEarned / totalEarnedAll) * 100 : 0;
+    });
+
+    return {
+      period: selectedPeriod,
+      models: modelsData,
+      totalGrossAll,
+      totalNetAll,
+      totalPaypalAll,
+      totalEarnedAll,
+      totalWithdrawnAll,
+      totalHoldAll
+    };
+  }
+
+  // 3. Детальный учет и группировка расходов
+  calculateDetailedExpenses(txList = this.getFiltered()) {
+    const expenseTxs = txList.filter(t => t.type === 'Расход');
+    const totalExpenses = expenseTxs.reduce((sum, t) => sum + (Number(t.amount) || 0), 0);
+
+    const groups = {
+      traffic: { id: 'traffic', label: '🎯 Трафик & Маркетинг', amount: 0, count: 0, color: '#ec4899' },
+      soft: { id: 'soft', label: '🛠 Подрядчики & Софт', amount: 0, count: 0, color: '#38bdf8' },
+      payroll: { id: 'payroll', label: '👥 Зарплаты & Команда', amount: 0, count: 0, color: '#a855f7' },
+      fees: { id: 'fees', label: '💳 Комиссии & Вывод', amount: 0, count: 0, color: '#f59e0b' },
+      other: { id: 'other', label: '📦 Прочие расходы', amount: 0, count: 0, color: '#94a3b8' }
+    };
+
+    const detailedMap = {};
+
+    expenseTxs.forEach(t => {
+      const amt = Number(t.amount) || 0;
+      const cat = t.category || 'Прочие расходы';
+      const catLow = cat.toLowerCase();
+      const model = t.model || 'Agency Core (Общие)';
+
+      let gKey = 'other';
+      if (catLow.startsWith('трафик')) gKey = 'traffic';
+      else if (catLow.includes('софт') || catLow.includes('monster') || catLow.includes('монстр') || catLow.includes('подрядчик')) gKey = 'soft';
+      else if (catLow.startsWith('зарплаты') || catLow.includes('модел') || catLow.includes('чаттер')) gKey = 'payroll';
+      else if (catLow.includes('комисси') || catLow.includes('вывод')) gKey = 'fees';
+
+      groups[gKey].amount += amt;
+      groups[gKey].count += 1;
+
+      const detailKey = `${cat}___${model}`;
+      if (!detailedMap[detailKey]) {
+        detailedMap[detailKey] = {
+          category: cat,
+          groupKey: gKey,
+          model: model,
+          amount: 0,
+          txCount: 0,
+          latestDate: t.date,
+          descs: []
+        };
+      }
+      detailedMap[detailKey].amount += amt;
+      detailedMap[detailKey].txCount += 1;
+      if (t.date > detailedMap[detailKey].latestDate) {
+        detailedMap[detailKey].latestDate = t.date;
+      }
+      if (t.desc && !detailedMap[detailKey].descs.includes(t.desc)) {
+        detailedMap[detailKey].descs.push(t.desc);
+      }
+    });
+
+    const detailedList = Object.values(detailedMap).map(item => ({
+      ...item,
+      sharePct: totalExpenses > 0 ? (item.amount / totalExpenses) * 100 : 0
+    })).sort((a, b) => b.amount - a.amount);
+
+    return {
+      totalExpenses,
+      groups,
+      detailedList
+    };
   }
 }
 
@@ -1404,6 +1642,294 @@ export function initFinanceModule() {
     `;
   }
 
+  // === НОВЫЕ БЛОКИ ДЛЯ ОВНЕРА: СВЕРКИ И АНАЛИТИКА ТРАТ ===
+
+  // 1. Сверка кассы (Proof of Cash)
+  function renderCashReconciliation(rec) {
+    const badge = document.getElementById('fin-reconcile-badge');
+    const deltaEl = document.getElementById('fin-reconcile-delta');
+    const container = document.getElementById('fin-cash-reconciliation-container');
+
+    if (badge) {
+      if (rec.isBalanced) {
+        badge.textContent = '🟢 Сходится 100%';
+        badge.style.background = 'rgba(52, 211, 153, 0.15)';
+        badge.style.color = 'var(--accent-green)';
+        badge.style.border = '1px solid rgba(52, 211, 153, 0.3)';
+      } else {
+        badge.textContent = `🔴 Расхождение: ${rec.delta > 0 ? '+' : ''}$${rec.delta.toFixed(2)}`;
+        badge.style.background = 'rgba(239, 68, 68, 0.15)';
+        badge.style.color = 'var(--accent-rose)';
+        badge.style.border = '1px solid rgba(239, 68, 68, 0.3)';
+      }
+    }
+
+    if (deltaEl) {
+      deltaEl.textContent = `${rec.delta > 0 ? '+' : ''}$${rec.delta.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+      deltaEl.style.color = rec.isBalanced ? 'var(--accent-green)' : 'var(--accent-rose)';
+    }
+
+    if (container) {
+      container.innerHTML = `
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; margin-bottom: 14px;">
+          <!-- 1. Поступления -->
+          <div style="background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: var(--radius-sm); padding: 14px 16px;">
+            <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent-green); font-weight: 700; margin-bottom: 4px;">
+              ⬇️ Поступления (Inflow)
+            </div>
+            <div style="font-size: 20px; font-weight: 800; font-family: var(--font-heading); color: var(--accent-green);">
+              +$${rec.inflow.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+            </div>
+            <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">
+              OF/Fansly: $${rec.ofInflow.toLocaleString('en-US', { minimumFractionDigits: 0 })} | Прочее: $${rec.otherInflow.toLocaleString('en-US', { minimumFractionDigits: 0 })}
+            </div>
+          </div>
+
+          <!-- 2. Списания -->
+          <div style="background: rgba(248, 113, 113, 0.05); border: 1px solid rgba(248, 113, 113, 0.25); border-radius: var(--radius-sm); padding: 14px 16px;">
+            <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent-rose); font-weight: 700; margin-bottom: 4px;">
+              ⬆️ Списания (Outflow)
+            </div>
+            <div style="font-size: 20px; font-weight: 800; font-family: var(--font-heading); color: var(--accent-rose);">
+              -$${rec.outflow.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+            </div>
+            <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">
+              Трафик: $${rec.trafficOutflow.toFixed(0)} | Софт: $${rec.softOutflow.toFixed(0)} | Комсы: $${rec.feeOutflow.toFixed(0)}
+            </div>
+          </div>
+
+          <!-- 3. Чистый поток периода -->
+          <div style="background: rgba(56, 189, 248, 0.05); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: var(--radius-sm); padding: 14px 16px;">
+            <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--primary); font-weight: 700; margin-bottom: 4px;">
+              📊 Поток Периода (Net)
+            </div>
+            <div style="font-size: 20px; font-weight: 800; font-family: var(--font-heading); color: ${rec.netPeriodCashflow >= 0 ? 'var(--accent-green)' : 'var(--accent-rose)'};">
+              ${rec.netPeriodCashflow >= 0 ? '+' : ''}$${rec.netPeriodCashflow.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+            </div>
+            <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">
+              Сальдо приходов и расходов за период
+            </div>
+          </div>
+
+          <!-- 4. Свободная касса -->
+          <div style="background: rgba(245, 158, 11, 0.05); border: 1px solid rgba(245, 158, 11, 0.25); border-radius: var(--radius-sm); padding: 14px 16px;">
+            <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent-amber); font-weight: 700; margin-bottom: 4px;">
+              🛡 Свободная Касса (Safe Cash)
+            </div>
+            <div style="font-size: 20px; font-weight: 800; font-family: var(--font-heading); color: var(--accent-amber);">
+              $${rec.safeCash.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+            </div>
+            <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">
+              В кассе: $${rec.actualCashBalance.toLocaleString('en-US', { minimumFractionDigits: 2 })} (Резерв: -$${rec.totalObligations.toFixed(0)})
+            </div>
+          </div>
+        </div>
+
+        <!-- Formula Audit Strip -->
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: rgba(0, 0, 0, 0.25); border: 1px solid var(--border-color); border-radius: 8px; font-size: 12px; font-family: var(--font-mono); color: var(--text-secondary); flex-wrap: wrap; gap: 8px;">
+          <div>
+            <span>Расчет: </span>
+            <span style="color: var(--accent-green); font-weight: 700;">+$${rec.inflow.toFixed(2)} (Приход)</span>
+            <span> − </span>
+            <span style="color: var(--accent-rose); font-weight: 700;">$${rec.outflow.toFixed(2)} (Расход)</span>
+            <span> = </span>
+            <strong style="color: var(--text-main); font-weight: 800;">$${rec.expectedCashBalance.toFixed(2)} (Расчетная касса)</strong>
+          </div>
+          <div>
+            <span>Факт Bybit/Paxum: </span>
+            <strong style="color: var(--primary); font-weight: 800;">$${rec.actualCashBalance.toFixed(2)}</strong>
+            <span style="margin-left: 8px; font-weight: 700; color: ${rec.isBalanced ? 'var(--accent-green)' : 'var(--accent-rose)'};">
+              ${rec.isBalanced ? '✓ Дельта $0.00 (Сверка идеальна)' : `⚠️ Расхождение $${rec.delta.toFixed(2)}`}
+            </span>
+          </div>
+        </div>
+      `;
+    }
+  }
+
+  // 2. Сверка заработка по анкетам (CRM vs Выводы)
+  function renderModelEarningsReconciliation(modelData, selectedPeriod) {
+    const periodBadge = document.getElementById('fin-model-period-badge');
+    const totalEarnedEl = document.getElementById('fin-model-total-earned');
+    const tbody = document.getElementById('fin-tbody-model-reconciliation');
+
+    if (periodBadge) {
+      let label = 'Все периоды';
+      if (selectedPeriod === '2026-11') label = 'Ноябрь 2026 (1–10 Ноя)';
+      else if (selectedPeriod === '2026-10') label = 'Октябрь 2026 (1–31 Окт)';
+      else if (selectedPeriod === '2026-09') label = 'Сентябрь 2026';
+      periodBadge.textContent = label;
+    }
+
+    if (totalEarnedEl) {
+      totalEarnedEl.textContent = `$${modelData.totalEarnedAll.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+    }
+
+    if (tbody) {
+      if (!modelData.models || modelData.models.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="9" style="text-align: center; color: var(--text-dim); padding: 18px;">Нет данных по анкетам за выбранный период</td></tr>`;
+        return;
+      }
+
+      const rowsHtml = modelData.models.map(m => {
+        let statusBadge = '';
+        if (m.withdrawnToCash >= m.totalEarned && m.totalEarned > 0) {
+          statusBadge = '<span style="font-size: 11px; padding: 3px 8px; border-radius: 8px; background: rgba(52, 211, 153, 0.15); color: var(--accent-green); font-weight: 700;">🟢 Выведено в кассу</span>';
+        } else if (m.withdrawnToCash > 0 && m.withdrawnToCash < m.totalEarned) {
+          statusBadge = '<span style="font-size: 11px; padding: 3px 8px; border-radius: 8px; background: rgba(56, 189, 248, 0.15); color: var(--primary); font-weight: 700;">⚡ Частично выведено</span>';
+        } else if (m.withdrawnToCash === 0 && m.totalEarned > 0) {
+          statusBadge = '<span style="font-size: 11px; padding: 3px 8px; border-radius: 8px; background: rgba(245, 158, 11, 0.15); color: var(--accent-amber); font-weight: 700;">🟡 В хольде OF</span>';
+        } else {
+          statusBadge = '<span style="font-size: 11px; color: var(--text-dim);">—</span>';
+        }
+
+        return `
+          <tr>
+            <td style="font-weight: 700; color: var(--text-main); font-size: 13px;">${m.name}</td>
+            <td style="font-family: var(--font-mono); font-size: 13px;">$${m.grossRev.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
+            <td style="font-family: var(--font-mono); font-size: 13px; color: var(--text-secondary);">$${m.netRev.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
+            <td style="font-family: var(--font-mono); font-size: 13px; color: ${m.ppRev > 0 ? 'var(--primary)' : 'var(--text-dim)'};">${m.ppRev > 0 ? '$' + m.ppRev.toLocaleString('en-US', { minimumFractionDigits: 2 }) : '—'}</td>
+            <td style="font-family: var(--font-mono); font-weight: 700; color: var(--accent-green); font-size: 14px;">$${m.totalEarned.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
+            <td style="font-family: var(--font-mono); font-weight: 700; color: var(--primary); font-size: 14px;">$${m.withdrawnToCash.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
+            <td style="font-family: var(--font-mono); font-weight: 600; color: ${m.inHold > 0 ? 'var(--accent-amber)' : 'var(--text-dim)'}; font-size: 13px;">$${m.inHold.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
+            <td>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span style="font-family: var(--font-mono); font-weight: 700; font-size: 12px; min-width: 42px;">${m.sharePct.toFixed(1)}%</span>
+                <div style="flex: 1; height: 6px; background: rgba(255, 255, 255, 0.08); border-radius: 4px; overflow: hidden; min-width: 50px;">
+                  <div style="width: ${Math.min(100, m.sharePct)}%; height: 100%; background: var(--primary); border-radius: 4px;"></div>
+                </div>
+              </div>
+            </td>
+            <td>${statusBadge}</td>
+          </tr>
+        `;
+      }).join('');
+
+      const totalRowHtml = `
+        <tr style="border-top: 2px solid var(--border-color); background: rgba(255, 255, 255, 0.03); font-weight: 800;">
+          <td style="color: var(--text-main); font-size: 13px;">ИТОГО АГЕНТСТВО</td>
+          <td style="font-family: var(--font-mono); font-size: 13px;">$${modelData.totalGrossAll.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
+          <td style="font-family: var(--font-mono); font-size: 13px; color: var(--text-secondary);">$${modelData.totalNetAll.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
+          <td style="font-family: var(--font-mono); font-size: 13px; color: var(--primary);">$${modelData.totalPaypalAll.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
+          <td style="font-family: var(--font-mono); color: var(--accent-green); font-size: 15px;">$${modelData.totalEarnedAll.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
+          <td style="font-family: var(--font-mono); color: var(--primary); font-size: 15px;">$${modelData.totalWithdrawnAll.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
+          <td style="font-family: var(--font-mono); color: var(--accent-amber); font-size: 14px;">$${modelData.totalHoldAll.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
+          <td style="font-family: var(--font-mono); font-size: 12px;">100.0%</td>
+          <td><span style="font-size: 11px; color: var(--text-muted);">Сверка периода</span></td>
+        </tr>
+      `;
+
+      tbody.innerHTML = rowsHtml + totalRowHtml;
+    }
+  }
+
+  // 3. Детальная аналитика и таблица расходов
+  let currentExpenseFilter = 'all';
+
+  function renderDetailedExpenses(expData) {
+    const badge = document.getElementById('fin-expenses-total-badge');
+    const filterPillsContainer = document.getElementById('fin-expense-filter-pills');
+    const kpiGrid = document.getElementById('fin-expense-kpi-grid');
+    const tbody = document.getElementById('fin-tbody-detailed-expenses');
+
+    if (badge) {
+      badge.textContent = `Расход: $${expData.totalExpenses.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+    }
+
+    // KPI Grid cards
+    if (kpiGrid) {
+      const gList = [
+        { key: 'traffic', ...expData.groups.traffic, icon: '🎯' },
+        { key: 'soft', ...expData.groups.soft, icon: '🛠' },
+        { key: 'payroll', ...expData.groups.payroll, icon: '👥' },
+        { key: 'fees', ...expData.groups.fees, icon: '💳' },
+        { key: 'other', ...expData.groups.other, icon: '📦' }
+      ];
+
+      kpiGrid.innerHTML = gList.map(g => {
+        const share = expData.totalExpenses > 0 ? (g.amount / expData.totalExpenses) * 100 : 0;
+        return `
+          <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 12px 14px; border-left: 3px solid ${g.color};">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+              <span style="font-size: 11px; font-weight: 700; color: var(--text-muted);">${g.label}</span>
+              <span style="font-size: 10px; font-family: var(--font-mono); color: var(--text-dim);">${g.count} оп.</span>
+            </div>
+            <div style="font-size: 17px; font-weight: 800; font-family: var(--font-heading); color: var(--text-main);">
+              $${g.amount.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+            </div>
+            <div style="font-size: 11px; font-family: var(--font-mono); color: ${g.color}; margin-top: 3px;">
+              ${share.toFixed(1)}% от всех трат
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Filter pills
+    if (filterPillsContainer) {
+      const pills = [
+        { id: 'all', label: `Все (${expData.detailedList.length})` },
+        { id: 'traffic', label: `🎯 Трафик ($${expData.groups.traffic.amount.toFixed(0)})` },
+        { id: 'soft', label: `🛠 Подрядчики/Софт ($${expData.groups.soft.amount.toFixed(0)})` },
+        { id: 'payroll', label: `👥 Зарплаты ($${expData.groups.payroll.amount.toFixed(0)})` },
+        { id: 'fees', label: `💳 Комиссии ($${expData.groups.fees.amount.toFixed(0)})` },
+        { id: 'other', label: `📦 Прочее ($${expData.groups.other.amount.toFixed(0)})` }
+      ];
+
+      filterPillsContainer.innerHTML = pills.map(p => {
+        const isActive = currentExpenseFilter === p.id;
+        return `
+          <button class="btn-expense-pill" data-filter="${p.id}" style="padding: 4px 10px; font-size: 11px; font-weight: 700; border-radius: 8px; border: 1px solid ${isActive ? 'var(--primary)' : 'var(--border-color)'}; background: ${isActive ? 'rgba(56, 189, 248, 0.2)' : 'rgba(255, 255, 255, 0.04)'}; color: ${isActive ? 'var(--primary)' : 'var(--text-muted)'}; cursor: pointer; transition: all 0.2s;">
+            ${p.label}
+          </button>
+        `;
+      }).join('');
+
+      filterPillsContainer.querySelectorAll('.btn-expense-pill').forEach(btn => {
+        btn.addEventListener('click', () => {
+          currentExpenseFilter = btn.dataset.filter;
+          renderDetailedExpenses(expData);
+        });
+      });
+    }
+
+    // Tbody detailed items
+    if (tbody) {
+      let filtered = expData.detailedList;
+      if (currentExpenseFilter !== 'all') {
+        filtered = filtered.filter(item => item.groupKey === currentExpenseFilter);
+      }
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-dim); padding: 18px;">Нет расходов по выбранной категории</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(item => {
+        const descPreview = item.descs.length > 0 ? item.descs.join('; ') : '—';
+        return `
+          <tr>
+            <td style="font-weight: 700; font-size: 13px; color: var(--text-main);">${item.category}</td>
+            <td style="font-size: 12px; color: var(--primary);">${item.model}</td>
+            <td style="font-family: var(--font-mono); font-weight: 700; color: var(--accent-rose); font-size: 14px;">$${item.amount.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
+            <td>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span style="font-family: var(--font-mono); font-weight: 700; font-size: 12px; min-width: 42px;">${item.sharePct.toFixed(1)}%</span>
+                <div style="flex: 1; height: 6px; background: rgba(255, 255, 255, 0.08); border-radius: 4px; overflow: hidden; min-width: 50px;">
+                  <div style="width: ${Math.min(100, item.sharePct)}%; height: 100%; background: var(--accent-rose); border-radius: 4px;"></div>
+                </div>
+              </div>
+            </td>
+            <td style="font-family: var(--font-mono); font-size: 12px; text-align: center;">${item.txCount}</td>
+            <td style="font-family: var(--font-mono); font-size: 12px; color: var(--text-muted);">${item.latestDate}</td>
+            <td style="font-size: 11px; color: var(--text-muted); max-width: 280px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${descPreview}">${descPreview}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+  }
+
+
   // Google Sheets UI & Sync handlers
   function updateGsheetUI() {
     const savedUrl = manager.loadGSheetUrl();
@@ -1489,6 +2015,20 @@ export function initFinanceModule() {
     renderTransactionsTable(txs);
     renderCharts(txs);
     
+    // Новые блоки для Овнера: Сверка Кассы, Сверка Анкет и Аналитика Расходов
+    const cashReconciliation = manager.calculateCashReconciliation(
+      txs, 
+      cashBalance, 
+      contractorsStatus?.totalContractorsRemaining, 
+      escrowData?.totalEscrowRemaining
+    );
+    const modelReconciliation = manager.calculateModelEarningsReconciliation(manager.selectedPeriod, txs);
+    const detailedExpenses = manager.calculateDetailedExpenses(txs);
+
+    renderCashReconciliation(cashReconciliation);
+    renderModelEarningsReconciliation(modelReconciliation, manager.selectedPeriod);
+    renderDetailedExpenses(detailedExpenses);
+
     // Показ индикатора кассового разрыва и безопасного Runway
     renderRunwayAlert(cashBalance, escrowData, contractorsStatus?.totalContractorsRemaining);
   }

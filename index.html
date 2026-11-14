@@ -430,7 +430,122 @@
         </div>
       </div>
 
-      <!-- 1. Top Section: P&L Dynamics Chart -->
+      <!-- 1. Сверка Кассы (Proof of Cash & Reconciliation) -->
+      <div class="glass-card" style="padding: 22px; margin-bottom: 24px; border-left: 4px solid var(--accent-green); background: rgba(16, 185, 129, 0.03);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; flex-wrap: wrap; gap: 12px;">
+          <div>
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <h3 style="font-size: 18px; font-weight: 800; font-family: var(--font-heading); color: var(--text-main); margin: 0;">
+                🏦 Сверка Кассы (Proof of Cash)
+              </h3>
+              <span id="fin-reconcile-badge" style="font-size: 11px; background: rgba(52, 211, 153, 0.15); color: var(--accent-green); padding: 3px 10px; border-radius: 12px; font-weight: 700; border: 1px solid rgba(52, 211, 153, 0.3);">
+                🟢 Сходится 100%
+              </span>
+            </div>
+            <p style="font-size: 12px; color: var(--text-muted); margin: 4px 0 0 0;">
+              Прозрачный расчетный баланс: сколько фактически поступило vs сколько списано = сколько реально должно быть в кассе
+            </p>
+          </div>
+          <div style="font-size: 12px; font-family: var(--font-mono); color: var(--text-muted); background: rgba(0, 0, 0, 0.3); padding: 6px 12px; border-radius: 8px; border: 1px solid var(--border-color);">
+            Расхождение: <strong id="fin-reconcile-delta" style="color: var(--accent-green); font-size: 13px;">$0.00</strong>
+          </div>
+        </div>
+
+        <div id="fin-cash-reconciliation-container">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
+
+      <!-- 2. Сверка Выручки по Анкетам за Период (CRM vs Выводы в кассу) -->
+      <div class="table-container scrollable-slider" style="margin-bottom: 24px; border-left: 4px solid var(--primary);">
+        <div style="padding: 16px 20px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; background: rgba(56, 189, 248, 0.03);">
+          <div>
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <h3 style="font-size: 16px; font-weight: 700; font-family: var(--font-heading); margin: 0;">
+                👑 Сверка Заработка по Анкетам за Период
+              </h3>
+              <span id="fin-model-period-badge" style="font-size: 11px; background: rgba(56, 189, 248, 0.15); color: var(--primary); padding: 3px 10px; border-radius: 12px; font-weight: 700; border: 1px solid rgba(56, 189, 248, 0.3);">
+                CRM vs Выводы в кассу
+              </span>
+            </div>
+            <p style="font-size: 12px; color: var(--text-muted); margin: 4px 0 0 0;">
+              Сколько каждая анкета заработала в CRM (Gross & Net 80%) vs сколько фактически выведено на счет и сколько еще в хольде OnlyFans
+            </p>
+          </div>
+          <div style="font-size: 12px; font-family: var(--font-mono); color: var(--text-muted);">
+            Всего заработано: <strong id="fin-model-total-earned" style="color: var(--accent-green); font-size: 15px;">$0.00</strong>
+          </div>
+        </div>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Модель / Анкета</th>
+              <th>Заработано в CRM (Gross)</th>
+              <th>Net 80% (к выводу)</th>
+              <th>PayPal ($)</th>
+              <th style="color: var(--accent-green);">ИТОГО Заработано ($)</th>
+              <th style="color: var(--primary);">Выведено в кассу ($)</th>
+              <th style="color: var(--accent-amber);">В хольде OnlyFans ($)</th>
+              <th>Доля в кассе (%)</th>
+              <th>Статус выплат</th>
+            </tr>
+          </thead>
+          <tbody id="fin-tbody-model-reconciliation">
+            <!-- Rendered dynamically -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 3. Детальная Аналитика и Сводная Таблица Расходов (Expense Breakdown) -->
+      <div class="glass-card" style="padding: 22px; margin-bottom: 24px; border-left: 4px solid var(--accent-rose); background: rgba(248, 113, 113, 0.02);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
+          <div>
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <h3 style="font-size: 18px; font-weight: 800; font-family: var(--font-heading); color: var(--text-main); margin: 0;">
+                📊 Детальная Аналитика и Сводка Расходов
+              </h3>
+              <span id="fin-expenses-total-badge" style="font-size: 11px; background: rgba(248, 113, 113, 0.15); color: var(--accent-rose); padding: 3px 10px; border-radius: 12px; font-weight: 700; border: 1px solid rgba(248, 113, 113, 0.3);">
+                Расход: $0.00
+              </span>
+            </div>
+            <p style="font-size: 12px; color: var(--text-muted); margin: 4px 0 0 0;">
+              Полная структура трат агентства по статьям, направлениям и анкетам с контролем сумм и долей
+            </p>
+          </div>
+
+          <!-- Quick Category Filter Pills -->
+          <div id="fin-expense-filter-pills" style="display: flex; gap: 6px; flex-wrap: wrap;">
+            <!-- Rendered dynamically -->
+          </div>
+        </div>
+
+        <!-- Quick Summary Expense KPI Cards -->
+        <div id="fin-expense-kpi-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 18px;">
+          <!-- Rendered dynamically -->
+        </div>
+
+        <!-- Detailed Expense Table -->
+        <div class="table-container scrollable-slider">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Статья Расходов</th>
+                <th>Анкета / Направление</th>
+                <th style="color: var(--accent-rose);">Сумма ($)</th>
+                <th>Доля в расходах (%)</th>
+                <th>Транзакций</th>
+                <th>Последняя выплата</th>
+                <th>Детали / Назначение</th>
+              </tr>
+            </thead>
+            <tbody id="fin-tbody-detailed-expenses">
+              <!-- Rendered dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 4. Top Section: P&L Dynamics Chart -->
       <div class="glass-card" style="padding: 20px; margin-bottom: 24px;">
         <h3 style="font-size: 15px; font-weight: 700; font-family: var(--font-heading); margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between;">
           <span>📈 Динамика P&L по Месяцам</span>
