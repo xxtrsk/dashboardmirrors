@@ -14,6 +14,7 @@ export const FINANCE_INCOME_CATS = [
 ];
 
 export const FINANCE_EXPENSE_CATS = [
+  'Трафик: OFTV',
   'Трафик: Reddit',
   'Трафик: TikTok',
   'Трафик: Twitter',
@@ -53,7 +54,7 @@ export const CONTRACTOR_SCHEDULE = [
     installmentAmount: 175,
     keywords: ['оскар', 'osckelly', 'oftv'],
     model: 'Lolly (Lollysunnery)',
-    category: 'Трафик: TikTok',
+    category: 'Трафик: OFTV',
     warning: '⚠️ Проверить отгрузку сценариев перед выплатой 2-й части (175 USDT)!',
     urgencyColor: 'var(--accent-amber)',
     urgencyBadge: '2 транша (175 + 175)'

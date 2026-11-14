@@ -52,6 +52,7 @@ bot = telebot.TeleBot(CONFIG["bot_token"], parse_mode="HTML")
 
 # Категории и Модели (синхронизированы с finance.js и dashboard)
 CATEGORIES_EXPENSE = [
+    "Трафик: OFTV",
     "Трафик: TikTok",
     "Трафик: Reddit",
     "Трафик: Twitter",
@@ -78,7 +79,7 @@ MODELS_LIST = [
 ]
 
 CONTRACTORS = [
-    {"name": "@osckelly (Оскар) — OFTV", "amount": 350, "terms": "175$ в начале + 175$ в конце (Lollysunnery)", "cat": "Трафик: TikTok", "model": "Lolly (Lollysunnery)"},
+    {"name": "@osckelly (Оскар) — OFTV", "amount": 350, "terms": "175$ в начале + 175$ в конце (Lollysunnery)", "cat": "Трафик: OFTV", "model": "Lolly (Lollysunnery)"},
     {"name": "@aneskagency (Анастасия) — FYP", "amount": 250, "terms": "125$ каждые 2 недели (Fansly)", "cat": "Трафик: TikTok", "model": "Eva Pinky (Fansly)"},
     {"name": "OnlyMonster CRM", "amount": 220, "terms": "220$ / 2-го числа (единственный софт)", "cat": "Софт: OnlyMonster", "model": "Agency Core (Общие)"},
     {"name": "@KillerLe0n (Леон) — SFS", "amount": 580, "terms": "По сверке 1–5 числа (1lolly & Eva Blush)", "cat": "Трафик: Twitter", "model": "Eva Blush"}
@@ -303,8 +304,8 @@ def detect_category(desc: str, tx_type: str) -> str:
     # Расходы
     if "paypal" in d or "пейпал" in d or "пайпал" in d or re.search(r"\bpp\b|\bпп\b", d):
         return "Выплаты: PayPal"
-    if "оскар" in d or "osckelly" in d or "oftv" in d or "монтаж" in d or "сценари" in d:
-        return "Трафик: TikTok"
+    if "оскар" in d or "osckelly" in d or "oftv" in d or "офтв" in d:
+        return "Трафик: OFTV"
     if "анастасия" in d or "aneskagency" in d or "fyp" in d or "tiktok" in d or "тикток" in d:
         return "Трафик: TikTok"
     if "реддит" in d or "reddit" in d or "дейтинг" in d or "dating" in d:
