@@ -1912,7 +1912,7 @@ export function initFinanceModule() {
 
     if (periodBadge) {
       let label = 'Все периоды';
-      if (selectedPeriod === '2026-11') label = 'Ноябрь 2026 (1–16 Ноя)';
+      if (selectedPeriod === '2026-11') label = 'Ноябрь 2026 (1–15 Ноя)';
       else if (selectedPeriod === '2026-10') label = 'Октябрь 2026 (1–31 Окт)';
       else if (selectedPeriod === '2026-09') label = 'Сентябрь 2026';
       periodBadge.textContent = label;
