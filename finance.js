@@ -1890,7 +1890,7 @@ export function initFinanceModule() {
             <span style="font-size: 22px;">⚖️</span>
             <div>
               <div style="font-weight: 700; color: var(--text-main); font-size: 14px;">
-                Касса ожидает пополнения: внесите остаток Bybit или первый вывод OnlyFans
+                Касса ожидает пополнения: внесите остаток на кошельке (USDT) или первый вывод OnlyFans
               </div>
               <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">
                 Запланировано обязательств по графику на месяц: <strong style="color: var(--primary); font-family: var(--font-mono);">$${contractorsDue.toLocaleString()}</strong> (Оскар, Анастасия, софт, Леон)
@@ -1917,7 +1917,7 @@ export function initFinanceModule() {
                 ${safeCash >= 0 ? 'Безопасный Runway: Касса полностью покрывает все зарплаты и обязательства' : 'Внимание: Риск кассового разрыва перед ближайшими выплатами!'}
               </div>
               <div style="font-size: 12px; color: var(--text-muted); margin-top: 3px;">
-                В кассе на Bybit: <strong style="color: var(--text-main); font-family: var(--font-mono);">$${cashBalance.toLocaleString('en-US', { minimumFractionDigits: 2 })}</strong> | 
+                В кошельке (USDT): <strong style="color: var(--text-main); font-family: var(--font-mono);">$${cashBalance.toLocaleString('en-US', { minimumFractionDigits: 2 })}</strong> | 
                 Все обязательства: <strong style="color: #fbbf24; font-family: var(--font-mono);">$${totalObligations.toLocaleString()}</strong> 
                 (Модели: $${Math.round(modelRem).toLocaleString()}, Чаттеры: $${Math.round(chatterRem).toLocaleString()}, Подрядчики: $${Math.round(contractorsDue).toLocaleString()})
               </div>
@@ -1997,16 +1997,16 @@ export function initFinanceModule() {
               </tr>
             </thead>
             <tbody>
-              <!-- Строка 1: Касса Bybit факт -->
+              <!-- Строка 1: Касса USDT факт -->
               <tr>
-                <td style="font-weight: 800; color: #f8fafc; font-size: 13px;">💎 USDT (Касса Bybit на руках)</td>
+                <td style="font-weight: 800; color: #f8fafc; font-size: 13px;">💎 USDT (В кошельке на руках)</td>
                 <td style="font-family: var(--font-mono); color: var(--accent-green); font-weight: 700; text-align: right;">+$${rec.inflow.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
                 <td style="font-family: var(--font-mono); color: var(--accent-rose); font-weight: 700; text-align: right;">-$${rec.outflow.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
                 <td style="font-family: var(--font-mono); color: var(--primary); font-weight: 800; font-size: 14px; text-align: right;">$${rec.expectedCashBalance.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
                 <td style="text-align: right;">
                   <div style="display: inline-flex; align-items: center; gap: 6px;">
                     <input id="fin-input-actual-usdt" type="number" step="0.01" value="${actualWalletVal.toFixed(2)}" style="width: 105px; padding: 4px 8px; font-family: var(--font-mono); font-weight: 700; background: #283042; border: 1px solid #414c62; color: #f8fafc; border-radius: 4px; text-align: right;" />
-                    <button id="fin-btn-save-actual-usdt" class="btn-action btn-pay-contractor" style="padding: 4px 8px; font-size: 11px;" title="Сохранить факт Bybit">💾</button>
+                    <button id="fin-btn-save-actual-usdt" class="btn-action btn-pay-contractor" style="padding: 4px 8px; font-size: 11px;" title="Сохранить баланс на кошельке">💾</button>
                   </div>
                 </td>
                 <td style="font-family: var(--font-mono); font-weight: 800; font-size: 13px; color: ${isUsdtBalanced ? 'var(--accent-green)' : 'var(--accent-rose)'}; text-align: right;">
@@ -2045,7 +2045,7 @@ export function initFinanceModule() {
               <tr style="background: rgba(16, 185, 129, 0.08); border-top: 2px solid #353e52; font-weight: 800;">
                 <td style="color: #f8fafc; font-size: 13px;">🏦 СОВОКУПНЫЙ КАПИТАЛ АГЕНТСТВА</td>
                 <td colspan="3" style="font-size: 12px; color: #cbd5e1;">
-                  Касса Bybit ($${actualWalletVal.toFixed(0)}) + Деньги в пути ($${transitVal.toFixed(0)})
+                  В кошельке USDT ($${actualWalletVal.toFixed(0)}) + Деньги в пути ($${transitVal.toFixed(0)})
                 </td>
                 <td colspan="2" style="font-family: var(--font-mono); font-size: 15px; color: var(--accent-green); text-align: right; padding-right: 12px;">
                   $${totalLiquidity.toLocaleString('en-US', { minimumFractionDigits: 2 })}
@@ -2096,7 +2096,7 @@ export function initFinanceModule() {
               +$${transitVal.toLocaleString('en-US', { minimumFractionDigits: 2 })}
             </div>
             <div style="font-size: 11px; color: #cbd5e1; margin-top: 4px;">
-              OnlyFans / Paxum → Bybit
+              OnlyFans / Paxum → На кошелек (USDT)
             </div>
           </div>
 
@@ -2122,7 +2122,7 @@ export function initFinanceModule() {
               $${totalLiquidity.toLocaleString('en-US', { minimumFractionDigits: 2 })}
             </div>
             <div style="font-size: 11px; color: #cbd5e1; margin-top: 4px;">
-              Касса Bybit + Транзит
+              В кошельке (USDT) + Транзит
             </div>
           </div>
         </div>
@@ -2138,7 +2138,7 @@ export function initFinanceModule() {
             <strong style="color: #f8fafc; font-weight: 800;">$${rec.expectedCashBalance.toFixed(2)}</strong>
           </div>
           <div>
-            <span>Факт Bybit: </span>
+            <span>На кошельке: </span>
             <strong style="color: #38bdf8; font-weight: 800;">$${actualWalletVal.toFixed(2)}</strong>
             <span> | В пути: </span>
             <strong style="color: #c084fc; font-weight: 800;">+$${transitVal.toFixed(2)}</strong>
@@ -2156,7 +2156,7 @@ export function initFinanceModule() {
         btnSaveActual.onclick = () => {
           const val = parseFloat(inputActual.value) || 0;
           localStorage.setItem(STORAGE_KEY_ACTUAL_WALLET, val.toString());
-          showToast(`💾 Фактический баланс кошелька Bybit сохранен: $${val.toLocaleString()}`);
+          showToast(`💾 Баланс USDT на кошельке сохранен: $${val.toLocaleString()}`);
           renderAll();
         };
       }
