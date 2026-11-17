@@ -2176,7 +2176,7 @@ export function initFinanceModule() {
 
     if (tbody) {
       if (!modelData.models || modelData.models.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="10" style="text-align: center; color: var(--text-dim); padding: 18px;">Нет данных по анкетам за выбранный период</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="9" style="text-align: center; color: var(--text-dim); padding: 18px;">Нет данных по анкетам за выбранный период</td></tr>`;
         return;
       }
 
@@ -2184,12 +2184,8 @@ export function initFinanceModule() {
         let statusBadge = '';
         if (m.withdrawnToCash >= m.totalEarned && m.totalEarned > 0) {
           statusBadge = '<span style="font-size: 11px; padding: 3px 8px; border-radius: 8px; background: rgba(52, 211, 153, 0.15); color: var(--accent-green); font-weight: 700;">🟢 Выведено в кассу</span>';
-        } else if (m.inTransit > 0 && m.withdrawnToCash > 0) {
-          statusBadge = '<span style="font-size: 11px; padding: 3px 8px; border-radius: 8px; background: rgba(56, 189, 248, 0.15); color: #38bdf8; font-weight: 700;">🚀 Часть в пути</span>';
-        } else if (m.inTransit > 0 && m.withdrawnToCash === 0) {
+        } else if (m.inTransit > 0) {
           statusBadge = '<span style="font-size: 11px; padding: 3px 8px; border-radius: 8px; background: rgba(56, 189, 248, 0.15); color: #38bdf8; font-weight: 700;">🚀 В пути на кошелек</span>';
-        } else if (m.inHold > 0 && m.withdrawnToCash === 0) {
-          statusBadge = '<span style="font-size: 11px; padding: 3px 8px; border-radius: 8px; background: rgba(245, 158, 11, 0.15); color: var(--accent-amber); font-weight: 700;">🟡 На балансе анкеты</span>';
         } else {
           statusBadge = '<span style="font-size: 11px; color: var(--text-dim);">—</span>';
         }
@@ -2203,7 +2199,6 @@ export function initFinanceModule() {
             <td style="font-family: var(--font-mono); font-weight: 700; color: var(--accent-green); font-size: 14px;">$${m.totalEarned.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
             <td style="font-family: var(--font-mono); font-weight: 700; color: var(--primary); font-size: 14px;">$${m.withdrawnToCash.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
             <td style="font-family: var(--font-mono); font-weight: 700; color: #38bdf8; font-size: 13px;">${m.inTransit > 0 ? '$' + m.inTransit.toLocaleString('en-US', { minimumFractionDigits: 2 }) : '—'}</td>
-            <td style="font-family: var(--font-mono); font-weight: 600; color: ${m.inHold > 0 ? 'var(--accent-amber)' : 'var(--text-dim)'}; font-size: 13px;">$${m.inHold.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
             <td>
               <div style="display: flex; align-items: center; gap: 8px;">
                 <span style="font-family: var(--font-mono); font-weight: 700; font-size: 12px; min-width: 42px;">${m.sharePct.toFixed(1)}%</span>
@@ -2226,7 +2221,6 @@ export function initFinanceModule() {
           <td style="font-family: var(--font-mono); color: var(--accent-green); font-size: 15px;">$${modelData.totalEarnedAll.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
           <td style="font-family: var(--font-mono); color: var(--primary); font-size: 15px;">$${modelData.totalWithdrawnAll.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
           <td style="font-family: var(--font-mono); color: #38bdf8; font-size: 14px;">$${(modelData.totalTransitAll || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
-          <td style="font-family: var(--font-mono); color: var(--accent-amber); font-size: 14px;">$${modelData.totalHoldAll.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
           <td style="font-family: var(--font-mono); font-size: 12px;">100.0%</td>
           <td><span style="font-size: 11px; color: #cbd5e1;">Сверка периода</span></td>
         </tr>
