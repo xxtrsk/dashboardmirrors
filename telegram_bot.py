@@ -800,19 +800,19 @@ def send_balance_report(chat_id):
             elif "чаттер" in cat or "оператор" in cat:
                 chatters_paid += amt
 
-    # Начисления (45% от Net OF)
-    p1_due = p1_income * 0.45
-    p2_due = p2_income * 0.45
-    total_payroll_paid = models_paid + chatters_paid
+    # Начисления Моделям (25% OF, 30% Fansly) и Чаттерам (20% Net)
+    models_due = 0.0
+    for t in txs:
+        if t.get("type") == "Доход":
+            amt = float(t.get("amount", 0))
+            is_fansly = "fansly" in str(t.get("model", "")).lower() or "fansly" in str(t.get("desc", "")).lower()
+            models_due += amt * (0.30 if is_fansly else 0.25)
 
-    p1_paid = min(p1_due, total_payroll_paid)
-    p1_remaining_calc = max(0.0, p1_due - p1_paid)
-    p1_remaining = 0.0  # Заморозка на 31 число временно отключена по запросу овнера
-    p2_paid = min(p2_due, max(0.0, total_payroll_paid - p1_due))
-    p2_remaining = max(0.0, p2_due - p2_paid)
-    total_escrow = p2_remaining  # Удерживаем в резерве только период к 15-му числу
+    chatters_due = income * 0.20
+    models_rem = max(0.0, models_due - models_paid)
+    chatters_rem = max(0.0, chatters_due - chatters_paid)
 
-    # Подрядчики к доплате
+    # Подрядчики к доплате (4 контрагента)
     contractors_due = 0.0
     for c in CONTRACTORS:
         c_name_lower = c["name"].lower()
@@ -823,20 +823,26 @@ def send_balance_report(chat_id):
         rem_c = max(0.0, float(c["amount"]) - paid_c)
         contractors_due += rem_c
 
-    # Свободная касса овнера (Касса минус Подрядчики)
-    safe_cash = balance - contractors_due
+    # ИТОГО ВСЕ НАЧИСЛЕННЫЕ ОБЯЗАТЕЛЬСТВА
+    total_obligations = models_rem + chatters_rem + contractors_due
+
+    # Свободная касса овнера (Касса минус ВСЕ обязательства)
+    safe_cash = balance - total_obligations
     safe_icon = "🟢" if safe_cash >= 0 else "🚨"
     safe_note = (
         "<i>🟢 Доступно к выводу овнером без риска разрыва кассы</i>" 
         if safe_cash >= 0 
-        else "<i>⚠️ Дефицит кассы! Не выводите дивиденды до закрытия выплат</i>"
+        else f"<i>🚨 Дефицит кассы -${abs(safe_cash):,.2f}! Не выводите дивиденды до закрытия выплат</i>"
     )
 
     text = (
-        f"🏦 <b>СОСТОЯНИЕ КАССЫ & РАСХОДОВ MIRRORS</b>\n"
+        f"🏦 <b>СОСТОЯНИЕ КАССЫ & SAFE CASH MIRRORS</b>\n"
         f"━━━━━━━━━━━━━━━━━━━━\n"
-        f"💰 <b>Физическая касса (на руках):</b> <code>${balance:,.2f}</code>\n"
-        f"📅 <b>Подрядчики к доплате:</b> ${contractors_due:,.2f}\n"
+        f"💵 <b>ФАКТИЧЕСКИ В КАССЕ (на руках):</b> <code>${balance:,.2f}</code>\n\n"
+        f"🔒 <b>Все обязательства к выплате:</b> <code>${total_obligations:,.2f}</code>\n"
+        f"   ├ <i>Долг моделям:</i> ${models_rem:,.2f}\n"
+        f"   ├ <i>Долг чаттерам:</i> ${chatters_rem:,.2f}\n"
+        f"   └ <i>Подрядчики к доплате:</i> ${contractors_due:,.2f}\n"
         f"━━━━━━━━━━━━━━━━━━━━\n"
         f"{safe_icon} <b>СВОБОДНАЯ КАССА (Safe Cash):</b> <code>${safe_cash:,.2f}</code>\n"
         f"{safe_note}\n\n"
@@ -844,7 +850,6 @@ def send_balance_report(chat_id):
         f"💵 <b>Выручка Net OF:</b> ${income:,.2f}\n"
         f"💸 <b>Расходы OPEX:</b> ${expense:,.2f}\n"
         f"💳 <b>Комиссии вывода & обнала:</b> ${withdrawal_fees:,.2f} ({effective_fee:.1f}%)\n"
-        f"🏆 <b>Чистая прибыль:</b> ${balance:,.2f} ({net_margin:.1f}%)\n"
         f"📋 <b>Записей в реестре:</b> {len(txs)}\n\n"
         f"<i>Данные онлайн из Google Sheets & Dashboard</i>"
     )

@@ -1063,13 +1063,20 @@ class FinanceManager {
       });
       const chatterPaid = chatterPaidTxs.reduce((s, t) => s + (Number(t.amount) || 0), 0);
 
-      const totalTeamPlan = modelPlan + chatterPlan;
-      const totalTeamPaid = modelPaid + chatterPaid;
-      const teamDelta = totalTeamPaid - totalTeamPlan;
-
-      if (teamDelta > 5) {
+      // 1. Дельта и остаток Модели (ОТДЕЛЬНО)
+      const modelRemaining = Math.max(0, modelPlan - modelPaid);
+      const modelDelta = modelPaid - modelPlan;
+      if (modelDelta > 5) {
         overpaymentCount++;
-        totalOverpaidAmount += teamDelta;
+        totalOverpaidAmount += modelDelta;
+      }
+
+      // 2. Дельта и остаток Чаттеров (ОТДЕЛЬНО)
+      const chatterRemaining = Math.max(0, chatterPlan - chatterPaid);
+      const chatterDelta = chatterPaid - chatterPlan;
+      if (chatterDelta > 5) {
+        overpaymentCount++;
+        totalOverpaidAmount += chatterDelta;
       }
 
       totalModelPlanAll += modelPlan;
@@ -1078,15 +1085,32 @@ class FinanceManager {
       totalChatterPaidAll += chatterPaid;
       totalAgencyShareAll += agencyShare;
 
-      let statusBadge = '';
-      if (teamDelta > 5) {
-        statusBadge = `<span style="font-size: 11px; padding: 3px 8px; border-radius: 8px; background: rgba(239, 68, 68, 0.15); color: var(--accent-rose); font-weight: 700; border: 1px solid var(--accent-rose);">🔴 Переплата! +$${teamDelta.toFixed(2)}</span>`;
-      } else if (totalTeamPaid === 0 && totalTeamPlan > 0) {
-        statusBadge = `<span style="font-size: 11px; padding: 3px 8px; border-radius: 8px; background: rgba(245, 158, 11, 0.15); color: var(--accent-amber); font-weight: 700; border: 1px solid rgba(245, 158, 11, 0.3);">🟡 В резерве: $${Math.round(totalTeamPlan)}</span>`;
-      } else if (totalTeamPaid > 0 && totalTeamPaid < totalTeamPlan - 5) {
-        statusBadge = `<span style="font-size: 11px; padding: 3px 8px; border-radius: 8px; background: rgba(56, 189, 248, 0.15); color: var(--primary); font-weight: 700; border: 1px solid rgba(56, 189, 248, 0.3);">⚡ Аванс (Остаток: $${Math.round(totalTeamPlan - totalTeamPaid)})</span>`;
+      // Статус Модели (5 аудиторских статусов)
+      let modelStatusBadge = '';
+      if (modelDelta > 5) {
+        modelStatusBadge = `<span style="font-size: 11px; padding: 2px 7px; border-radius: 6px; background: rgba(239, 68, 68, 0.15); color: var(--accent-rose); font-weight: 700; border: 1px solid var(--accent-rose);">🔴 Переплата +$${modelDelta.toFixed(0)}</span>`;
+      } else if (modelPaid >= modelPlan - 5 && modelPlan > 0) {
+        modelStatusBadge = `<span style="font-size: 11px; padding: 2px 7px; border-radius: 6px; background: rgba(52, 211, 153, 0.15); color: var(--accent-green); font-weight: 700; border: 1px solid rgba(52, 211, 153, 0.3);">🟢 Закрыто ($${modelPaid.toFixed(0)})</span>`;
+      } else if (modelPaid > 0) {
+        modelStatusBadge = `<span style="font-size: 11px; padding: 2px 7px; border-radius: 6px; background: rgba(56, 189, 248, 0.15); color: var(--primary); font-weight: 700; border: 1px solid rgba(56, 189, 248, 0.3);">⚡ Частично (долг: $${modelRemaining.toFixed(0)})</span>`;
+      } else if (modelPlan > 0) {
+        modelStatusBadge = `<span style="font-size: 11px; padding: 2px 7px; border-radius: 6px; background: rgba(245, 158, 11, 0.15); color: var(--accent-amber); font-weight: 700; border: 1px solid rgba(245, 158, 11, 0.3);">🟡 К выплате $${modelPlan.toFixed(0)}</span>`;
       } else {
-        statusBadge = `<span style="font-size: 11px; padding: 3px 8px; border-radius: 8px; background: rgba(52, 211, 153, 0.15); color: var(--accent-green); font-weight: 700; border: 1px solid rgba(52, 211, 153, 0.3);">🟢 Сходится</span>`;
+        modelStatusBadge = `<span style="font-size: 11px; color: var(--text-dim);">—</span>`;
+      }
+
+      // Статус Чаттеров (5 аудиторских статусов)
+      let chatterStatusBadge = '';
+      if (chatterDelta > 5) {
+        chatterStatusBadge = `<span style="font-size: 11px; padding: 2px 7px; border-radius: 6px; background: rgba(239, 68, 68, 0.15); color: var(--accent-rose); font-weight: 700; border: 1px solid var(--accent-rose);">🔴 Переплата +$${chatterDelta.toFixed(0)}</span>`;
+      } else if (chatterPaid >= chatterPlan - 5 && chatterPlan > 0) {
+        chatterStatusBadge = `<span style="font-size: 11px; padding: 2px 7px; border-radius: 6px; background: rgba(52, 211, 153, 0.15); color: var(--accent-green); font-weight: 700; border: 1px solid rgba(52, 211, 153, 0.3);">🟢 Закрыто ($${chatterPaid.toFixed(0)})</span>`;
+      } else if (chatterPaid > 0) {
+        chatterStatusBadge = `<span style="font-size: 11px; padding: 2px 7px; border-radius: 6px; background: rgba(56, 189, 248, 0.15); color: var(--primary); font-weight: 700; border: 1px solid rgba(56, 189, 248, 0.3);">⚡ Частично (долг: $${chatterRemaining.toFixed(0)})</span>`;
+      } else if (chatterPlan > 0) {
+        chatterStatusBadge = `<span style="font-size: 11px; padding: 2px 7px; border-radius: 6px; background: rgba(168, 85, 247, 0.15); color: #c084fc; font-weight: 700; border: 1px solid rgba(168, 85, 247, 0.3);">🟡 К выплате $${chatterPlan.toFixed(0)}</span>`;
+      } else {
+        chatterStatusBadge = `<span style="font-size: 11px; color: var(--text-dim);">—</span>`;
       }
 
       return {
@@ -1094,15 +1118,15 @@ class FinanceManager {
         earned,
         modelPlan,
         modelPaid,
-        modelDelta: modelPaid - modelPlan,
+        modelRemaining,
+        modelDelta,
+        modelStatusBadge,
         chatterPlan,
         chatterPaid,
-        chatterDelta: chatterPaid - chatterPlan,
-        agencyShare,
-        totalTeamPlan,
-        totalTeamPaid,
-        teamDelta,
-        statusBadge
+        chatterRemaining,
+        chatterDelta,
+        chatterStatusBadge,
+        agencyShare
       };
     });
 
@@ -1163,14 +1187,23 @@ class FinanceManager {
       };
     }).sort((a, b) => b.totalSales - a.totalSales);
 
+    const totalModelRemainingAll = modelAuditList.reduce((sum, m) => sum + m.modelRemaining, 0);
+    const totalChatterRemainingAll = modelAuditList.reduce((sum, m) => sum + m.chatterRemaining, 0);
+    const modelOverpaidAmount = modelAuditList.reduce((sum, m) => sum + (m.modelDelta > 5 ? m.modelDelta : 0), 0);
+    const chatterOverpaidAmount = modelAuditList.reduce((sum, m) => sum + (m.chatterDelta > 5 ? m.chatterDelta : 0), 0);
+
     return {
       period: selectedPeriod,
       models: modelAuditList,
       chatters: chatterAuditList,
       totalModelPlanAll,
       totalModelPaidAll,
+      totalModelRemainingAll,
+      modelOverpaidAmount,
       totalChatterPlanAll,
       totalChatterPaidAll,
+      totalChatterRemainingAll,
+      chatterOverpaidAmount,
       totalAgencyShareAll,
       overpaymentCount,
       totalOverpaidAmount,
@@ -1419,56 +1452,59 @@ export function initFinanceModule() {
     }
   });
 
-  function renderKPIs(metrics, cashBalance = 0, escrowData = null, totalContractorsRemaining = 0) {
-    const elCash = document.getElementById('fin-kpi-cash-balance');
-    const elSafeCash = document.getElementById('fin-kpi-safe-cash');
-    const elSafeCashSub = document.getElementById('fin-kpi-safe-cash-sub');
-    const elEscrow = document.getElementById('fin-kpi-escrow');
-    const elEscrowSub = document.getElementById('fin-kpi-escrow-sub');
+  function renderKPIs(metrics, cashBalance = 0, totalObligations = 0, safeCash = 0, modelRem = 0, chatterRem = 0, contractorsRem = 0) {
+    const elTopCash = document.getElementById('fin-top-cash-balance');
+    const elTopSafe = document.getElementById('fin-top-safe-cash');
+    const elTopSafeSub = document.getElementById('fin-top-safe-cash-sub');
+    const elTopObligations = document.getElementById('fin-top-obligations');
+    const elTopObligationsSub = document.getElementById('fin-top-obligations-sub');
+    const elTopTransit = document.getElementById('fin-top-transit');
+
     const elRev = document.getElementById('fin-kpi-rev');
     const elFees = document.getElementById('fin-kpi-fees');
     const elFeesSub = document.getElementById('fin-kpi-fees-sub');
     const elNet = document.getElementById('fin-kpi-net');
     const elMargin = document.getElementById('fin-kpi-margin');
 
-    // 1. Физическая касса (на руках)
-    if (elCash) {
-      elCash.textContent = `$${cashBalance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-      elCash.style.color = cashBalance >= 0 ? '#34d399' : 'var(--accent-rose)';
+    // 1. Топовая плашка: Фактически в кассе (на руках)
+    if (elTopCash) {
+      elTopCash.textContent = `$${cashBalance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      elTopCash.style.color = cashBalance >= 0 ? '#34d399' : 'var(--accent-rose)';
     }
 
-    // 2. Зарплатный резерв (Обязательства к 15-му числу)
-    const escrowDue = escrowData ? escrowData.totalEscrowRemaining : 0;
-    const p2Due = escrowData ? escrowData.p2Remaining : 0;
-
-    if (elEscrow) {
-      elEscrow.textContent = `$${escrowDue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-      elEscrow.style.color = escrowDue > 0 ? '#fbbf24' : 'var(--accent-green)';
+    // 2. Свободная касса овнера (Safe Cash = Касса минус ВСЕ обязательства)
+    const isDeficit = safeCash < 0;
+    if (elTopSafe) {
+      elTopSafe.textContent = `${safeCash >= 0 ? '+' : '-'}$${Math.abs(safeCash).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      elTopSafe.style.color = isDeficit ? 'var(--accent-rose)' : '#38bdf8';
     }
-    if (elEscrowSub) {
-      if (escrowDue > 0) {
-        elEscrowSub.textContent = `Обязательства по ЗП: $${Math.round(escrowDue).toLocaleString()}`;
+    if (elTopSafeSub) {
+      if (cashBalance <= 0) {
+        elTopSafeSub.textContent = 'Касса пуста: ожидание зачислений';
+        elTopSafeSub.style.color = 'var(--text-muted)';
+      } else if (!isDeficit) {
+        elTopSafeSub.textContent = '🟢 Доступно к выводу без риска разрыва';
+        elTopSafeSub.style.color = 'var(--accent-green)';
       } else {
-        elEscrowSub.textContent = `Текущие выплаты закрыты`;
+        elTopSafeSub.textContent = `🚨 Дефицит -$${Math.abs(Math.round(safeCash)).toLocaleString()}! Не выводить дивиденды`;
+        elTopSafeSub.style.color = 'var(--accent-rose)';
       }
     }
 
-    // 3. Свободная касса овнера (Safe Cash: Касса минус Подрядчики)
-    const contractorsDue = totalContractorsRemaining || 0;
-    let safeCash = 0;
-    let isDeficit = false;
-
-    if (cashBalance <= 0) {
-      safeCash = 0;
-      isDeficit = false;
-    } else {
-      safeCash = cashBalance - contractorsDue;
-      isDeficit = safeCash < 0;
+    // 3. Начисленные обязательства (Модели + Чаттеры + Подрядчики)
+    if (elTopObligations) {
+      elTopObligations.textContent = `$${totalObligations.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      elTopObligations.style.color = totalObligations > 0 ? '#fbbf24' : 'var(--accent-green)';
+    }
+    if (elTopObligationsSub) {
+      elTopObligationsSub.textContent = `Модели: $${Math.round(modelRem).toLocaleString()} | Чаттеры: $${Math.round(chatterRem).toLocaleString()} | Подрядчики: $${Math.round(contractorsRem).toLocaleString()}`;
     }
 
-    if (elSafeCash) {
-      elSafeCash.textContent = `$${safeCash.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-      elSafeCash.style.color = isDeficit ? 'var(--accent-rose)' : '#34d399';
+    // 4. Деньги в пути (Транзит OnlyFans / Paxum -> Bybit)
+    if (elTopTransit) {
+      const savedInTransit = localStorage.getItem('mirrors_in_transit_amount');
+      const transitVal = savedInTransit !== null ? parseFloat(savedInTransit) : 2450.00;
+      elTopTransit.textContent = `$${transitVal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
     }
     if (elSafeCashSub) {
       if (cashBalance <= 0) {
@@ -2034,13 +2070,9 @@ export function initFinanceModule() {
 
   let userOverrodePayout = false;
 
-  function renderRunwayAlert(cashBalance, escrowData, totalContractorsRemaining) {
+  function renderRunwayAlert(cashBalance, totalObligations = 0, contractorsDue = 0, modelRem = 0, chatterRem = 0) {
     const alertContainer = document.getElementById('fin-runway-alert');
     if (!alertContainer) return;
-
-    // Реальный остаток к выплате подрядчикам с учетом уже внесенных авансов/траншей
-    const contractorsDue = totalContractorsRemaining !== undefined ? totalContractorsRemaining : 0;
-    const totalObligations = contractorsDue;
 
     // Спокойное нейтральное состояние при нулевой кассе
     if (cashBalance <= 0) {
@@ -2078,7 +2110,8 @@ export function initFinanceModule() {
               </div>
               <div style="font-size: 12px; color: var(--text-muted); margin-top: 3px;">
                 В кассе на Bybit: <strong style="color: var(--text-main); font-family: var(--font-mono);">$${cashBalance.toLocaleString('en-US', { minimumFractionDigits: 2 })}</strong> | 
-                Подрядчики к доплате: <strong style="color: var(--primary); font-family: var(--font-mono);">$${contractorsDue.toLocaleString()}</strong>
+                Все обязательства: <strong style="color: #fbbf24; font-family: var(--font-mono);">$${totalObligations.toLocaleString()}</strong> 
+                (Модели: $${Math.round(modelRem).toLocaleString()}, Чаттеры: $${Math.round(chatterRem).toLocaleString()}, Подрядчики: $${Math.round(contractorsDue).toLocaleString()})
               </div>
             </div>
           </div>
@@ -2587,7 +2620,7 @@ export function initFinanceModule() {
       `;
     }
 
-    // Таблица по Анкетам
+    // Таблица по Анкетам: Модели и Чаттеры проверяются РАЗДЕЛЬНО
     if (tbodyModels) {
       const rowsHtml = auditData.models.map(m => `
         <tr>
@@ -2595,17 +2628,14 @@ export function initFinanceModule() {
           <td style="font-family: var(--font-mono); font-weight: 700; color: var(--accent-green); font-size: 13px;">$${m.earned.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
           <td style="font-family: var(--font-mono); font-size: 13px; color: #ec4899;">$${m.modelPlan.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
           <td style="font-family: var(--font-mono); font-size: 13px; color: ${m.modelPaid > 0 ? 'var(--text-main)' : 'var(--text-dim)'};">$${m.modelPaid.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
+          <td>${m.modelStatusBadge}</td>
           <td style="font-family: var(--font-mono); font-size: 13px; color: #a855f7;">$${m.chatterPlan.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
           <td style="font-family: var(--font-mono); font-size: 13px; color: ${m.chatterPaid > 0 ? 'var(--text-main)' : 'var(--text-dim)'};">$${m.chatterPaid.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
+          <td>${m.chatterStatusBadge}</td>
           <td style="font-family: var(--font-mono); font-size: 13px; color: var(--primary);">$${m.agencyShare.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
-          <td style="font-family: var(--font-mono); font-size: 12px; font-weight: 700; color: ${m.teamDelta > 5 ? 'var(--accent-rose)' : 'var(--text-muted)'};">
-            ${m.teamDelta > 0 ? '+' : ''}$${m.teamDelta.toFixed(2)}
-          </td>
-          <td>${m.statusBadge}</td>
         </tr>
       `).join('');
 
-      const totalDeltaAll = (auditData.totalModelPaidAll + auditData.totalChatterPaidAll) - (auditData.totalModelPlanAll + auditData.totalChatterPlanAll);
       const totalEarnedAll = auditData.models.reduce((s, m) => s + m.earned, 0);
 
       const totalRowHtml = `
@@ -2614,13 +2644,11 @@ export function initFinanceModule() {
           <td style="font-family: var(--font-mono); color: var(--accent-green); font-size: 14px;">$${totalEarnedAll.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
           <td style="font-family: var(--font-mono); color: #ec4899; font-size: 14px;">$${auditData.totalModelPlanAll.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
           <td style="font-family: var(--font-mono); font-size: 14px;">$${auditData.totalModelPaidAll.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
+          <td>${auditData.modelOverpaidAmount > 0 ? `<span style="font-size: 11px; color: var(--accent-rose); font-weight: 700;">🔴 Переплата +$${auditData.modelOverpaidAmount.toFixed(0)}</span>` : `<span style="font-size: 11px; color: var(--accent-green); font-weight: 700;">🟢 Сходится</span>`}</td>
           <td style="font-family: var(--font-mono); color: #a855f7; font-size: 14px;">$${auditData.totalChatterPlanAll.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
           <td style="font-family: var(--font-mono); font-size: 14px;">$${auditData.totalChatterPaidAll.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
+          <td>${auditData.chatterOverpaidAmount > 0 ? `<span style="font-size: 11px; color: var(--accent-rose); font-weight: 700;">🔴 Переплата +$${auditData.chatterOverpaidAmount.toFixed(0)}</span>` : `<span style="font-size: 11px; color: var(--accent-green); font-weight: 700;">🟢 Сходится</span>`}</td>
           <td style="font-family: var(--font-mono); color: var(--primary); font-size: 14px;">$${auditData.totalAgencyShareAll.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
-          <td style="font-family: var(--font-mono); font-size: 12px; color: ${totalDeltaAll > 5 ? 'var(--accent-rose)' : 'var(--accent-green)'};">
-            ${totalDeltaAll > 0 ? '+' : ''}$${totalDeltaAll.toFixed(2)}
-          </td>
-          <td><span style="font-size: 11px; color: var(--accent-green); font-weight: 700;">🟢 Сверка: Ок</span></td>
         </tr>
       `;
 
@@ -2782,33 +2810,41 @@ export function initFinanceModule() {
     // Подрядчики: расчет статуса оплат (100% / 50% / 0%)
     const contractorsStatus = renderContractorsRunway(txs);
 
-    renderKPIs(metrics, cashBalance, escrowData, contractorsStatus?.totalContractorsRemaining);
+    // Сверка выплат: План vs Факт (расчет долгов моделям и чаттерам)
+    const payrollAudit = manager.calculatePayrollAudit(manager.selectedPeriod, txs);
+    renderPayrollAudit(payrollAudit);
+
+    // ЕДИНЫЙ РАСЧЕТ ВСЕХ ОБЯЗАТЕЛЬСТВ (Модели + Чаттеры + Подрядчики)
+    const modelRem = payrollAudit?.totalModelRemainingAll || 0;
+    const chatterRem = payrollAudit?.totalChatterRemainingAll || 0;
+    const contractorsRem = contractorsStatus?.totalContractorsRemaining || 0;
+    const totalObligations = modelRem + chatterRem + contractorsRem;
+    const safeCash = cashBalance - totalObligations;
+
+    // Рендерим топ-бар с подсвеченной кассой
+    renderKPIs(metrics, cashBalance, totalObligations, safeCash, modelRem, chatterRem, contractorsRem);
+
     renderBudgets(budgets);
     renderUnitEconomics(txs, manager.selectedPeriod);
     renderTransactionsTable(txs);
     renderCharts(txs);
     
-    // Новые блоки для Овнера: Сверка Кассы, Сверка Анкет и Аналитика Расходов
+    // Сверка Кассы и Аналитика Расходов
     const cashReconciliation = manager.calculateCashReconciliation(
       txs, 
       cashBalance, 
-      contractorsStatus?.totalContractorsRemaining, 
-      escrowData?.totalEscrowRemaining
+      totalObligations,
+      0
     );
     const modelReconciliation = manager.calculateModelEarningsReconciliation(manager.selectedPeriod, txs);
     const detailedExpenses = manager.calculateDetailedExpenses(txs);
 
     renderCashReconciliation(cashReconciliation);
     renderModelEarningsReconciliation(modelReconciliation, manager.selectedPeriod);
-    
-    // Сверка выплат: План vs Факт
-    const payrollAudit = manager.calculatePayrollAudit(manager.selectedPeriod, txs);
-    renderPayrollAudit(payrollAudit);
-
     renderDetailedExpenses(detailedExpenses);
 
     // Показ индикатора кассового разрыва и безопасного Runway
-    renderRunwayAlert(cashBalance, escrowData, contractorsStatus?.totalContractorsRemaining);
+    renderRunwayAlert(cashBalance, totalObligations, contractorsRem, modelRem, chatterRem);
   }
 
   // Initial Run

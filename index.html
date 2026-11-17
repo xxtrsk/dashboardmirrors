@@ -387,6 +387,73 @@
         </div>
       </div>
 
+      <!-- TOP EXECUTIVE CASH & LIQUIDITY BAR (МАКСИМАЛЬНО ПОДСВЕЧЕННАЯ КАССА) -->
+      <div class="grid-summary" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 16px; margin-bottom: 24px;">
+        <!-- 1. ФАКТИЧЕСКИ В КАССЕ (НА РУКАХ) -->
+        <div class="glass-card" style="padding: 22px; border-left: 5px solid #10b981; background: linear-gradient(135deg, rgba(16, 185, 129, 0.14) 0%, rgba(16, 185, 129, 0.04) 100%); box-shadow: 0 8px 24px rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.35);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <span style="font-size: 11px; font-weight: 800; letter-spacing: 0.07em; text-transform: uppercase; color: #34d399;">
+              💵 ФАКТИЧЕСКИ В КАССЕ (НА РУКАХ)
+            </span>
+            <span style="font-size: 22px;">🏦</span>
+          </div>
+          <div id="fin-top-cash-balance" style="font-size: 34px; font-weight: 900; font-family: var(--font-heading); color: #34d399; line-height: 1.1; margin-bottom: 6px; text-shadow: 0 0 20px rgba(52, 211, 153, 0.35);">
+            $0.00
+          </div>
+          <div style="font-size: 12px; color: #cbd5e1; font-weight: 500;">
+            Фактически на счетах (Bybit USDT + Paxum)
+          </div>
+        </div>
+
+        <!-- 2. СВОБОДНАЯ КАССА ОВНЕРА (SAFE CASH) -->
+        <div class="glass-card" style="padding: 22px; border-left: 5px solid var(--primary); background: rgba(56, 189, 248, 0.06); border: 1px solid rgba(56, 189, 248, 0.25);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <span style="font-size: 11px; font-weight: 800; letter-spacing: 0.07em; text-transform: uppercase; color: var(--primary);">
+              🟢 СВОБОДНАЯ КАССА (SAFE CASH)
+            </span>
+            <span style="font-size: 22px;">🛡️</span>
+          </div>
+          <div id="fin-top-safe-cash" style="font-size: 34px; font-weight: 900; font-family: var(--font-heading); color: #38bdf8; line-height: 1.1; margin-bottom: 6px;">
+            $0.00
+          </div>
+          <div id="fin-top-safe-cash-sub" style="font-size: 11px; color: #cbd5e1;">
+            Касса минус ВСЕ начисленные обязательства
+          </div>
+        </div>
+
+        <!-- 3. НАЧИСЛЕННЫЕ ОБЯЗАТЕЛЬСТВА (К ВЫПЛАТЕ) -->
+        <div class="glass-card" style="padding: 22px; border-left: 5px solid #fbbf24; background: rgba(251, 191, 36, 0.06); border: 1px solid rgba(251, 191, 36, 0.25);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <span style="font-size: 11px; font-weight: 800; letter-spacing: 0.07em; text-transform: uppercase; color: #fbbf24;">
+              🔒 ВСЕ ОБЯЗАТЕЛЬСТВА (ДОЛГИ)
+            </span>
+            <span style="font-size: 22px;">📑</span>
+          </div>
+          <div id="fin-top-obligations" style="font-size: 34px; font-weight: 900; font-family: var(--font-heading); color: #fbbf24; line-height: 1.1; margin-bottom: 6px;">
+            $0.00
+          </div>
+          <div id="fin-top-obligations-sub" style="font-size: 11px; color: #cbd5e1;">
+            Модели + Чаттеры + Подрядчики
+          </div>
+        </div>
+
+        <!-- 4. ДЕНЬГИ В ПУТИ (ТРАНЗИТ) -->
+        <div class="glass-card" style="padding: 22px; border-left: 5px solid #a855f7; background: rgba(168, 85, 247, 0.06); border: 1px solid rgba(168, 85, 247, 0.25);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <span style="font-size: 11px; font-weight: 800; letter-spacing: 0.07em; text-transform: uppercase; color: #c084fc;">
+              🚀 ДЕНЬГИ В ПУТИ (ТРАНЗИТ)
+            </span>
+            <span style="font-size: 22px;">⏳</span>
+          </div>
+          <div id="fin-top-transit" style="font-size: 34px; font-weight: 900; font-family: var(--font-heading); color: #c084fc; line-height: 1.1; margin-bottom: 6px;">
+            $0.00
+          </div>
+          <div style="font-size: 11px; color: #cbd5e1;">
+            Ожидает зачисления OnlyFans / Fansly ➔ Bybit
+          </div>
+        </div>
+      </div>
+
 
       <!-- 1. Сверка Кассы (Proof of Cash & Reconciliation) -->
       <div class="glass-card" style="padding: 22px; margin-bottom: 24px; border-left: 4px solid var(--accent-green); background: rgba(16, 185, 129, 0.03);">
@@ -517,14 +584,14 @@
             <thead>
               <tr>
                 <th>Анкета / Источник</th>
-                <th>Заработано Net ($)</th>
-                <th style="color: #ec4899;">Модель: Доля ($)</th>
+                <th>Заработано Platform Net ($)</th>
+                <th style="color: #ec4899;">Модель: План ($)</th>
                 <th style="color: #ec4899;">Модель: Факт ($)</th>
-                <th style="color: #a855f7;">Чаттеры: Фонд 20% ($)</th>
+                <th>Статус Модели</th>
+                <th style="color: #a855f7;">Чаттеры: План 20% ($)</th>
                 <th style="color: #a855f7;">Чаттеры: Факт ($)</th>
-                <th style="color: var(--primary);">Доля Агентства ($)</th>
-                <th>Дельта выплат</th>
-                <th>Контроль / Статус</th>
+                <th>Статус Чаттеров</th>
+                <th style="color: var(--primary);">Вклад Агентства ($)</th>
               </tr>
             </thead>
             <tbody id="fin-tbody-audit-models">
