@@ -1378,78 +1378,266 @@ export function initFinanceModule() {
     });
   }
 
-  function renderUnitEconomics(txs) {
+  function renderUnitEconomics(txs, selectedPeriod = manager?.selectedPeriod || 'all') {
     const tbody = document.getElementById('fin-tbody-unit-economics');
-    if (!tbody) return;
+    const matrixContainer = document.getElementById('fin-matrix-container');
 
+    const matrixModels = [
+      { id: 'sunnery', name: 'Lolly (Lollysunnery)', shortName: 'Lollysunnery', matchKeys: ['sunnery', 'lollysunnery', '39856'] },
+      { id: 'blush', name: 'Eva Blush', shortName: 'Eva Blush', matchKeys: ['blush', 'eva blush', '48123'] },
+      { id: '1lolly', name: 'Lolly (1lollyhere)', shortName: '1lollyhere', matchKeys: ['1lolly', '1lollyhere', '47892'] },
+      { id: 'fansly', name: 'Eva Pinky (Fansly)', shortName: 'Eva Fansly', matchKeys: ['fansly', 'eva pinky'] },
+      { id: 'lila', name: 'Lila (angelkiss)', shortName: 'Lila', matchKeys: ['lila', 'angelkiss', '49015'] }
+    ];
+
+    // Получаем точные данные о доходах по анкетам из CRM и транзакций
+    const modelRec = manager.calculateModelEarningsReconciliation(selectedPeriod, txs);
+    const modelRecMap = {};
+    if (modelRec && modelRec.models) {
+      modelRec.models.forEach(m => {
+        modelRecMap[m.name] = m;
+      });
+    }
+
+    // Собираем прямые и общие статьи расходов
     const stats = {};
-    FINANCE_MODELS.forEach(m => {
-      stats[m] = { income: 0, traffic: 0, chatters: 0, modelDue: 0, fees: 0, opex: 0 };
+    matrixModels.forEach(m => {
+      const rec = modelRecMap[m.name];
+      const earned = rec ? Number(rec.totalEarned) || 0 : 0;
+      stats[m.name] = {
+        meta: m,
+        earned: earned,
+        costsModel: earned * 0.25,
+        costsOperators: earned * 0.20,
+        costsMarketing: 0,
+        costsFees: 0,
+        agencyCosts: 0,
+        adminCosts: 0,
+        costsAll: 0,
+        gmp: 0,
+        gmpPct: 0
+      };
     });
 
+    let totalAgencyOverhead = 0;
+    let totalAdminOverhead = 0;
+
     txs.forEach(t => {
-      const model = t.model || 'Agency Core (Общие)';
-      if (!stats[model]) {
-        stats[model] = { income: 0, traffic: 0, chatters: 0, modelDue: 0, fees: 0, opex: 0 };
-      }
       const amt = Number(t.amount) || 0;
       if (t.type === 'Доход') {
-        stats[model].income += amt;
-      } else {
+        const tModel = t.model || '';
+        const target = matrixModels.find(m => m.name === tModel || m.matchKeys.some(k => tModel.toLowerCase().includes(k)));
+        if (target && stats[target.name].earned === 0) {
+          stats[target.name].earned += amt;
+          stats[target.name].costsModel = stats[target.name].earned * 0.25;
+          stats[target.name].costsOperators = stats[target.name].earned * 0.20;
+        }
+      } else if (t.type === 'Расход') {
         const cat = (t.category || '').toLowerCase();
         const desc = (t.desc || '').toLowerCase();
+        const tModel = t.model || '';
+        const target = matrixModels.find(m => m.name === tModel || m.matchKeys.some(k => tModel.toLowerCase().includes(k) || desc.includes(k)));
+
         if (cat.startsWith('трафик')) {
-          stats[model].traffic += amt;
+          if (target) {
+            stats[target.name].costsMarketing += amt;
+          } else {
+            totalAgencyOverhead += amt;
+          }
         } else if (cat.includes('комисси') || cat.includes('вывод') || desc.includes('комисси') || desc.includes('вывод') || desc.includes('paxum') || desc.includes('bybit')) {
-          stats[model].fees += amt;
-        } else if (!cat.includes('модел') && !cat.includes('чаттер')) {
-          stats[model].opex += amt;
+          if (target) {
+            stats[target.name].costsFees += amt;
+          } else {
+            totalAgencyOverhead += amt;
+          }
+        } else if (cat.includes('софт') || cat.includes('monster') || cat.includes('монстр') || cat.includes('прочие') || tModel.includes('Agency Core') || tModel.includes('Общие')) {
+          totalAgencyOverhead += amt;
+        } else if (cat.includes('зарплаты команды') || cat.includes('админ') || desc.includes('роп') || desc.includes('админ')) {
+          totalAdminOverhead += amt;
+        } else if (target) {
+          stats[target.name].costsMarketing += amt;
+        } else {
+          totalAgencyOverhead += amt;
         }
       }
     });
 
-    // Начисление себестоимости по моделям: 25% доля модели, 20% чаттеры
-    Object.keys(stats).forEach(m => {
-      if (m !== 'Agency Core (Общие)') {
-        stats[m].modelDue = stats[m].income * 0.25;
-        stats[m].chatters = stats[m].income * 0.20;
-      }
+    // Сплит общих расходов агентства (Agency costs USDT) и админских поровну на 5 анкет (точно как на Скрине 3!)
+    const modelCount = matrixModels.length;
+    const agencyPerModel = modelCount > 0 ? totalAgencyOverhead / modelCount : 0;
+    const adminPerModel = modelCount > 0 ? totalAdminOverhead / modelCount : 0;
+
+    // Итоговые расчеты по каждой анкете
+    matrixModels.forEach(m => {
+      const s = stats[m.name];
+      s.agencyCosts = agencyPerModel;
+      s.adminCosts = adminPerModel;
+      s.costsAll = s.costsModel + s.costsOperators + s.costsMarketing + s.costsFees + s.agencyCosts + s.adminCosts;
+      s.gmp = s.earned - s.costsAll;
+      s.costsAllPct = s.earned > 0 ? (s.costsAll / s.earned) * 100 : 0;
+      s.gmpPct = s.earned > 0 ? (s.gmp / s.earned) * 100 : 0;
     });
 
-    // Сортировка: Profitability Ranking (от самой прибыльной к слабой)
-    const ranked = Object.entries(stats).map(([model, data]) => {
-      const net = data.income - (data.traffic + data.chatters + data.modelDue + data.fees + data.opex);
-      const margin = data.income > 0 ? (net / data.income) * 100 : 0;
-      const roi = data.traffic > 0 ? (data.income / data.traffic) : 0;
-      return { model, ...data, net, margin, roi };
-    }).sort((a, b) => b.net - a.net);
+    // Итого по всему агентству (TOTAL)
+    const totalAgency = {
+      earned: Object.values(stats).reduce((acc, s) => acc + s.earned, 0),
+      costsModel: Object.values(stats).reduce((acc, s) => acc + s.costsModel, 0),
+      costsOperators: Object.values(stats).reduce((acc, s) => acc + s.costsOperators, 0),
+      costsMarketing: Object.values(stats).reduce((acc, s) => acc + s.costsMarketing, 0),
+      costsFees: Object.values(stats).reduce((acc, s) => acc + s.costsFees, 0),
+      agencyCosts: totalAgencyOverhead,
+      adminCosts: totalAdminOverhead,
+      costsAll: Object.values(stats).reduce((acc, s) => acc + s.costsAll, 0),
+      gmp: 0,
+      costsAllPct: 0,
+      gmpPct: 0
+    };
+    totalAgency.gmp = totalAgency.earned - totalAgency.costsAll;
+    totalAgency.costsAllPct = totalAgency.earned > 0 ? (totalAgency.costsAll / totalAgency.earned) * 100 : 0;
+    totalAgency.gmpPct = totalAgency.earned > 0 ? (totalAgency.gmp / totalAgency.earned) * 100 : 0;
 
-    const medals = ['🥇 #1', '🥈 #2', '🥉 #3'];
+    // 1. РЕНДЕРИНГ СВОДНОЙ МАТРИЦЫ (Скриншот 3 - 1-в-1 как в старой таблице!)
+    if (matrixContainer) {
+      const formatUsd = (num, digits = 2) => `$${Number(num || 0).toLocaleString('en-US', { minimumFractionDigits: digits, maximumFractionDigits: digits })}`;
+      
+      const renderRow = (label, agencyVal, modelExtractor, options = {}) => {
+        const isBold = options.isBold || false;
+        const isHighlight = options.isHighlight || false;
+        const isGmp = options.isGmp || false;
+        const isPct = options.isPct || false;
+        const customColor = options.color || 'var(--text-main)';
+        const bg = isGmp ? 'rgba(52, 211, 153, 0.06)' : (isHighlight ? 'rgba(244, 63, 94, 0.04)' : 'transparent');
+        const borderTop = isGmp ? '2px solid rgba(255, 255, 255, 0.2)' : (isHighlight ? '1px solid rgba(255, 255, 255, 0.15)' : '1px solid var(--border-color)');
 
-    tbody.innerHTML = ranked.map((d, idx) => {
-      const rankBadge = idx < 3 ? medals[idx] : `#${idx + 1}`;
-      const netColor = d.net >= 0 ? 'var(--accent-green)' : 'var(--accent-rose)';
-      const marginBadge = d.income > 0 
-        ? `<span style="padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 700; background: ${d.margin >= 30 ? 'rgba(52, 211, 153, 0.15)' : (d.margin > 0 ? 'rgba(251, 191, 36, 0.15)' : 'rgba(248, 113, 113, 0.15)')}; color: ${d.margin >= 30 ? 'var(--accent-green)' : (d.margin > 0 ? 'var(--accent-amber)' : 'var(--accent-rose)')};">${d.margin.toFixed(1)}%</span>`
-        : '—';
-      const roiText = d.roi > 0 ? `${d.roi.toFixed(2)}x` : '—';
+        return `
+          <tr style="background: ${bg}; border-top: ${borderTop};">
+            <td style="position: sticky; left: 0; background: #0f172a; z-index: 2; border-right: 1px solid var(--border-color); font-weight: ${isBold ? '800' : '600'}; color: ${isBold ? 'var(--text-main)' : 'var(--text-secondary)'}; font-size: 13px; padding: 10px 14px; white-space: nowrap;">
+              ${label}
+            </td>
+            <td style="background: rgba(56, 189, 248, 0.10); border-left: 2px solid var(--primary); border-right: 2px solid var(--primary); font-family: var(--font-mono); font-weight: 800; font-size: ${isGmp ? '15px' : '13px'}; text-align: right; color: ${isGmp ? (agencyVal >= 0 ? 'var(--accent-green)' : 'var(--accent-rose)') : customColor}; padding: 10px 14px;">
+              ${isPct ? `${agencyVal.toFixed(1)}%` : formatUsd(agencyVal, isGmp ? 0 : 2)}
+            </td>
+            ${matrixModels.map(m => {
+              const val = modelExtractor(stats[m.name]);
+              let cellColor = customColor;
+              if (isGmp) {
+                cellColor = val >= 0 ? 'var(--accent-green)' : 'var(--accent-rose)';
+              }
+              return `
+                <td style="font-family: var(--font-mono); font-weight: ${isBold ? '800' : '500'}; font-size: ${isGmp ? '14px' : '12px'}; text-align: right; color: ${cellColor}; padding: 10px 14px;">
+                  ${isPct ? (stats[m.name].earned > 0 ? `${val.toFixed(1)}%` : '—') : formatUsd(val, isGmp ? 0 : 2)}
+                </td>
+              `;
+            }).join('')}
+          </tr>
+        `;
+      };
 
-      return `
-        <tr>
-          <td style="font-family: var(--font-mono); font-weight: 800; font-size: 12px; color: ${idx === 0 ? 'var(--accent-green)' : 'var(--text-muted)'};">${rankBadge}</td>
-          <td style="font-weight: 700; color: var(--text-main); font-size: 13px;">${d.model}</td>
-          <td style="font-family: var(--font-mono); color: var(--accent-green); font-weight: 600;">$${d.income.toLocaleString()}</td>
-          <td style="font-family: var(--font-mono); color: var(--accent-rose);">$${d.traffic.toLocaleString()}</td>
-          <td style="font-family: var(--font-mono); color: #38bdf8;">$${Math.round(d.chatters).toLocaleString()}</td>
-          <td style="font-family: var(--font-mono); color: #fbbf24;">$${Math.round(d.modelDue).toLocaleString()}</td>
-          <td style="font-family: var(--font-mono); color: var(--accent-rose);">$${d.fees.toLocaleString()}</td>
-          <td style="font-family: var(--font-mono); color: var(--text-muted);">$${d.opex.toLocaleString()}</td>
-          <td style="font-family: var(--font-mono); font-weight: 800; color: ${netColor}; font-size: 14px;">$${Math.round(d.net).toLocaleString()}</td>
-          <td>${marginBadge}</td>
-          <td style="font-family: var(--font-mono); font-weight: 700; color: ${d.roi >= 2 ? 'var(--accent-green)' : 'var(--text-muted)'};">${roiText}</td>
-        </tr>
+      matrixContainer.innerHTML = `
+        <table class="data-table" style="min-width: 960px; border-collapse: separate; border-spacing: 0;">
+          <thead>
+            <tr style="background: rgba(15, 23, 42, 0.95);">
+              <th style="position: sticky; left: 0; background: #0f172a; z-index: 3; min-width: 250px; font-size: 13px; font-weight: 800; border-right: 1px solid var(--border-color); padding: 12px 14px;">
+                Статья затрат / Метрика
+              </th>
+              <th style="min-width: 170px; background: rgba(56, 189, 248, 0.15); color: var(--primary); font-weight: 800; font-size: 13px; border-left: 2px solid var(--primary); border-right: 2px solid var(--primary); text-align: right; padding: 12px 14px;">
+                🏢 ВСЕ АГЕНТСТВО
+              </th>
+              ${matrixModels.map(m => `
+                <th style="min-width: 140px; text-align: right; font-size: 13px; color: var(--text-main); font-weight: 700; padding: 12px 14px;">
+                  ${m.shortName}
+                </th>
+              `).join('')}
+            </tr>
+          </thead>
+          <tbody>
+            ${renderRow('💵 Заработано на странице', totalAgency.earned, s => s.earned, { isBold: true, color: 'var(--accent-green)' })}
+            ${renderRow('👑 Costs model (Выплата 25%)', totalAgency.costsModel, s => s.costsModel, { color: '#ec4899' })}
+            ${renderRow('💬 Costs operators (Чаттеры 20%)', totalAgency.costsOperators, s => s.costsOperators, { color: '#a855f7' })}
+            ${renderRow('🎯 Costs marketing (Трафик)', totalAgency.costsMarketing, s => s.costsMarketing, { color: 'var(--accent-rose)' })}
+            ${renderRow('💳 Costs withdraw fee (Комиссия вывода)', totalAgency.costsFees, s => s.costsFees, { color: 'var(--accent-amber)' })}
+            ${renderRow('🏢 Agency costs USDT (Опекс/софт сплит)', totalAgency.agencyCosts, s => s.agencyCosts, { color: 'var(--text-muted)' })}
+            ${renderRow('👔 Admin (Административные расходы)', totalAgency.adminCosts, s => s.adminCosts, { color: '#38bdf8' })}
+            ${renderRow('📉 Costs all $ (ИТОГО РАСХОДОВ)', totalAgency.costsAll, s => s.costsAll, { isBold: true, isHighlight: true, color: 'var(--text-main)' })}
+            ${renderRow('📊 Costs all % (Доля расходов)', totalAgency.costsAllPct, s => s.costsAllPct, { isBold: true, isPct: true, color: 'var(--text-muted)' })}
+            ${renderRow('🏆 GMP $ (Gross Margin Profit)', totalAgency.gmp, s => s.gmp, { isBold: true, isGmp: true })}
+            ${renderRow('📈 GMP % (Маржинальность)', totalAgency.gmpPct, s => s.gmpPct, { isBold: true, isPct: true, color: totalAgency.gmpPct >= 30 ? 'var(--accent-green)' : 'var(--accent-amber)' })}
+          </tbody>
+        </table>
       `;
-    }).join('');
+    }
+
+    // 2. РЕНДЕРИНГ ТАБЛИЦЫ РЕЙТИНГА (Если пользователь переключил на Лидерборд)
+    if (tbody) {
+      const ranked = Object.entries(stats).map(([model, data]) => {
+        return { model, ...data, net: data.gmp, margin: data.gmpPct, roi: data.costsMarketing > 0 ? (data.earned / data.costsMarketing) : 0 };
+      }).sort((a, b) => b.net - a.net);
+
+      const medals = ['🥇 #1', '🥈 #2', '🥉 #3'];
+
+      tbody.innerHTML = ranked.map((d, idx) => {
+        const rankBadge = idx < 3 ? medals[idx] : `#${idx + 1}`;
+        const netColor = d.net >= 0 ? 'var(--accent-green)' : 'var(--accent-rose)';
+        const marginBadge = d.earned > 0 
+          ? `<span style="padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 700; background: ${d.margin >= 30 ? 'rgba(52, 211, 153, 0.15)' : (d.margin > 0 ? 'rgba(251, 191, 36, 0.15)' : 'rgba(248, 113, 113, 0.15)')}; color: ${d.margin >= 30 ? 'var(--accent-green)' : (d.margin > 0 ? 'var(--accent-amber)' : 'var(--accent-rose)')};">${d.margin.toFixed(1)}%</span>`
+          : '—';
+        const roiText = d.roi > 0 ? `${d.roi.toFixed(2)}x` : '—';
+
+        return `
+          <tr>
+            <td style="font-family: var(--font-mono); font-weight: 800; font-size: 12px; color: ${idx === 0 ? 'var(--accent-green)' : 'var(--text-muted)'};">${rankBadge}</td>
+            <td style="font-weight: 700; color: var(--text-main); font-size: 13px;">${d.meta.shortName}</td>
+            <td style="font-family: var(--font-mono); color: var(--accent-green); font-weight: 600;">$${Math.round(d.earned).toLocaleString()}</td>
+            <td style="font-family: var(--font-mono); color: var(--accent-rose);">$${Math.round(d.costsMarketing).toLocaleString()}</td>
+            <td style="font-family: var(--font-mono); color: #38bdf8;">$${Math.round(d.costsOperators).toLocaleString()}</td>
+            <td style="font-family: var(--font-mono); color: #fbbf24;">$${Math.round(d.costsModel).toLocaleString()}</td>
+            <td style="font-family: var(--font-mono); color: var(--accent-amber);">$${Math.round(d.costsFees).toLocaleString()}</td>
+            <td style="font-family: var(--font-mono); color: var(--text-muted);">$${Math.round(d.agencyCosts).toLocaleString()}</td>
+            <td style="font-family: var(--font-mono); font-weight: 800; color: ${netColor}; font-size: 14px;">$${Math.round(d.net).toLocaleString()}</td>
+            <td>${marginBadge}</td>
+            <td style="font-family: var(--font-mono); font-weight: 700; color: ${d.roi >= 2 ? 'var(--accent-green)' : 'var(--text-muted)'};">${roiText}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // Слушатели переключения вида (Матрица / Рейтинг)
+    const btnMatrix = document.getElementById('btn-view-matrix');
+    const btnRanking = document.getElementById('btn-view-ranking');
+    const containerMatrix = document.getElementById('fin-matrix-container');
+    const containerRanking = document.getElementById('fin-ranking-container');
+
+    if (btnMatrix && btnRanking && containerMatrix && containerRanking) {
+      btnMatrix.onclick = () => {
+        btnMatrix.classList.add('active');
+        btnMatrix.style.background = 'rgba(56, 189, 248, 0.25)';
+        btnMatrix.style.color = 'var(--primary)';
+        btnMatrix.style.border = '1px solid var(--primary)';
+
+        btnRanking.classList.remove('active');
+        btnRanking.style.background = 'transparent';
+        btnRanking.style.color = 'var(--text-muted)';
+        btnRanking.style.border = '1px solid transparent';
+
+        containerMatrix.style.display = 'block';
+        containerRanking.style.display = 'none';
+      };
+
+      btnRanking.onclick = () => {
+        btnRanking.classList.add('active');
+        btnRanking.style.background = 'rgba(56, 189, 248, 0.25)';
+        btnRanking.style.color = 'var(--primary)';
+        btnRanking.style.border = '1px solid var(--primary)';
+
+        btnMatrix.classList.remove('active');
+        btnMatrix.style.background = 'transparent';
+        btnMatrix.style.color = 'var(--text-muted)';
+        btnMatrix.style.border = '1px solid transparent';
+
+        containerRanking.style.display = 'block';
+        containerMatrix.style.display = 'none';
+      };
+    }
   }
 
   let selectedCategoryFilter = 'all';
@@ -1807,14 +1995,20 @@ export function initFinanceModule() {
     const deltaEl = document.getElementById('fin-reconcile-delta');
     const container = document.getElementById('fin-cash-reconciliation-container');
 
+    // Баланс, сохраненный овнером/Владом для сверки
+    const savedActualVal = localStorage.getItem('mirrors_actual_usdt_wallet');
+    const actualWalletVal = savedActualVal !== null ? parseFloat(savedActualVal) : rec.expectedCashBalance;
+    const deltaUsdt = actualWalletVal - rec.expectedCashBalance;
+    const isUsdtBalanced = Math.abs(deltaUsdt) < 0.01;
+
     if (badge) {
-      if (rec.isBalanced) {
-        badge.textContent = '🟢 Сходится 100%';
+      if (isUsdtBalanced) {
+        badge.textContent = '🟢 Сходится 100% (Без наёбки)';
         badge.style.background = 'rgba(52, 211, 153, 0.15)';
         badge.style.color = 'var(--accent-green)';
         badge.style.border = '1px solid rgba(52, 211, 153, 0.3)';
       } else {
-        badge.textContent = `🔴 Расхождение: ${rec.delta > 0 ? '+' : ''}$${rec.delta.toFixed(2)}`;
+        badge.textContent = `🔴 Расхождение: ${deltaUsdt > 0 ? '+' : ''}$${deltaUsdt.toFixed(2)}`;
         badge.style.background = 'rgba(239, 68, 68, 0.15)';
         badge.style.color = 'var(--accent-rose)';
         badge.style.border = '1px solid rgba(239, 68, 68, 0.3)';
@@ -1822,12 +2016,51 @@ export function initFinanceModule() {
     }
 
     if (deltaEl) {
-      deltaEl.textContent = `${rec.delta > 0 ? '+' : ''}$${rec.delta.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
-      deltaEl.style.color = rec.isBalanced ? 'var(--accent-green)' : 'var(--accent-rose)';
+      deltaEl.textContent = `${deltaUsdt > 0 ? '+' : ''}$${deltaUsdt.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+      deltaEl.style.color = isUsdtBalanced ? 'var(--accent-green)' : 'var(--accent-rose)';
     }
 
     if (container) {
       container.innerHTML = `
+        <!-- Таблица Сверки Кассы USDT (1-в-1 как в Скрине 1) -->
+        <div class="table-container scrollable-slider" style="margin-bottom: 16px; border: 1px solid rgba(16, 185, 129, 0.25); border-radius: 8px;">
+          <table class="data-table" style="min-width: 720px;">
+            <thead>
+              <tr style="background: rgba(16, 185, 129, 0.08);">
+                <th style="font-size: 13px;">Счет / Кошелек</th>
+                <th style="color: var(--accent-green); text-align: right; font-size: 13px;">Input (Всего зашло)</th>
+                <th style="color: var(--accent-rose); text-align: right; font-size: 13px;">Output (Всего ушло)</th>
+                <th style="color: var(--primary); text-align: right; font-size: 13px;">Баланс расчетный $</th>
+                <th style="text-align: right; font-size: 13px;">Факт в кошельке (Bybit) $</th>
+                <th style="text-align: right; font-size: 13px;">Расхождение (Дельта)</th>
+                <th style="font-size: 13px;">Контроль сходимости</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="font-weight: 800; color: var(--text-main); font-size: 13px;">💎 USDT (Bybit / Крипта)</td>
+                <td style="font-family: var(--font-mono); color: var(--accent-green); font-weight: 700; text-align: right;">+$${rec.inflow.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
+                <td style="font-family: var(--font-mono); color: var(--accent-rose); font-weight: 700; text-align: right;">-$${rec.outflow.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
+                <td style="font-family: var(--font-mono); color: var(--primary); font-weight: 800; font-size: 14px; text-align: right;">$${rec.expectedCashBalance.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
+                <td style="text-align: right;">
+                  <div style="display: inline-flex; align-items: center; gap: 6px;">
+                    <input id="fin-input-actual-usdt" type="number" step="0.01" value="${actualWalletVal.toFixed(2)}" style="width: 105px; padding: 4px 8px; font-family: var(--font-mono); font-weight: 700; background: #07090e; border: 1px solid var(--border-color); color: var(--text-main); border-radius: 4px; text-align: right;" />
+                    <button id="fin-btn-save-actual-usdt" class="btn-action btn-primary" style="padding: 4px 8px; font-size: 11px;" title="Сохранить факт кошелька">💾</button>
+                  </div>
+                </td>
+                <td style="font-family: var(--font-mono); font-weight: 800; font-size: 13px; color: ${isUsdtBalanced ? 'var(--accent-green)' : 'var(--accent-rose)'}; text-align: right;">
+                  ${deltaUsdt > 0 ? '+' : ''}$${deltaUsdt.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                </td>
+                <td>
+                  <span style="padding: 3px 10px; border-radius: 6px; font-size: 11px; font-weight: 700; background: ${isUsdtBalanced ? 'rgba(52, 211, 153, 0.15)' : 'rgba(239, 68, 68, 0.15)'}; color: ${isUsdtBalanced ? 'var(--accent-green)' : 'var(--accent-rose)'}; border: 1px solid ${isUsdtBalanced ? 'rgba(52, 211, 153, 0.3)' : 'rgba(239, 68, 68, 0.3)'};">
+                    ${isUsdtBalanced ? '🟢 100% Сходимость (Без наёбки)' : `🔴 Расхождение $${deltaUsdt.toFixed(2)}`}
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; margin-bottom: 14px;">
           <!-- 1. Поступления -->
           <div style="background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: var(--radius-sm); padding: 14px 16px;">
@@ -1893,14 +2126,26 @@ export function initFinanceModule() {
             <strong style="color: var(--text-main); font-weight: 800;">$${rec.expectedCashBalance.toFixed(2)} (Расчетная касса)</strong>
           </div>
           <div>
-            <span>Факт Bybit/Paxum: </span>
-            <strong style="color: var(--primary); font-weight: 800;">$${rec.actualCashBalance.toFixed(2)}</strong>
-            <span style="margin-left: 8px; font-weight: 700; color: ${rec.isBalanced ? 'var(--accent-green)' : 'var(--accent-rose)'};">
-              ${rec.isBalanced ? '✓ Дельта $0.00 (Сверка идеальна)' : `⚠️ Расхождение $${rec.delta.toFixed(2)}`}
+            <span>Факт Bybit: </span>
+            <strong style="color: var(--primary); font-weight: 800;">$${actualWalletVal.toFixed(2)}</strong>
+            <span style="margin-left: 8px; font-weight: 700; color: ${isUsdtBalanced ? 'var(--accent-green)' : 'var(--accent-rose)'};">
+              ${isUsdtBalanced ? '✓ Дельта $0.00 (Сверка идеальна)' : `⚠️ Расхождение ${deltaUsdt > 0 ? '+' : ''}$${deltaUsdt.toFixed(2)}`}
             </span>
           </div>
         </div>
       `;
+
+      // Привязка кнопки сохранения баланса кошелька
+      const btnSaveActual = document.getElementById('fin-btn-save-actual-usdt');
+      const inputActual = document.getElementById('fin-input-actual-usdt');
+      if (btnSaveActual && inputActual) {
+        btnSaveActual.onclick = () => {
+          const val = parseFloat(inputActual.value) || 0;
+          localStorage.setItem('mirrors_actual_usdt_wallet', val.toString());
+          showToast(`💾 Фактический баланс кошелька Bybit сохранен: $${val.toLocaleString()}`);
+          renderAll();
+        };
+      }
     }
   }
 
@@ -2356,7 +2601,7 @@ export function initFinanceModule() {
 
     renderKPIs(metrics, cashBalance, escrowData, contractorsStatus?.totalContractorsRemaining);
     renderBudgets(budgets);
-    renderUnitEconomics(txs);
+    renderUnitEconomics(txs, manager.selectedPeriod);
     renderTransactionsTable(txs);
     renderCharts(txs);
     

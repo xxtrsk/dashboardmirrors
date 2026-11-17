@@ -456,6 +456,64 @@
         </div>
       </div>
 
+      <!-- 2. Сводный P&L Дашборд по Анкетам (Скриншот 3: Unit-Экономика и GMP) -->
+      <div class="glass-card" style="margin-bottom: 24px; padding: 22px; border-left: 4px solid var(--primary); background: rgba(56, 189, 248, 0.02);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; flex-wrap: wrap; gap: 12px;">
+          <div>
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <h3 style="font-size: 18px; font-weight: 800; font-family: var(--font-heading); color: var(--text-main); margin: 0;">
+                📊 Сводный P&L Дашборд по Анкетам (Unit-Экономика)
+              </h3>
+              <span style="font-size: 11px; background: rgba(56, 189, 248, 0.15); color: var(--primary); padding: 3px 10px; border-radius: 12px; font-weight: 700; border: 1px solid rgba(56, 189, 248, 0.3);">
+                Сквозная матрица затрат и GMP
+              </span>
+            </div>
+            <p style="font-size: 12px; color: var(--text-muted); margin: 4px 0 0 0;">
+              Полная окупаемость страниц: выручка, прямые расходы, сплит общих затрат агентства и чистый профит (GMP $)
+            </p>
+          </div>
+
+          <!-- View Mode Toggle -->
+          <div style="display: flex; gap: 6px; background: rgba(0, 0, 0, 0.3); padding: 4px; border-radius: 10px; border: 1px solid var(--border-color);">
+            <button id="btn-view-matrix" class="btn-action active" style="padding: 5px 12px; font-size: 11px; font-weight: 700; border-radius: 6px; background: rgba(56, 189, 248, 0.25); color: var(--primary); border: 1px solid var(--primary); cursor: pointer;">
+              📊 Сводная Матрица (P&L)
+            </button>
+            <button id="btn-view-ranking" class="btn-action" style="padding: 5px 12px; font-size: 11px; font-weight: 700; border-radius: 6px; background: transparent; color: var(--text-muted); border: 1px solid transparent; cursor: pointer;">
+              🏆 Рейтинг моделей
+            </button>
+          </div>
+        </div>
+
+        <!-- Container 1: P&L Matrix View (Default, 1-в-1 как в Скрине 3) -->
+        <div id="fin-matrix-container" class="table-container scrollable-slider">
+          <!-- Rendered dynamically -->
+        </div>
+
+        <!-- Container 2: Ranking Table View (Alternative) -->
+        <div id="fin-ranking-container" class="table-container scrollable-slider" style="display: none;">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th style="width: 60px;">Ранг</th>
+                <th>Модель / Анкета</th>
+                <th>Выручка Net ($)</th>
+                <th>Трафик ($)</th>
+                <th>Чаттеры (20%)</th>
+                <th>Модель (25%)</th>
+                <th>Комиссии ($)</th>
+                <th>Опекс ($)</th>
+                <th>Чистая Прибыль ($)</th>
+                <th>Маржа (%)</th>
+                <th>ROI Трафика</th>
+              </tr>
+            </thead>
+            <tbody id="fin-tbody-unit-economics">
+              <!-- Rendered dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
       <!-- 2. Сверка Выручки по Анкетам за Период (CRM vs Выводы в кассу) -->
       <div class="table-container scrollable-slider" style="margin-bottom: 24px; border-left: 4px solid var(--primary);">
         <div style="padding: 16px 20px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; background: rgba(56, 189, 248, 0.03);">
@@ -630,39 +688,6 @@
         <div id="fin-chart-timeline"></div>
       </div>
 
-      <!-- 2. Top Section: Model Unit-Economics & Profitability Ranking -->
-      <div class="table-container scrollable-slider" style="margin-bottom: 24px;">
-        <div style="padding: 16px 20px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
-          <div>
-            <h3 style="font-size: 16px; font-weight: 700; font-family: var(--font-heading); margin-bottom: 2px;">
-              👑 Unit-экономика по Анкетам
-            </h3>
-          </div>
-          <span style="font-size: 11px; background: rgba(56, 189, 248, 0.12); color: var(--primary); padding: 3px 10px; border-radius: 12px; font-weight: 700; border: 1px solid rgba(56, 189, 248, 0.3);">
-            Executive Leaderboard
-          </span>
-        </div>
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th style="width: 60px;">Ранг</th>
-              <th>Модель / Анкета</th>
-              <th>Выручка Net ($)</th>
-              <th>Трафик ($)</th>
-              <th>Чаттеры (20%)</th>
-              <th>Модель (25%)</th>
-              <th>Комиссии ($)</th>
-              <th>Опекс ($)</th>
-              <th>Чистая Прибыль ($)</th>
-              <th>Маржа (%)</th>
-              <th>ROI Трафика</th>
-            </tr>
-          </thead>
-          <tbody id="fin-tbody-unit-economics">
-            <!-- Rendered dynamically -->
-          </tbody>
-        </table>
-      </div>
 
       <!-- 3. Bottom Section: Cash Flow Runway & Payment Calendar -->
       <div class="glass-card" style="margin-bottom: 24px; padding: 22px; border-left: 4px solid var(--accent-amber);">
