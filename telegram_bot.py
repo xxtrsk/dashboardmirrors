@@ -827,29 +827,16 @@ def send_balance_report(chat_id):
     total_obligations = models_rem + chatters_rem + contractors_due
 
     # Свободная касса овнера (Касса минус ВСЕ обязательства)
-    safe_cash = balance - total_obligations
-    safe_icon = "🟢" if safe_cash >= 0 else "🚨"
-    safe_note = (
-        "<i>🟢 Доступно к выводу овнером без риска разрыва кассы</i>" 
-        if safe_cash >= 0 
-        else f"<i>🚨 Дефицит кассы -${abs(safe_cash):,.2f}! Не выводите дивиденды до закрытия выплат</i>"
-    )
-
     text = (
-        f"🏦 <b>СОСТОЯНИЕ КАССЫ & SAFE CASH MIRRORS</b>\n"
+        f"🏦 <b>СОСТОЯНИЕ КАССЫ MIRRORS</b>\n"
         f"━━━━━━━━━━━━━━━━━━━━\n"
-        f"💵 <b>ФАКТИЧЕСКИ В КАССЕ (на руках):</b> <code>${balance:,.2f}</code>\n\n"
-        f"🔒 <b>Все обязательства к выплате:</b> <code>${total_obligations:,.2f}</code>\n"
-        f"   ├ <i>Долг моделям:</i> ${models_rem:,.2f}\n"
-        f"   ├ <i>Долг чаттерам:</i> ${chatters_rem:,.2f}\n"
-        f"   └ <i>Подрядчики к доплате:</i> ${contractors_due:,.2f}\n"
+        f"💵 <b>ФАКТИЧЕСКИ В КАССЕ (на руках):</b> <code>${balance:,.2f}</code>\n"
         f"━━━━━━━━━━━━━━━━━━━━\n"
-        f"{safe_icon} <b>СВОБОДНАЯ КАССА (Safe Cash):</b> <code>${safe_cash:,.2f}</code>\n"
-        f"{safe_note}\n\n"
         f"📊 <b>ФИНАНСОВЫЙ СРЕЗ:</b>\n"
         f"💵 <b>Выручка Net OF:</b> ${income:,.2f}\n"
         f"💸 <b>Расходы OPEX:</b> ${expense:,.2f}\n"
         f"💳 <b>Комиссии вывода & обнала:</b> ${withdrawal_fees:,.2f} ({effective_fee:.1f}%)\n"
+        f"🏆 <b>Чистая прибыль:</b> ${balance:,.2f} ({net_margin:.1f}%)\n"
         f"📋 <b>Записей в реестре:</b> {len(txs)}\n\n"
         f"<i>Данные онлайн из Google Sheets & Dashboard</i>"
     )

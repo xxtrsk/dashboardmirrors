@@ -1452,13 +1452,13 @@ export function initFinanceModule() {
     }
   });
 
-  function renderKPIs(metrics, cashBalance = 0, totalObligations = 0, safeCash = 0, modelRem = 0, chatterRem = 0, contractorsRem = 0) {
+  function renderKPIs(metrics, cashBalance = 0) {
     const elTopCash = document.getElementById('fin-top-cash-balance');
-    const elTopSafe = document.getElementById('fin-top-safe-cash');
-    const elTopSafeSub = document.getElementById('fin-top-safe-cash-sub');
-    const elTopObligations = document.getElementById('fin-top-obligations');
-    const elTopObligationsSub = document.getElementById('fin-top-obligations-sub');
     const elTopTransit = document.getElementById('fin-top-transit');
+    const elTopRev = document.getElementById('fin-top-rev');
+    const elTopRevSub = document.getElementById('fin-top-rev-sub');
+    const elTopProfit = document.getElementById('fin-top-profit');
+    const elTopProfitSub = document.getElementById('fin-top-profit-sub');
 
     const elRev = document.getElementById('fin-kpi-rev');
     const elFees = document.getElementById('fin-kpi-fees');
@@ -1472,51 +1472,28 @@ export function initFinanceModule() {
       elTopCash.style.color = cashBalance >= 0 ? '#34d399' : 'var(--accent-rose)';
     }
 
-    // 2. Свободная касса овнера (Safe Cash = Касса минус ВСЕ обязательства)
-    const isDeficit = safeCash < 0;
-    if (elTopSafe) {
-      elTopSafe.textContent = `${safeCash >= 0 ? '+' : '-'}$${Math.abs(safeCash).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-      elTopSafe.style.color = isDeficit ? 'var(--accent-rose)' : '#38bdf8';
-    }
-    if (elTopSafeSub) {
-      if (cashBalance <= 0) {
-        elTopSafeSub.textContent = 'Касса пуста: ожидание зачислений';
-        elTopSafeSub.style.color = 'var(--text-muted)';
-      } else if (!isDeficit) {
-        elTopSafeSub.textContent = '🟢 Доступно к выводу без риска разрыва';
-        elTopSafeSub.style.color = 'var(--accent-green)';
-      } else {
-        elTopSafeSub.textContent = `🚨 Дефицит -$${Math.abs(Math.round(safeCash)).toLocaleString()}! Не выводить дивиденды`;
-        elTopSafeSub.style.color = 'var(--accent-rose)';
-      }
-    }
-
-    // 3. Начисленные обязательства (Модели + Чаттеры + Подрядчики)
-    if (elTopObligations) {
-      elTopObligations.textContent = `$${totalObligations.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-      elTopObligations.style.color = totalObligations > 0 ? '#fbbf24' : 'var(--accent-green)';
-    }
-    if (elTopObligationsSub) {
-      elTopObligationsSub.textContent = `Модели: $${Math.round(modelRem).toLocaleString()} | Чаттеры: $${Math.round(chatterRem).toLocaleString()} | Подрядчики: $${Math.round(contractorsRem).toLocaleString()}`;
-    }
-
-    // 4. Деньги в пути (Транзит OnlyFans / Paxum -> Bybit)
+    // 2. Деньги в пути (Транзит OnlyFans / Paxum -> Bybit)
     if (elTopTransit) {
       const savedInTransit = localStorage.getItem('mirrors_in_transit_amount');
       const transitVal = savedInTransit !== null ? parseFloat(savedInTransit) : 2450.00;
       elTopTransit.textContent = `$${transitVal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
     }
-    if (elSafeCashSub) {
-      if (cashBalance <= 0) {
-        elSafeCashSub.textContent = 'Касса пуста: ожидание пополнения';
-        elSafeCashSub.style.color = 'var(--text-muted)';
-      } else if (!isDeficit) {
-        elSafeCashSub.textContent = 'Доступно к выводу без риска разрыва';
-        elSafeCashSub.style.color = 'var(--text-muted)';
-      } else {
-        elSafeCashSub.textContent = `Дефицит -$${Math.abs(Math.round(safeCash)).toLocaleString()}! Не выводить дивиденды`;
-        elSafeCashSub.style.color = 'var(--accent-rose)';
-      }
+
+    // 3. Выручка Net OnlyFans & Fansly
+    if (elTopRev) {
+      elTopRev.textContent = `$${metrics.income.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    }
+    if (elTopRevSub) {
+      elTopRevSub.textContent = 'Поступило с платформ за период';
+    }
+
+    // 4. Чистая прибыль агентства
+    if (elTopProfit) {
+      elTopProfit.textContent = `$${metrics.netProfit.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      elTopProfit.style.color = metrics.netProfit >= 0 ? '#fbbf24' : 'var(--accent-rose)';
+    }
+    if (elTopProfitSub) {
+      elTopProfitSub.textContent = `Маржинальность: ${metrics.netMargin.toFixed(1)}%`;
     }
 
     // 4. Выручка Net OnlyFans
@@ -2822,7 +2799,7 @@ export function initFinanceModule() {
     const safeCash = cashBalance - totalObligations;
 
     // Рендерим топ-бар с подсвеченной кассой
-    renderKPIs(metrics, cashBalance, totalObligations, safeCash, modelRem, chatterRem, contractorsRem);
+    renderKPIs(metrics, cashBalance);
 
     renderBudgets(budgets);
     renderUnitEconomics(txs, manager.selectedPeriod);
