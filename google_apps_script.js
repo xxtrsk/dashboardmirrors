@@ -466,8 +466,8 @@ function detectCategory(desc, type) {
   }
 
   // Расходы
-  if (d.includes("оскар") || d.includes("osckelly") || d.includes("oftv") || d.includes("сценари") || d.includes("монтаж")) return "Трафик: TikTok";
-  if (d.includes("анастасия") || d.includes("aneskagency") || d.includes("fyp") || d.includes("reels") || d.includes("tiktok") || d.includes("shorts")) return "Трафик: TikTok";
+  if (d.includes("оскар") || d.includes("osckelly") || d.includes("oftv") || d.includes("сценари") || d.includes("монтаж")) return "Трафик: OFTV";
+  if (d.includes("анастасия") || d.includes("aneskagency") || d.includes("fyp") || d.includes("фуп") || d.includes("фупы")) return "Трафик: FYP (Fansly)";
   if (d.includes("реддит") || d.includes("reddit") || d.includes("дейтинг") || d.includes("dating")) return "Трафик: Reddit";
   if (d.includes("леон") || d.includes("killerle0n") || d.includes("sfs") || d.includes("twitter") || d.includes("твиттер")) return "Трафик: Twitter";
   if (d.includes("чаттер") || d.includes("оператор") || d.includes("смена") || d.includes("зп")) return "Зарплаты: Чаттеры";

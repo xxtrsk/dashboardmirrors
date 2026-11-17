@@ -20,8 +20,9 @@ INCOME_CATEGORIES = [
 ]
 
 EXPENSE_CATEGORIES = [
+    "Трафик: OFTV",
+    "Трафик: FYP (Fansly)",
     "Трафик: Reddit & Dating Apps",
-    "Трафик: TikTok / Reels / Shorts",
     "Трафик: Twitter / X Promo",
     "Зарплаты: Чаттеры / Операторы",
     "Зарплаты: Тимлиды / Баеры",

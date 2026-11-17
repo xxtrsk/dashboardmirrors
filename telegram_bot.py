@@ -53,7 +53,7 @@ bot = telebot.TeleBot(CONFIG["bot_token"], parse_mode="HTML")
 # Категории и Модели (синхронизированы с finance.js и dashboard)
 CATEGORIES_EXPENSE = [
     "Трафик: OFTV",
-    "Трафик: TikTok",
+    "Трафик: FYP (Fansly)",
     "Трафик: Reddit",
     "Трафик: Twitter",
     "Выплаты: PayPal",
@@ -80,7 +80,7 @@ MODELS_LIST = [
 
 CONTRACTORS = [
     {"name": "@osckelly (Оскар) — OFTV", "amount": 350, "terms": "175$ в начале + 175$ в конце (Lollysunnery)", "cat": "Трафик: OFTV", "model": "Lolly (Lollysunnery)"},
-    {"name": "@aneskagency (Анастасия) — FYP", "amount": 250, "terms": "125$ каждые 2 недели (Fansly)", "cat": "Трафик: TikTok", "model": "Eva Pinky (Fansly)"},
+    {"name": "@aneskagency (Анастасия) — FYP", "amount": 250, "terms": "125$ каждые 2 недели (Fansly)", "cat": "Трафик: FYP (Fansly)", "model": "Eva Pinky (Fansly)"},
     {"name": "OnlyMonster CRM", "amount": 220, "terms": "220$ / 2-го числа (единственный софт)", "cat": "Софт: OnlyMonster", "model": "Agency Core (Общие)"},
     {"name": "@KillerLe0n (Леон) — SFS", "amount": 580, "terms": "По сверке 1–5 числа (1lolly & Eva Blush)", "cat": "Трафик: Twitter", "model": "Eva Blush"}
 ]
@@ -306,8 +306,8 @@ def detect_category(desc: str, tx_type: str) -> str:
         return "Выплаты: PayPal"
     if "оскар" in d or "osckelly" in d or "oftv" in d or "офтв" in d:
         return "Трафик: OFTV"
-    if "анастасия" in d or "aneskagency" in d or "fyp" in d or "tiktok" in d or "тикток" in d:
-        return "Трафик: TikTok"
+    if "анастасия" in d or "aneskagency" in d or "fyp" in d or "фуп" in d or "фупы" in d:
+        return "Трафик: FYP (Fansly)"
     if "реддит" in d or "reddit" in d or "дейтинг" in d or "dating" in d:
         return "Трафик: Reddit"
     if "леон" in d or "killerle0n" in d or "sfs" in d or "твиттер" in d or "twitter" in d:
@@ -372,7 +372,7 @@ def cmd_start(msg):
         f"• <code>/out 250 Анастасия FYP</code>\n"
         f"• <code>/out 220 OnlyMonster CRM</code>\n"
         f"• <code>/in 4200 Вывод OnlyFans Lolly</code>\n"
-        f"• Или просто: <code>-150 Тикток</code>, <code>+4200 Лолли</code>\n\n"
+        f"• Или просто: <code>-125 FYP</code>, <code>+4200 Лолли</code>\n\n"
         f"<i>Или используйте кнопки меню ниже:</i>"
     )
     bot.send_message(msg.chat.id, text, reply_markup=get_main_keyboard(), parse_mode="HTML")
@@ -536,7 +536,7 @@ def process_amount_and_desc(msg, tx_type: str, text: str):
     if not match:
         bot.send_message(
             msg.chat.id,
-            "⚠️ Укажите сумму числом. Пример: <code>150 TikTok</code> или <code>+2384 02.11 вывод оф полина</code> (можно с комиссией: <code>+8000 fee 250</code>)",
+            "⚠️ Укажите сумму числом. Пример: <code>125 FYP</code> или <code>+2384 вывод OF Eva</code> (можно с комиссией: <code>+8000 fee 250</code>)",
             reply_markup=get_main_keyboard(),
             parse_mode="HTML"
         )

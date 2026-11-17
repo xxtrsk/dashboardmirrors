@@ -300,8 +300,9 @@ function applyDataValidation(sheet) {
 
   // 2. Колонка C: Категории
   const categories = [
+    "Трафик: OFTV",
+    "Трафик: FYP (Fansly)",
     "Трафик: Reddit",
-    "Трафик: TikTok",
     "Трафик: Twitter",
     "Зарплаты: Чаттеры",
     "Выплаты моделям",

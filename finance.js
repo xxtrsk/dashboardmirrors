@@ -20,6 +20,7 @@ export const FINANCE_INCOME_CATS = [
 
 export const FINANCE_EXPENSE_CATS = [
   'Трафик: OFTV',
+  'Трафик: FYP (Fansly)',
   'Трафик: Reddit',
   'Трафик: Twitter',
   'Выплаты: PayPal',
@@ -72,9 +73,9 @@ export const CONTRACTOR_SCHEDULE = [
     defaultAmount: 250,
     installments: 2,
     installmentAmount: 125,
-    keywords: ['анастасия', 'aneskagency', 'fyp', 'фуп'],
+    keywords: ['анастасия', 'aneskagency', 'fyp', 'фуп', 'фупы'],
     model: 'Eva Pinky (Fansly)',
-    category: 'Трафик: TikTok',
+    category: 'Трафик: FYP (Fansly)',
     warning: '🔵 Предоплата на 2 недели вперед. Оплачивать после понедельничного вывода.',
     urgencyColor: 'var(--primary)',
     urgencyBadge: '2 транша (125 + 125)'
@@ -1236,7 +1237,7 @@ export function initFinanceModule() {
             'operations': 'Прочие операционные расходы',
             'traffic': 'Трафик: Reddit & Dating Apps',
             'traffic reddit': 'Трафик: Reddit & Dating Apps',
-            'traffic tiktok': 'Трафик: TikTok / Reels / Shorts',
+            'traffic fyp': 'Трафик: FYP (Fansly)',
             'traffic twitter': 'Трафик: Twitter / X Promo',
             'chatters': 'Зарплаты: Чаттеры / Операторы',
             'salaries': 'Зарплаты: Тимлиды / Баеры',
