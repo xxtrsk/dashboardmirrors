@@ -1506,15 +1506,15 @@ export function initFinanceModule() {
         const isGmp = options.isGmp || false;
         const isPct = options.isPct || false;
         const customColor = options.color || 'var(--text-main)';
-        const bg = isGmp ? 'rgba(5, 150, 105, 0.04)' : (isHighlight ? 'rgba(220, 38, 38, 0.03)' : 'transparent');
-        const borderTop = isGmp ? '2px solid #cbd5e1' : (isHighlight ? '1px solid #cbd5e1' : '1px solid var(--border-color)');
+        const bg = isGmp ? 'rgba(16, 185, 129, 0.07)' : (isHighlight ? 'rgba(244, 63, 94, 0.04)' : 'transparent');
+        const borderTop = isGmp ? '2px solid #334155' : (isHighlight ? '1px solid #334155' : '1px solid #1e293b');
 
         return `
           <tr style="background: ${bg}; border-top: ${borderTop};">
-            <td style="position: sticky; left: 0; background: #ffffff; z-index: 2; border-right: 1px solid var(--border-color); font-weight: ${isBold ? '800' : '600'}; color: ${isBold ? 'var(--text-main)' : 'var(--text-secondary)'}; font-size: 13px; padding: 10px 14px; white-space: nowrap;">
+            <td style="position: sticky; left: 0; background: #0d131f; z-index: 2; border-right: 1px solid #1e293b; font-weight: ${isBold ? '800' : '600'}; color: ${isBold ? 'var(--text-main)' : 'var(--text-secondary)'}; font-size: 13px; padding: 11px 16px; white-space: nowrap;">
               ${label}
             </td>
-            <td style="background: #f0f9ff; border-left: 2px solid var(--primary); border-right: 2px solid var(--primary); font-family: var(--font-mono); font-weight: 800; font-size: ${isGmp ? '15px' : '13px'}; text-align: right; color: ${isGmp ? (agencyVal >= 0 ? 'var(--accent-green)' : 'var(--accent-rose)') : customColor}; padding: 10px 14px;">
+            <td style="background: rgba(56, 189, 248, 0.08); border-left: 2px solid var(--primary); border-right: 2px solid var(--primary); font-family: var(--font-mono); font-weight: 800; font-size: ${isGmp ? '15px' : '13px'}; text-align: right; color: ${isGmp ? (agencyVal >= 0 ? 'var(--accent-green)' : 'var(--accent-rose)') : customColor}; padding: 11px 16px;">
               ${isPct ? `${agencyVal.toFixed(1)}%` : formatUsd(agencyVal, isGmp ? 0 : 2)}
             </td>
             ${matrixModels.map(m => {
@@ -1524,7 +1524,7 @@ export function initFinanceModule() {
                 cellColor = val >= 0 ? 'var(--accent-green)' : 'var(--accent-rose)';
               }
               return `
-                <td style="font-family: var(--font-mono); font-weight: ${isBold ? '800' : '500'}; font-size: ${isGmp ? '14px' : '12px'}; text-align: right; color: ${cellColor}; padding: 10px 14px;">
+                <td style="font-family: var(--font-mono); font-weight: ${isBold ? '800' : '500'}; font-size: ${isGmp ? '14px' : '13px'}; text-align: right; color: ${cellColor}; padding: 11px 16px;">
                   ${isPct ? (stats[m.name].earned > 0 ? `${val.toFixed(1)}%` : '—') : formatUsd(val, isGmp ? 0 : 2)}
                 </td>
               `;
@@ -1536,15 +1536,15 @@ export function initFinanceModule() {
       matrixContainer.innerHTML = `
         <table class="data-table" style="min-width: 960px; border-collapse: separate; border-spacing: 0;">
           <thead>
-            <tr style="background: #f8fafc;">
-              <th style="position: sticky; left: 0; background: #f8fafc; z-index: 3; min-width: 250px; font-size: 13px; font-weight: 800; border-right: 1px solid var(--border-color); padding: 12px 14px;">
+            <tr style="background: #131b2e;">
+              <th style="position: sticky; left: 0; background: #131b2e; z-index: 3; min-width: 250px; font-size: 13px; font-weight: 800; color: #f8fafc; border-right: 1px solid #1e293b; padding: 13px 16px;">
                 Статья затрат / Метрика
               </th>
-              <th style="min-width: 170px; background: #e0f2fe; color: var(--primary); font-weight: 800; font-size: 13px; border-left: 2px solid var(--primary); border-right: 2px solid var(--primary); text-align: right; padding: 12px 14px;">
+              <th style="min-width: 170px; background: rgba(56, 189, 248, 0.15); color: var(--primary); font-weight: 800; font-size: 13px; border-left: 2px solid var(--primary); border-right: 2px solid var(--primary); text-align: right; padding: 13px 16px;">
                 🏢 ВСЕ АГЕНТСТВО
               </th>
               ${matrixModels.map(m => `
-                <th style="min-width: 140px; text-align: right; font-size: 13px; color: var(--text-main); font-weight: 700; padding: 12px 14px;">
+                <th style="min-width: 140px; text-align: right; font-size: 13px; color: #f8fafc; font-weight: 700; padding: 13px 16px;">
                   ${m.shortName}
                 </th>
               `).join('')}
@@ -1565,78 +1565,6 @@ export function initFinanceModule() {
           </tbody>
         </table>
       `;
-    }
-
-    // 2. РЕНДЕРИНГ ТАБЛИЦЫ РЕЙТИНГА (Если пользователь переключил на Лидерборд)
-    if (tbody) {
-      const ranked = Object.entries(stats).map(([model, data]) => {
-        return { model, ...data, net: data.gmp, margin: data.gmpPct, roi: data.costsMarketing > 0 ? (data.earned / data.costsMarketing) : 0 };
-      }).sort((a, b) => b.net - a.net);
-
-      const medals = ['🥇 #1', '🥈 #2', '🥉 #3'];
-
-      tbody.innerHTML = ranked.map((d, idx) => {
-        const rankBadge = idx < 3 ? medals[idx] : `#${idx + 1}`;
-        const netColor = d.net >= 0 ? 'var(--accent-green)' : 'var(--accent-rose)';
-        const marginBadge = d.earned > 0 
-          ? `<span style="padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 700; background: ${d.margin >= 30 ? 'rgba(52, 211, 153, 0.15)' : (d.margin > 0 ? 'rgba(251, 191, 36, 0.15)' : 'rgba(248, 113, 113, 0.15)')}; color: ${d.margin >= 30 ? 'var(--accent-green)' : (d.margin > 0 ? 'var(--accent-amber)' : 'var(--accent-rose)')};">${d.margin.toFixed(1)}%</span>`
-          : '—';
-        const roiText = d.roi > 0 ? `${d.roi.toFixed(2)}x` : '—';
-
-        return `
-          <tr>
-            <td style="font-family: var(--font-mono); font-weight: 800; font-size: 12px; color: ${idx === 0 ? 'var(--accent-green)' : 'var(--text-muted)'};">${rankBadge}</td>
-            <td style="font-weight: 700; color: var(--text-main); font-size: 13px;">${d.meta.shortName}</td>
-            <td style="font-family: var(--font-mono); color: var(--accent-green); font-weight: 600;">$${Math.round(d.earned).toLocaleString()}</td>
-            <td style="font-family: var(--font-mono); color: var(--accent-rose);">$${Math.round(d.costsMarketing).toLocaleString()}</td>
-            <td style="font-family: var(--font-mono); color: #38bdf8;">$${Math.round(d.costsOperators).toLocaleString()}</td>
-            <td style="font-family: var(--font-mono); color: #fbbf24;">$${Math.round(d.costsModel).toLocaleString()}</td>
-            <td style="font-family: var(--font-mono); color: var(--accent-amber);">$${Math.round(d.costsFees).toLocaleString()}</td>
-            <td style="font-family: var(--font-mono); color: var(--text-muted);">$${Math.round(d.agencyCosts).toLocaleString()}</td>
-            <td style="font-family: var(--font-mono); font-weight: 800; color: ${netColor}; font-size: 14px;">$${Math.round(d.net).toLocaleString()}</td>
-            <td>${marginBadge}</td>
-            <td style="font-family: var(--font-mono); font-weight: 700; color: ${d.roi >= 2 ? 'var(--accent-green)' : 'var(--text-muted)'};">${roiText}</td>
-          </tr>
-        `;
-      }).join('');
-    }
-
-    // Слушатели переключения вида (Матрица / Рейтинг)
-    const btnMatrix = document.getElementById('btn-view-matrix');
-    const btnRanking = document.getElementById('btn-view-ranking');
-    const containerMatrix = document.getElementById('fin-matrix-container');
-    const containerRanking = document.getElementById('fin-ranking-container');
-
-    if (btnMatrix && btnRanking && containerMatrix && containerRanking) {
-      btnMatrix.onclick = () => {
-        btnMatrix.classList.add('active');
-        btnMatrix.style.background = 'rgba(56, 189, 248, 0.25)';
-        btnMatrix.style.color = 'var(--primary)';
-        btnMatrix.style.border = '1px solid var(--primary)';
-
-        btnRanking.classList.remove('active');
-        btnRanking.style.background = 'transparent';
-        btnRanking.style.color = 'var(--text-muted)';
-        btnRanking.style.border = '1px solid transparent';
-
-        containerMatrix.style.display = 'block';
-        containerRanking.style.display = 'none';
-      };
-
-      btnRanking.onclick = () => {
-        btnRanking.classList.add('active');
-        btnRanking.style.background = 'rgba(56, 189, 248, 0.25)';
-        btnRanking.style.color = 'var(--primary)';
-        btnRanking.style.border = '1px solid var(--primary)';
-
-        btnMatrix.classList.remove('active');
-        btnMatrix.style.background = 'transparent';
-        btnMatrix.style.color = 'var(--text-muted)';
-        btnMatrix.style.border = '1px solid transparent';
-
-        containerRanking.style.display = 'block';
-        containerMatrix.style.display = 'none';
-      };
     }
   }
 
@@ -1854,7 +1782,7 @@ export function initFinanceModule() {
               <span style="font-family: var(--font-mono); font-weight: 700; font-size: 11px; padding: 3px 8px; border-radius: 8px; background: rgba(255, 255, 255, 0.04); color: ${statusColor}; border: 1px solid ${statusColor};">
                 ${statusBadge}
               </span>
-              <button class="btn-action btn-primary btn-pay-contractor" data-id="${c.id}" data-suggest="${suggestAmount}" style="padding: 4px 10px; font-size: 11px; white-space: nowrap;">
+              <button class="btn-action btn-pay-contractor" data-id="${c.id}" data-suggest="${suggestAmount}" style="padding: 4px 10px; font-size: 11px; white-space: nowrap;">
                 ${nextActionLabel}
               </button>
             </div>
@@ -2003,7 +1931,7 @@ export function initFinanceModule() {
 
     if (badge) {
       if (isUsdtBalanced) {
-        badge.textContent = '🟢 Сходится 100% (Без наёбки)';
+        badge.textContent = '🟢 Сходится 100%';
         badge.style.background = 'rgba(52, 211, 153, 0.15)';
         badge.style.color = 'var(--accent-green)';
         badge.style.border = '1px solid rgba(52, 211, 153, 0.3)';
@@ -2044,8 +1972,8 @@ export function initFinanceModule() {
                 <td style="font-family: var(--font-mono); color: var(--primary); font-weight: 800; font-size: 14px; text-align: right;">$${rec.expectedCashBalance.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
                 <td style="text-align: right;">
                   <div style="display: inline-flex; align-items: center; gap: 6px;">
-                    <input id="fin-input-actual-usdt" type="number" step="0.01" value="${actualWalletVal.toFixed(2)}" style="width: 105px; padding: 4px 8px; font-family: var(--font-mono); font-weight: 700; background: #ffffff; border: 1px solid var(--border-color); color: var(--text-main); border-radius: 4px; text-align: right;" />
-                    <button id="fin-btn-save-actual-usdt" class="btn-action btn-primary" style="padding: 4px 8px; font-size: 11px;" title="Сохранить факт кошелька">💾</button>
+                    <input id="fin-input-actual-usdt" type="number" step="0.01" value="${actualWalletVal.toFixed(2)}" style="width: 105px; padding: 4px 8px; font-family: var(--font-mono); font-weight: 700; background: #0f172a; border: 1px solid #334155; color: #f8fafc; border-radius: 4px; text-align: right;" />
+                    <button id="fin-btn-save-actual-usdt" class="btn-action btn-pay-contractor" style="padding: 4px 8px; font-size: 11px;" title="Сохранить факт кошелька">💾</button>
                   </div>
                 </td>
                 <td style="font-family: var(--font-mono); font-weight: 800; font-size: 13px; color: ${isUsdtBalanced ? 'var(--accent-green)' : 'var(--accent-rose)'}; text-align: right;">
@@ -2053,7 +1981,7 @@ export function initFinanceModule() {
                 </td>
                 <td>
                   <span style="padding: 3px 10px; border-radius: 6px; font-size: 11px; font-weight: 700; background: ${isUsdtBalanced ? 'rgba(52, 211, 153, 0.15)' : 'rgba(239, 68, 68, 0.15)'}; color: ${isUsdtBalanced ? 'var(--accent-green)' : 'var(--accent-rose)'}; border: 1px solid ${isUsdtBalanced ? 'rgba(52, 211, 153, 0.3)' : 'rgba(239, 68, 68, 0.3)'};">
-                    ${isUsdtBalanced ? '🟢 100% Сходимость (Без наёбки)' : `🔴 Расхождение $${deltaUsdt.toFixed(2)}`}
+                    ${isUsdtBalanced ? '🟢 Сходимость 100%' : `🔴 Расхождение $${deltaUsdt.toFixed(2)}`}
                   </span>
                 </td>
               </tr>
@@ -2116,20 +2044,20 @@ export function initFinanceModule() {
         </div>
 
         <!-- Formula Audit Strip -->
-        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: #f8fafc; border: 1px solid var(--border-color); border-radius: 8px; font-size: 12px; font-family: var(--font-mono); color: var(--text-muted); flex-wrap: wrap; gap: 8px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: #131b2e; border: 1px solid #1e293b; border-radius: 8px; font-size: 12px; font-family: var(--font-mono); color: #94a3b8; flex-wrap: wrap; gap: 8px;">
           <div>
             <span>Расчет: </span>
             <span style="color: var(--accent-green); font-weight: 700;">+$${rec.inflow.toFixed(2)} (Приход)</span>
             <span> − </span>
             <span style="color: var(--accent-rose); font-weight: 700;">$${rec.outflow.toFixed(2)} (Расход)</span>
             <span> = </span>
-            <strong style="color: var(--text-main); font-weight: 800;">$${rec.expectedCashBalance.toFixed(2)} (Расчетная касса)</strong>
+            <strong style="color: #f8fafc; font-weight: 800;">$${rec.expectedCashBalance.toFixed(2)} (Расчетная касса)</strong>
           </div>
           <div>
             <span>Факт Bybit: </span>
             <strong style="color: var(--primary); font-weight: 800;">$${actualWalletVal.toFixed(2)}</strong>
             <span style="margin-left: 8px; font-weight: 700; color: ${isUsdtBalanced ? 'var(--accent-green)' : 'var(--accent-rose)'};">
-              ${isUsdtBalanced ? '✓ Дельта $0.00 (Сверка идеальна)' : `⚠️ Расхождение ${deltaUsdt > 0 ? '+' : ''}$${deltaUsdt.toFixed(2)}`}
+              ${isUsdtBalanced ? '✓ Расхождений нет ($0.00)' : `⚠️ Расхождение ${deltaUsdt > 0 ? '+' : ''}$${deltaUsdt.toFixed(2)}`}
             </span>
           </div>
         </div>

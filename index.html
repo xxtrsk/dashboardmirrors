@@ -358,7 +358,7 @@
       </div>
 
       <!-- Collapsible Google Sheets Integration Panel -->
-      <div id="fin-gsheet-panel" class="glass-card" style="display: none; margin-bottom: 24px; padding: 18px 22px; border: 1px solid var(--primary); background: #ffffff;">
+      <div id="fin-gsheet-panel" class="glass-card" style="display: none; margin-bottom: 24px; padding: 18px 22px; border: 1px solid var(--primary); background: #0d131f;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
           <div style="display: flex; align-items: center; gap: 10px;">
             <span style="font-size: 18px;">☁️</span>
@@ -404,7 +404,7 @@
               Прозрачный расчетный баланс: сколько фактически поступило vs сколько списано = сколько реально должно быть в кассе
             </p>
           </div>
-          <div style="font-size: 12px; font-family: var(--font-mono); color: var(--text-muted); background: #f1f5f9; padding: 6px 12px; border-radius: 8px; border: 1px solid var(--border-color);">
+          <div style="font-size: 12px; font-family: var(--font-mono); color: #94a3b8; background: #131b2e; padding: 6px 12px; border-radius: 8px; border: 1px solid #1e293b;">
             Расхождение: <strong id="fin-reconcile-delta" style="color: var(--accent-green); font-size: 13px;">$0.00</strong>
           </div>
         </div>
@@ -430,45 +430,11 @@
               Полная окупаемость страниц: выручка, прямые расходы, сплит общих затрат агентства и чистый профит (GMP $)
             </p>
           </div>
-
-          <!-- View Mode Toggle -->
-          <div style="display: flex; gap: 6px; background: #f1f5f9; padding: 4px; border-radius: 10px; border: 1px solid var(--border-color);">
-            <button id="btn-view-matrix" class="btn-action active" style="padding: 5px 12px; font-size: 11px; font-weight: 700; border-radius: 6px; background: rgba(56, 189, 248, 0.25); color: var(--primary); border: 1px solid var(--primary); cursor: pointer;">
-              📊 Сводная Матрица (P&L)
-            </button>
-            <button id="btn-view-ranking" class="btn-action" style="padding: 5px 12px; font-size: 11px; font-weight: 700; border-radius: 6px; background: transparent; color: var(--text-muted); border: 1px solid transparent; cursor: pointer;">
-              🏆 Рейтинг моделей
-            </button>
-          </div>
         </div>
 
         <!-- Container 1: P&L Matrix View (Default, 1-в-1 как в Скрине 3) -->
         <div id="fin-matrix-container" class="table-container scrollable-slider">
           <!-- Rendered dynamically -->
-        </div>
-
-        <!-- Container 2: Ranking Table View (Alternative) -->
-        <div id="fin-ranking-container" class="table-container scrollable-slider" style="display: none;">
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th style="width: 60px;">Ранг</th>
-                <th>Модель / Анкета</th>
-                <th>Выручка Net ($)</th>
-                <th>Трафик ($)</th>
-                <th>Чаттеры (20%)</th>
-                <th>Модель (25%)</th>
-                <th>Комиссии ($)</th>
-                <th>Опекс ($)</th>
-                <th>Чистая Прибыль ($)</th>
-                <th>Маржа (%)</th>
-                <th>ROI Трафика</th>
-              </tr>
-            </thead>
-            <tbody id="fin-tbody-unit-economics">
-              <!-- Rendered dynamically -->
-            </tbody>
-          </table>
         </div>
       </div>
 
@@ -530,7 +496,7 @@
           </div>
 
           <!-- Quick Toggle: По Анкетам / Персонально по Чаттерам -->
-          <div style="display: flex; gap: 6px; background: #f1f5f9; padding: 4px; border-radius: 10px; border: 1px solid var(--border-color);">
+          <div style="display: flex; gap: 6px; background: #131b2e; padding: 4px; border-radius: 10px; border: 1px solid #1e293b;">
             <button id="fin-audit-tab-models" class="btn-action active" style="padding: 5px 12px; font-size: 11px; font-weight: 700; border-radius: 6px; background: rgba(168, 85, 247, 0.25); color: #c084fc; border: 1px solid #a855f7; cursor: pointer;">
               👑 По Анкетам (25% / 20% / 55%)
             </button>
@@ -637,14 +603,6 @@
         </div>
       </div>
 
-      <!-- 4. Top Section: P&L Dynamics Chart -->
-      <div class="glass-card" style="padding: 20px; margin-bottom: 24px;">
-        <h3 style="font-size: 15px; font-weight: 700; font-family: var(--font-heading); margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between;">
-          <span>📈 Динамика P&L по Месяцам</span>
-          <span style="font-size: 11px; color: var(--accent-green); font-family: var(--font-mono); font-weight: 600;">Accrual P&L</span>
-        </h3>
-        <div id="fin-chart-timeline"></div>
-      </div>
 
 
       <!-- 3. Bottom Section: Cash Flow Runway & Payment Calendar -->
