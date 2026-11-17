@@ -597,123 +597,128 @@
       </div>
 
 
-      <!-- Two Columns: Add Transaction Form & Ledger -->
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 20px;">
-        <!-- Add Operation Form -->
-        <div class="glass-card" style="padding: 22px;">
-          <h3 style="font-size: 16px; font-weight: 700; font-family: var(--font-heading); margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
-            ➕ Внести операцию
-          </h3>
-          <form id="form-add-finance-tx">
-            <div style="margin-bottom: 14px;">
-              <label style="font-size: 12px; color: var(--text-muted); font-weight: 600; display: block; margin-bottom: 6px;">Тип операции</label>
-              <div style="display: flex; gap: 16px;">
-                <label style="display: flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer; color: var(--accent-rose); font-weight: 600;">
-                  <input type="radio" name="finance-tx-type" value="Расход" checked /> Расход
-                </label>
-                <label style="display: flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer; color: var(--accent-green); font-weight: 600;">
-                  <input type="radio" name="finance-tx-type" value="Доход" /> Доход
-                </label>
-              </div>
+      <!-- 1. Реестр Финансовых Записей (Большое окно на всю ширину) -->
+      <div class="glass-card" style="padding: 24px; margin-bottom: 24px; border-left: 4px solid var(--primary);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; flex-wrap: wrap; gap: 12px;">
+          <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+            <h3 style="font-size: 18px; font-weight: 800; font-family: var(--font-heading); color: var(--text-main); margin: 0;">
+              📋 Реестр Финансовых Записей (Касса)
+            </h3>
+            <span id="fin-tx-count-badge" style="font-size: 12px; font-family: var(--font-mono); background: rgba(56, 189, 248, 0.15); color: var(--primary); padding: 4px 10px; border-radius: 12px; font-weight: 700; border: 1px solid rgba(56, 189, 248, 0.3);">
+              0 записей
+            </span>
+            <select id="fin-filter-cat" class="custom-select" style="font-size: 12px; padding: 5px 12px; border-radius: 6px; border: 1px solid var(--border-color); color: var(--text-main); background: #283042;">
+              <option value="all">Все категории</option>
+              <option value="paypal">🅿️ Только PayPal</option>
+              <option value="Выплаты OnlyFans">💵 Выплаты OF</option>
+              <option value="Комиссии и вывод">💳 Комиссии</option>
+              <option value="Трафик">🎯 Трафик</option>
+              <option value="Зарплаты">👥 Зарплаты</option>
+            </select>
+          </div>
+          <div style="display: flex; gap: 8px; align-items: center;">
+            <button id="btn-fin-clean-duplicates" class="btn" style="padding: 6px 12px; font-size: 12px; background: rgba(244, 63, 94, 0.12); color: var(--accent-rose); border: 1px solid rgba(244, 63, 94, 0.3); border-radius: var(--radius-sm); cursor: pointer; font-weight: 600;" title="Удалить все одинаковые строки-дубликаты">
+              🧹 Очистить дубликаты
+            </button>
+          </div>
+        </div>
+
+        <div class="table-container scrollable-slider" style="max-height: 560px; overflow-y: auto;">
+          <table class="data-table" style="font-size: 13px; min-width: 860px; width: 100%;">
+            <thead>
+              <tr style="background: #2a3142;">
+                <th style="min-width: 105px;">Дата</th>
+                <th style="min-width: 90px;">Тип</th>
+                <th style="min-width: 170px;">Категория</th>
+                <th style="min-width: 170px;">Модель / Проект</th>
+                <th style="min-width: 120px; text-align: right;">Сумма ($)</th>
+                <th>Комментарий / Детали</th>
+                <th style="text-align: right; min-width: 100px;">Действие</th>
+              </tr>
+            </thead>
+            <tbody id="fin-tbody-transactions">
+              <!-- Rendered dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 2. Форма внесения операции (Расположена ниже) -->
+      <div class="glass-card" style="padding: 24px; border-left: 4px solid var(--accent-green); background: rgba(16, 185, 129, 0.02);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; flex-wrap: wrap; gap: 12px;">
+          <div>
+            <h3 style="font-size: 17px; font-weight: 800; font-family: var(--font-heading); color: var(--text-main); margin: 0; display: flex; align-items: center; gap: 8px;">
+              ➕ Внести финансовую операцию в кассу
+            </h3>
+            <p style="font-size: 12px; color: var(--text-muted); margin: 4px 0 0 0;">
+              Ручное добавление дохода или расхода с мгновенным пересчетом баланса и аналитики
+            </p>
+          </div>
+          <!-- Type switch pills -->
+          <div style="display: flex; gap: 8px; background: #283042; padding: 4px; border-radius: 8px; border: 1px solid #353e52;">
+            <label style="display: flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer; color: var(--accent-rose); font-weight: 700; padding: 4px 10px; border-radius: 6px;">
+              <input type="radio" name="finance-tx-type" value="Расход" checked /> Расход (−)
+            </label>
+            <label style="display: flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer; color: var(--accent-green); font-weight: 700; padding: 4px 10px; border-radius: 6px;">
+              <input type="radio" name="finance-tx-type" value="Доход" /> Доход (+)
+            </label>
+          </div>
+        </div>
+
+        <form id="form-add-finance-tx">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; margin-bottom: 14px;">
+            <div>
+              <label style="font-size: 12px; color: var(--text-muted); font-weight: 600; display: block; margin-bottom: 6px;">Дата операции</label>
+              <input type="date" id="finance-tx-date" class="custom-select" style="width: 100%; padding: 8px 12px; background: #283042; border: 1px solid #353e52; color: #f8fafc;" required />
             </div>
 
-            <div style="margin-bottom: 14px;">
-              <label style="font-size: 12px; color: var(--text-muted); font-weight: 600; display: block; margin-bottom: 6px;">Дата</label>
-              <input type="date" id="finance-tx-date" class="custom-select" style="width: 100%; padding: 8px 12px; " required />
-            </div>
-
-            <div style="margin-bottom: 14px;">
+            <div>
               <label style="font-size: 12px; color: var(--text-muted); font-weight: 600; display: block; margin-bottom: 6px;">Категория</label>
-              <select id="finance-tx-category" class="custom-select" style="width: 100%; padding: 8px 12px; " required>
+              <select id="finance-tx-category" class="custom-select" style="width: 100%; padding: 8px 12px; background: #283042; border: 1px solid #353e52; color: #f8fafc;" required>
                 <!-- Rendered dynamically -->
               </select>
             </div>
 
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px;">
-              <div>
-                <label style="font-size: 12px; color: var(--text-muted); font-weight: 600; display: block; margin-bottom: 6px;">Сумма ($)</label>
-                <input type="number" id="finance-tx-amount" step="0.01" min="0.01" placeholder="150.00" class="custom-select" style="width: 100%; padding: 8px 12px;  font-family: var(--font-mono); font-weight: 700;" required />
-              </div>
-              <div>
-                <label style="font-size: 12px; color: var(--text-muted); font-weight: 600; display: block; margin-bottom: 6px;">Модель / Проект</label>
-                <select id="finance-tx-model" class="custom-select" style="width: 100%; padding: 8px 12px; ">
-                  <option value="Lolly (Lollysunnery)">Lolly (Lollysunnery)</option>
-                  <option value="Lolly (1lollyhere)">Lolly (1lollyhere)</option>
-                  <option value="Eva Blush">Eva Blush</option>
-                  <option value="Lila (angelkiss)">Lila (angelkiss)</option>
-                  <option value="Eva Pinky (Fansly)">Eva Pinky (Fansly)</option>
-                  <option value="Agency Core (Общие)">Agency Core (Общие)</option>
-                </select>
-              </div>
+            <div>
+              <label style="font-size: 12px; color: var(--text-muted); font-weight: 600; display: block; margin-bottom: 6px;">Сумма ($)</label>
+              <input type="number" id="finance-tx-amount" step="0.01" min="0.01" placeholder="150.00" class="custom-select" style="width: 100%; padding: 8px 12px; font-family: var(--font-mono); font-weight: 700; background: #283042; border: 1px solid #353e52; color: #f8fafc;" required />
             </div>
 
-            <!-- Дополнительное поле комиссии вывода для доходов -->
-            <div id="finance-fee-group" style="display: none; margin-bottom: 14px; padding: 10px 12px; background: rgba(244, 63, 94, 0.06); border: 1px dashed rgba(244, 63, 94, 0.3); border-radius: 6px;">
-              <label style="font-size: 11px; color: var(--accent-rose); font-weight: 700; display: block; margin-bottom: 4px;">
-                💳 Комиссия вывода / обнала (Paxum, P2P, крипта)
-              </label>
-              <input type="number" id="finance-tx-fee" step="0.01" min="0" placeholder="Например: 250.00 (или 0 если нет)" class="custom-select" style="width: 100%; padding: 6px 10px;  font-family: var(--font-mono);" />
-              <div style="font-size: 10px; color: var(--text-muted); margin-top: 4px;">
-                Система автоматически запишет эту комиссию в расход «Комиссии и вывод», и в кассу зачислится чистая сумма.
-              </div>
+            <div>
+              <label style="font-size: 12px; color: var(--text-muted); font-weight: 600; display: block; margin-bottom: 6px;">Модель / Проект</label>
+              <select id="finance-tx-model" class="custom-select" style="width: 100%; padding: 8px 12px; background: #283042; border: 1px solid #353e52; color: #f8fafc;">
+                <option value="Lolly (Lollysunnery)">Lolly (Lollysunnery)</option>
+                <option value="Lolly (1lollyhere)">Lolly (1lollyhere)</option>
+                <option value="Eva Blush">Eva Blush</option>
+                <option value="Lila (angelkiss)">Lila (angelkiss)</option>
+                <option value="Eva Pinky (Fansly)">Eva Pinky (Fansly)</option>
+                <option value="Agency Core (Общие)">Agency Core (Общие)</option>
+              </select>
             </div>
+          </div>
 
-            <div style="margin-bottom: 18px;">
+          <!-- Дополнительное поле комиссии вывода для доходов -->
+          <div id="finance-fee-group" style="display: none; margin-bottom: 14px; padding: 12px 14px; background: rgba(244, 63, 94, 0.06); border: 1px dashed rgba(244, 63, 94, 0.3); border-radius: 8px;">
+            <label style="font-size: 11px; color: var(--accent-rose); font-weight: 700; display: block; margin-bottom: 4px;">
+              💳 Комиссия вывода / обнала (Paxum, P2P, крипта)
+            </label>
+            <input type="number" id="finance-tx-fee" step="0.01" min="0" placeholder="Например: 250.00 (или 0 если нет)" class="custom-select" style="width: 100%; padding: 7px 12px; font-family: var(--font-mono); background: #283042; border: 1px solid #353e52; color: #f8fafc;" />
+            <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">
+              Система автоматически запишет эту комиссию в расход «Комиссии и вывод», и в кассу зачислится чистая сумма.
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr auto; gap: 14px; align-items: end;">
+            <div>
               <label style="font-size: 12px; color: var(--text-muted); font-weight: 600; display: block; margin-bottom: 6px;">Комментарий / Примечание</label>
-              <input type="text" id="finance-tx-desc" placeholder="Например: Пакет Reddit аккаунтов, софт" class="custom-select" style="width: 100%; padding: 8px 12px; " />
+              <input type="text" id="finance-tx-desc" placeholder="Например: Пакет Reddit аккаунтов, софт CRM, транш" class="custom-select" style="width: 100%; padding: 8px 12px; background: #283042; border: 1px solid #353e52; color: #f8fafc;" />
             </div>
 
-            <button type="submit" class="btn-action btn-primary" style="width: 100%; justify-content: center;">
+            <button type="submit" class="btn-action btn-primary" style="padding: 9px 26px; font-size: 13px; font-weight: 700; white-space: nowrap; height: 38px;">
               💾 Записать операцию
             </button>
-          </form>
-        </div>
-
-        <!-- Ledger Table -->
-        <div class="glass-card" style="padding: 22px;">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 8px;">
-            <div style="display: flex; align-items: center; gap: 10px;">
-              <h3 style="font-size: 16px; font-weight: 700; font-family: var(--font-heading); margin: 0;">
-                📋 Реестр Финансовых Записей
-              </h3>
-              <select id="fin-filter-cat" class="custom-select" style="font-size: 11px; padding: 4px 8px;  border-radius: 6px; border: 1px solid var(--border-color); color: var(--text-main);">
-                <option value="all">Все категории</option>
-                <option value="paypal">🅿️ Только PayPal</option>
-                <option value="Выплаты OnlyFans">💵 Выплаты OF</option>
-                <option value="Комиссии и вывод">💳 Комиссии</option>
-                <option value="Трафик">🎯 Трафик</option>
-                <option value="Зарплаты">👥 Зарплаты</option>
-              </select>
-            </div>
-            <div style="display: flex; gap: 8px; align-items: center;">
-              <button id="btn-fin-clean-duplicates" class="btn" style="padding: 4px 10px; font-size: 11px; background: rgba(244, 63, 94, 0.12); color: var(--accent-rose); border: 1px solid rgba(244, 63, 94, 0.3); border-radius: var(--radius-sm); cursor: pointer;" title="Удалить все одинаковые строки-дубликаты">
-                🧹 Очистить дубликаты
-              </button>
-              <span id="fin-tx-count-badge" style="font-size: 11px; font-family: var(--font-mono); background: rgba(56, 189, 248, 0.15); color: var(--primary); padding: 2px 8px; border-radius: 8px; font-weight: 700;">
-                0 записей
-              </span>
-            </div>
           </div>
-
-          <div class="table-container scrollable-slider" style="max-height: 410px; overflow-y: auto;">
-            <table class="data-table" style="font-size: 13px;">
-              <thead>
-                <tr>
-                  <th>Дата</th>
-                  <th>Тип</th>
-                  <th>Категория</th>
-                  <th>Модель</th>
-                  <th>Сумма ($)</th>
-                  <th>Комментарий</th>
-                  <th style="text-align: right;">Действие</th>
-                </tr>
-              </thead>
-              <tbody id="fin-tbody-transactions">
-                <!-- Rendered dynamically -->
-              </tbody>
-            </table>
-          </div>
-        </div>
+        </form>
       </div>
     </section>
 
