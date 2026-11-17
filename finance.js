@@ -442,11 +442,14 @@ class FinanceManager {
     let modelPayouts = 0;
     let withdrawalFees = 0;
     let otherOpex = 0;
+    let modelsAccrued = 0;
 
     txList.forEach(t => {
       const amt = Number(t.amount) || 0;
       if (t.type === 'Доход') {
         income += amt;
+        const isFansly = (t.model || '').toLowerCase().includes('fansly') || (t.desc || '').toLowerCase().includes('fansly');
+        modelsAccrued += amt * (isFansly ? 0.30 : 0.25);
       } else if (t.type === 'Расход') {
         cashExpenses += amt;
         const cat = (t.category || '').toLowerCase();
@@ -457,7 +460,7 @@ class FinanceManager {
           chatterExpense += amt;
         } else if (cat.includes('модел')) {
           modelPayouts += amt;
-        } else if (cat.includes('комисси') || cat.includes('вывод') || desc.includes('комисси') || desc.includes('вывод') || desc.includes('paxum') || desc.includes('bybit')) {
+        } else if (cat.includes('комисси') || cat.includes('вывод') || desc.includes('комисси') || desc.includes('вывод') || desc.includes('paxum') || desc.includes('p2p') || desc.includes('обнал')) {
           withdrawalFees += amt;
         } else {
           otherOpex += amt;
@@ -465,9 +468,8 @@ class FinanceManager {
       }
     });
 
-    // P&L Accrual (Экономическая прибыль): себестоимость команды 45% (25% модель + 20% чаттеры)
+    // P&L Accrual (Экономическая прибыль): себестоимость команды (25% OF / 30% Fansly модель + 20% чаттеры)
     // зафиксирована сразу, чтобы фактические выплаты на 31-е и 15-е число НЕ задваивали расход!
-    const modelsAccrued = income * 0.25;
     const chattersAccrued = income * 0.20;
     const economicOpex = modelsAccrued + chattersAccrued + trafficExpense + withdrawalFees + otherOpex;
     const netProfit = income - economicOpex;
@@ -694,14 +696,6 @@ class FinanceManager {
       return r.monthKey === selectedPeriod;
     });
 
-    const paypalByMonthAndModel = {
-      '2026-10': {
-        'Lolly (Lollysunnery)': 987.63,
-        'Eva Blush': 155.00,
-        'Lolly (1lollyhere)': 91.61
-      }
-    };
-
     let totalGrossAll = 0;
     let totalNetAll = 0;
     let totalPaypalAll = 0;
@@ -712,34 +706,9 @@ class FinanceManager {
     const modelsData = targetModels.map(m => {
       let grossRev = 0;
       let ppRev = 0;
+      let netRev = 0;
 
-      if (selectedPeriod === '2026-10') {
-        if (m.id === 'sunnery') { grossRev = 7832.32; ppRev = 987.63; }
-        else if (m.id === 'blush') { grossRev = 3851.31; ppRev = 155.00; }
-        else if (m.id === '1lolly') { grossRev = 2594.03; ppRev = 91.61; }
-        else if (m.id === 'fansly') { grossRev = 1645.26; ppRev = 0; }
-        else if (m.id === 'lila') { grossRev = 1196.07; ppRev = 0; }
-      } else {
-        const matchingCrm = crmRows.filter(r => {
-          if (r.modelName === m.name) return true;
-          const low = (r.modelName || '').toLowerCase();
-          return m.matchKeys.some(k => low.includes(k));
-        });
-        grossRev = matchingCrm.reduce((sum, r) => sum + (Number(r.totalRevenue) || 0), 0);
-
-        if (selectedPeriod === 'all') {
-          Object.values(paypalByMonthAndModel).forEach(monthMap => {
-            ppRev += monthMap[m.name] || 0;
-          });
-        } else if (paypalByMonthAndModel[selectedPeriod]) {
-          ppRev = paypalByMonthAndModel[selectedPeriod][m.name] || 0;
-        }
-      }
-
-      const netRev = grossRev * 0.80;
-      const totalEarned = netRev + ppRev;
-
-      // Фактически выведено на счета/в кассу в рамках выбранного периода
+      // 1. Поступления по анкете из реальных транзакций кассы
       const modelIncomeTxs = txList.filter(t => {
         if (t.type !== 'Доход') return false;
         if (t.model === m.name) return true;
@@ -747,6 +716,35 @@ class FinanceManager {
         const descLow = (t.desc || '').toLowerCase();
         return m.matchKeys.some(k => low.includes(k) || descLow.includes(k));
       });
+
+      // Доход PayPal из транзакций
+      const ppIncomeTxs = modelIncomeTxs.filter(t => {
+        const cat = (t.category || '').toLowerCase();
+        const desc = (t.desc || '').toLowerCase();
+        return cat.includes('paypal') || desc.includes('paypal') || desc.includes('пейпал') || desc.includes('пайпал');
+      });
+      ppRev = ppIncomeTxs.reduce((sum, t) => sum + (Number(t.amount) || 0), 0);
+
+      // Если в CRM-импортах есть недельные данные выручки — учитываем их
+      const matchingCrm = crmRows.filter(r => {
+        if (r.modelName === m.name) return true;
+        const low = (r.modelName || '').toLowerCase();
+        return m.matchKeys.some(k => low.includes(k));
+      });
+      const crmGross = matchingCrm.reduce((sum, r) => sum + (Number(r.totalRevenue) || 0), 0);
+
+      if (crmGross > 0) {
+        grossRev = crmGross;
+        netRev = grossRev * 0.80;
+      } else {
+        // Доход платформы из чистых транзакций кассы
+        const platformIncomeTxs = modelIncomeTxs.filter(t => !ppIncomeTxs.includes(t));
+        netRev = platformIncomeTxs.reduce((sum, t) => sum + (Number(t.amount) || 0), 0);
+        // Gross рассчитывается обратно от Net (OnlyFans берет 20%)
+        grossRev = netRev > 0 ? (netRev / 0.80) : 0;
+      }
+
+      const totalEarned = netRev + ppRev;
       const withdrawnToCash = modelIncomeTxs.reduce((sum, t) => sum + (Number(t.amount) || 0), 0);
 
       totalGrossAll += grossRev;
@@ -1316,7 +1314,7 @@ export function initFinanceModule() {
       elTopCash.style.color = cashBalance >= 0 ? '#34d399' : 'var(--accent-rose)';
     }
 
-    // 2. Деньги в пути (Транзит OnlyFans / Paxum -> Bybit)
+    // 2. Деньги в пути (Транзит OnlyFans / Paxum -> Кошелек USDT)
     if (elTopTransit) {
       const savedInTransit = localStorage.getItem(STORAGE_KEY_IN_TRANSIT);
       const transitVal = savedInTransit !== null ? parseFloat(savedInTransit) : 0.00;
@@ -1478,12 +1476,15 @@ export function initFinanceModule() {
           } else {
             totalAgencyOverhead += amt;
           }
-        } else if (cat.includes('комисси') || cat.includes('вывод') || desc.includes('комисси') || desc.includes('вывод') || desc.includes('paxum') || desc.includes('bybit')) {
+        } else if (cat.includes('комисси') || cat.includes('вывод') || desc.includes('комисси') || desc.includes('вывод') || desc.includes('paxum') || desc.includes('p2p') || desc.includes('обнал')) {
           if (target) {
             stats[target.name].costsFees += amt;
           } else {
             totalAgencyOverhead += amt;
           }
+        } else if (cat.includes('модел') || cat.includes('чаттер') || cat.includes('оператор')) {
+          // Выплаты модели и чаттерам: факт выплат фиксируется в кассе, а в Unit-экономике их плановые доли (25%/30% и 20%) начисляются от выручки ниже
+          // Не сбрасываем в маркетинг!
         } else if (cat.includes('софт') || cat.includes('monster') || cat.includes('монстр') || cat.includes('прочие') || tModel.includes('Agency Core') || tModel.includes('Общие')) {
           totalAgencyOverhead += amt;
         } else if (target) {
@@ -1677,7 +1678,22 @@ export function initFinanceModule() {
 
     // Monthly Dynamics SVG Bar & Line Chart
     if (timelineContainer) {
-      const months = ['2026-09', '2026-10', '2026-11'];
+      const txMonths = new Set();
+      (manager.transactions || []).forEach(t => {
+        if (t.date && t.date.length >= 7) {
+          txMonths.add(t.date.substring(0, 7));
+        }
+      });
+      // Текущий месяц всегда доступен
+      const curMonth = new Date().toISOString().substring(0, 7);
+      txMonths.add(curMonth);
+
+      // Сортировка месяцев и выбор последних до 6 месяцев
+      let months = Array.from(txMonths).sort();
+      if (months.length > 6) {
+        months = months.slice(-6);
+      }
+
       const dataByMonth = months.map(m => {
         const mList = manager.transactions.filter(t => t.date.startsWith(m));
         const inc = mList.filter(t => t.type === 'Доход').reduce((s, t) => s + (Number(t.amount) || 0), 0);
@@ -1686,7 +1702,7 @@ export function initFinanceModule() {
         return { month: m, inc, exp, net };
       });
 
-      const maxVal = Math.max(...dataByMonth.map(d => Math.max(d.inc, d.exp)), 30000);
+      const maxVal = Math.max(...dataByMonth.map(d => Math.max(d.inc, d.exp)), 1000);
 
       timelineContainer.innerHTML = `
         <div style="display: flex; justify-content: space-between; align-items: flex-end; height: 180px; padding-top: 20px; border-bottom: 1px solid var(--border-color); gap: 20px;">
