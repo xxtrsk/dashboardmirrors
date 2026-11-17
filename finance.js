@@ -1354,7 +1354,7 @@ export function initFinanceModule() {
               <span>Факт: <strong style="color: var(--text-main);">$${b.fact.toLocaleString()}</strong></span>
               <span>/</span>
               <span style="color: var(--text-dim);">План $:</span>
-              <input type="number" class="input-budget-plan" data-group="${b.group}" value="${b.plan}" step="50" min="0" style="width: 85px; padding: 3px 6px; font-size: 13px; font-family: var(--font-mono); font-weight: 700; background: #07090e; color: var(--primary); border: 1px solid rgba(56, 189, 248, 0.4); border-radius: 4px; text-align: right;" title="Измените число и нажмите Enter или кликните вне поля" />
+              <input type="number" class="input-budget-plan" data-group="${b.group}" value="${b.plan}" step="50" min="0" style="width: 85px; padding: 3px 6px; font-size: 13px; font-family: var(--font-mono); font-weight: 700; background: #ffffff; color: var(--primary); border: 1px solid rgba(56, 189, 248, 0.4); border-radius: 4px; text-align: right;" title="Измените число и нажмите Enter или кликните вне поля" />
               (<span style="color: ${statusColor}; font-weight: 700;">${b.pct.toFixed(1)}%</span>)
             </div>
           </div>
@@ -1506,15 +1506,15 @@ export function initFinanceModule() {
         const isGmp = options.isGmp || false;
         const isPct = options.isPct || false;
         const customColor = options.color || 'var(--text-main)';
-        const bg = isGmp ? 'rgba(52, 211, 153, 0.06)' : (isHighlight ? 'rgba(244, 63, 94, 0.04)' : 'transparent');
-        const borderTop = isGmp ? '2px solid rgba(255, 255, 255, 0.2)' : (isHighlight ? '1px solid rgba(255, 255, 255, 0.15)' : '1px solid var(--border-color)');
+        const bg = isGmp ? 'rgba(5, 150, 105, 0.04)' : (isHighlight ? 'rgba(220, 38, 38, 0.03)' : 'transparent');
+        const borderTop = isGmp ? '2px solid #cbd5e1' : (isHighlight ? '1px solid #cbd5e1' : '1px solid var(--border-color)');
 
         return `
           <tr style="background: ${bg}; border-top: ${borderTop};">
-            <td style="position: sticky; left: 0; background: #0f172a; z-index: 2; border-right: 1px solid var(--border-color); font-weight: ${isBold ? '800' : '600'}; color: ${isBold ? 'var(--text-main)' : 'var(--text-secondary)'}; font-size: 13px; padding: 10px 14px; white-space: nowrap;">
+            <td style="position: sticky; left: 0; background: #ffffff; z-index: 2; border-right: 1px solid var(--border-color); font-weight: ${isBold ? '800' : '600'}; color: ${isBold ? 'var(--text-main)' : 'var(--text-secondary)'}; font-size: 13px; padding: 10px 14px; white-space: nowrap;">
               ${label}
             </td>
-            <td style="background: rgba(56, 189, 248, 0.10); border-left: 2px solid var(--primary); border-right: 2px solid var(--primary); font-family: var(--font-mono); font-weight: 800; font-size: ${isGmp ? '15px' : '13px'}; text-align: right; color: ${isGmp ? (agencyVal >= 0 ? 'var(--accent-green)' : 'var(--accent-rose)') : customColor}; padding: 10px 14px;">
+            <td style="background: #f0f9ff; border-left: 2px solid var(--primary); border-right: 2px solid var(--primary); font-family: var(--font-mono); font-weight: 800; font-size: ${isGmp ? '15px' : '13px'}; text-align: right; color: ${isGmp ? (agencyVal >= 0 ? 'var(--accent-green)' : 'var(--accent-rose)') : customColor}; padding: 10px 14px;">
               ${isPct ? `${agencyVal.toFixed(1)}%` : formatUsd(agencyVal, isGmp ? 0 : 2)}
             </td>
             ${matrixModels.map(m => {
@@ -1536,11 +1536,11 @@ export function initFinanceModule() {
       matrixContainer.innerHTML = `
         <table class="data-table" style="min-width: 960px; border-collapse: separate; border-spacing: 0;">
           <thead>
-            <tr style="background: rgba(15, 23, 42, 0.95);">
-              <th style="position: sticky; left: 0; background: #0f172a; z-index: 3; min-width: 250px; font-size: 13px; font-weight: 800; border-right: 1px solid var(--border-color); padding: 12px 14px;">
+            <tr style="background: #f8fafc;">
+              <th style="position: sticky; left: 0; background: #f8fafc; z-index: 3; min-width: 250px; font-size: 13px; font-weight: 800; border-right: 1px solid var(--border-color); padding: 12px 14px;">
                 Статья затрат / Метрика
               </th>
-              <th style="min-width: 170px; background: rgba(56, 189, 248, 0.15); color: var(--primary); font-weight: 800; font-size: 13px; border-left: 2px solid var(--primary); border-right: 2px solid var(--primary); text-align: right; padding: 12px 14px;">
+              <th style="min-width: 170px; background: #e0f2fe; color: var(--primary); font-weight: 800; font-size: 13px; border-left: 2px solid var(--primary); border-right: 2px solid var(--primary); text-align: right; padding: 12px 14px;">
                 🏢 ВСЕ АГЕНТСТВО
               </th>
               ${matrixModels.map(m => `
@@ -2044,7 +2044,7 @@ export function initFinanceModule() {
                 <td style="font-family: var(--font-mono); color: var(--primary); font-weight: 800; font-size: 14px; text-align: right;">$${rec.expectedCashBalance.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
                 <td style="text-align: right;">
                   <div style="display: inline-flex; align-items: center; gap: 6px;">
-                    <input id="fin-input-actual-usdt" type="number" step="0.01" value="${actualWalletVal.toFixed(2)}" style="width: 105px; padding: 4px 8px; font-family: var(--font-mono); font-weight: 700; background: #07090e; border: 1px solid var(--border-color); color: var(--text-main); border-radius: 4px; text-align: right;" />
+                    <input id="fin-input-actual-usdt" type="number" step="0.01" value="${actualWalletVal.toFixed(2)}" style="width: 105px; padding: 4px 8px; font-family: var(--font-mono); font-weight: 700; background: #ffffff; border: 1px solid var(--border-color); color: var(--text-main); border-radius: 4px; text-align: right;" />
                     <button id="fin-btn-save-actual-usdt" class="btn-action btn-primary" style="padding: 4px 8px; font-size: 11px;" title="Сохранить факт кошелька">💾</button>
                   </div>
                 </td>
@@ -2116,7 +2116,7 @@ export function initFinanceModule() {
         </div>
 
         <!-- Formula Audit Strip -->
-        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: rgba(0, 0, 0, 0.25); border: 1px solid var(--border-color); border-radius: 8px; font-size: 12px; font-family: var(--font-mono); color: var(--text-secondary); flex-wrap: wrap; gap: 8px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: #f8fafc; border: 1px solid var(--border-color); border-radius: 8px; font-size: 12px; font-family: var(--font-mono); color: var(--text-muted); flex-wrap: wrap; gap: 8px;">
           <div>
             <span>Расчет: </span>
             <span style="color: var(--accent-green); font-weight: 700;">+$${rec.inflow.toFixed(2)} (Приход)</span>

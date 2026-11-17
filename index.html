@@ -24,7 +24,7 @@
       <div style="display: flex; gap: 12px; align-items: center;">
         <div style="display: flex; align-items: center; gap: 8px; background: rgba(56, 189, 248, 0.1); border: 1px solid var(--primary); padding: 6px 14px; border-radius: var(--radius-md);">
           <span style="font-size: 13px; font-weight: 600; color: var(--primary);">🗓 Отчетный Месяц:</span>
-          <select id="select-month-picker" class="custom-select" style="padding: 4px 10px; font-weight: 700; background: #0f172a; border-color: var(--primary); color: var(--primary);">
+          <select id="select-month-picker" class="custom-select" style="padding: 4px 10px; font-weight: 700;  border-color: var(--primary); color: var(--primary);">
             <!-- Rendered dynamically -->
           </select>
         </div>
@@ -334,14 +334,14 @@
         </div>
 
         <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
-          <select id="finance-period-select" class="custom-select" style="padding: 6px 12px; font-weight: 600; background: #0f172a;">
+          <select id="finance-period-select" class="custom-select" style="padding: 6px 12px; font-weight: 600; ">
             <option value="all">🗓 Весь период</option>
             <option value="2026-11" selected>Ноябрь 2026</option>
             <option value="2026-10">Октябрь 2026</option>
             <option value="2026-09">Сентябрь 2026</option>
           </select>
 
-          <select id="finance-model-select" class="custom-select" style="padding: 6px 12px; font-weight: 600; background: #0f172a;">
+          <select id="finance-model-select" class="custom-select" style="padding: 6px 12px; font-weight: 600; ">
             <option value="all">👑 Все модели</option>
             <option value="Lolly (Lollysunnery)">Lolly (Lollysunnery)</option>
             <option value="Lolly (1lollyhere)">Lolly (1lollyhere)</option>
@@ -358,7 +358,7 @@
       </div>
 
       <!-- Collapsible Google Sheets Integration Panel -->
-      <div id="fin-gsheet-panel" class="glass-card" style="display: none; margin-bottom: 24px; padding: 18px 22px; border: 1px solid var(--primary); background: rgba(15, 23, 42, 0.85);">
+      <div id="fin-gsheet-panel" class="glass-card" style="display: none; margin-bottom: 24px; padding: 18px 22px; border: 1px solid var(--primary); background: #ffffff;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
           <div style="display: flex; align-items: center; gap: 10px;">
             <span style="font-size: 18px;">☁️</span>
@@ -375,7 +375,7 @@
         </p>
 
         <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
-          <input type="url" id="input-gsheet-url" placeholder="https://script.google.com/macros/s/ВАШ_SCRIPT_ID/exec" class="custom-select" style="flex: 1; min-width: 280px; padding: 8px 12px; font-family: var(--font-mono); font-size: 12px; background: #07090e;" />
+          <input type="url" id="input-gsheet-url" placeholder="https://script.google.com/macros/s/ВАШ_SCRIPT_ID/exec" class="custom-select" style="flex: 1; min-width: 280px; padding: 8px 12px; font-family: var(--font-mono); font-size: 12px; " />
           
           <button id="btn-gsheet-save-sync" class="btn-action btn-primary" style="padding: 8px 16px;">
             🔄 Синхронизировать
@@ -387,48 +387,6 @@
         </div>
       </div>
 
-      <!-- Executive KPI Cards Grid (Owner Cash & Profit Focus) -->
-      <div class="grid-summary" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px;">
-        <!-- 1. Физическая касса -->
-        <div class="glass-card" style="padding: 18px; border-left: 3px solid #10b981; background: rgba(16, 185, 129, 0.05);">
-          <div class="card-header">
-            <span class="card-title">Физическая Касса</span>
-            <div class="card-icon">🏦</div>
-          </div>
-          <div id="fin-kpi-cash-balance" class="card-value" style="color: #34d399; font-size: 26px;">$0.00</div>
-          <div class="card-subtext">Фактически на руках (Paxum / Bybit)</div>
-        </div>
-
-        <!-- 2. Свободная касса овнера -->
-        <div class="glass-card" style="padding: 18px; border-left: 3px solid var(--accent-green); background: rgba(52, 211, 153, 0.08);">
-          <div class="card-header">
-            <span class="card-title">Свободная Касса (Safe)</span>
-            <div class="card-icon">🟢</div>
-          </div>
-          <div id="fin-kpi-safe-cash" class="card-value" style="color: #34d399; font-size: 26px;">$0.00</div>
-          <div id="fin-kpi-safe-cash-sub" class="card-subtext">Доступно к выводу без риска разрыва</div>
-        </div>
-
-        <!-- 3. Зарплатный резерв (Эскроу к 15 числу, заморозка на 31-е отключена) -->
-        <div class="glass-card" style="padding: 18px; border-left: 3px solid #fbbf24; background: rgba(251, 191, 36, 0.05);">
-          <div class="card-header">
-            <span class="card-title">Зарплатный Резерв</span>
-            <div class="card-icon">🔒</div>
-          </div>
-          <div id="fin-kpi-escrow" class="card-value" style="color: #fbbf24; font-size: 26px;">$0.00</div>
-          <div id="fin-kpi-escrow-sub" class="card-subtext">К 15-му: $0 (заморозка на 31-е отключена)</div>
-        </div>
-
-        <!-- 4. Чистая прибыль агентства -->
-        <div class="glass-card" style="padding: 18px; border-left: 3px solid var(--primary);">
-          <div class="card-header">
-            <span class="card-title">Чистая Прибыль</span>
-            <div class="card-icon">🏆</div>
-          </div>
-          <div id="fin-kpi-net" class="card-value" style="color: var(--primary); font-size: 26px;">$0.00</div>
-          <div id="fin-kpi-net-sub" class="card-subtext">Маржинальность: <span id="fin-kpi-margin">0.0%</span></div>
-        </div>
-      </div>
 
       <!-- 1. Сверка Кассы (Proof of Cash & Reconciliation) -->
       <div class="glass-card" style="padding: 22px; margin-bottom: 24px; border-left: 4px solid var(--accent-green); background: rgba(16, 185, 129, 0.03);">
@@ -446,7 +404,7 @@
               Прозрачный расчетный баланс: сколько фактически поступило vs сколько списано = сколько реально должно быть в кассе
             </p>
           </div>
-          <div style="font-size: 12px; font-family: var(--font-mono); color: var(--text-muted); background: rgba(0, 0, 0, 0.3); padding: 6px 12px; border-radius: 8px; border: 1px solid var(--border-color);">
+          <div style="font-size: 12px; font-family: var(--font-mono); color: var(--text-muted); background: #f1f5f9; padding: 6px 12px; border-radius: 8px; border: 1px solid var(--border-color);">
             Расхождение: <strong id="fin-reconcile-delta" style="color: var(--accent-green); font-size: 13px;">$0.00</strong>
           </div>
         </div>
@@ -474,7 +432,7 @@
           </div>
 
           <!-- View Mode Toggle -->
-          <div style="display: flex; gap: 6px; background: rgba(0, 0, 0, 0.3); padding: 4px; border-radius: 10px; border: 1px solid var(--border-color);">
+          <div style="display: flex; gap: 6px; background: #f1f5f9; padding: 4px; border-radius: 10px; border: 1px solid var(--border-color);">
             <button id="btn-view-matrix" class="btn-action active" style="padding: 5px 12px; font-size: 11px; font-weight: 700; border-radius: 6px; background: rgba(56, 189, 248, 0.25); color: var(--primary); border: 1px solid var(--primary); cursor: pointer;">
               📊 Сводная Матрица (P&L)
             </button>
@@ -572,7 +530,7 @@
           </div>
 
           <!-- Quick Toggle: По Анкетам / Персонально по Чаттерам -->
-          <div style="display: flex; gap: 6px; background: rgba(0, 0, 0, 0.3); padding: 4px; border-radius: 10px; border: 1px solid var(--border-color);">
+          <div style="display: flex; gap: 6px; background: #f1f5f9; padding: 4px; border-radius: 10px; border: 1px solid var(--border-color);">
             <button id="fin-audit-tab-models" class="btn-action active" style="padding: 5px 12px; font-size: 11px; font-weight: 700; border-radius: 6px; background: rgba(168, 85, 247, 0.25); color: #c084fc; border: 1px solid #a855f7; cursor: pointer;">
               👑 По Анкетам (25% / 20% / 55%)
             </button>
@@ -751,12 +709,12 @@
 
             <div style="margin-bottom: 14px;">
               <label style="font-size: 12px; color: var(--text-muted); font-weight: 600; display: block; margin-bottom: 6px;">Дата</label>
-              <input type="date" id="finance-tx-date" class="custom-select" style="width: 100%; padding: 8px 12px; background: #0f172a;" required />
+              <input type="date" id="finance-tx-date" class="custom-select" style="width: 100%; padding: 8px 12px; " required />
             </div>
 
             <div style="margin-bottom: 14px;">
               <label style="font-size: 12px; color: var(--text-muted); font-weight: 600; display: block; margin-bottom: 6px;">Категория</label>
-              <select id="finance-tx-category" class="custom-select" style="width: 100%; padding: 8px 12px; background: #0f172a;" required>
+              <select id="finance-tx-category" class="custom-select" style="width: 100%; padding: 8px 12px; " required>
                 <!-- Rendered dynamically -->
               </select>
             </div>
@@ -764,11 +722,11 @@
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px;">
               <div>
                 <label style="font-size: 12px; color: var(--text-muted); font-weight: 600; display: block; margin-bottom: 6px;">Сумма ($)</label>
-                <input type="number" id="finance-tx-amount" step="0.01" min="0.01" placeholder="150.00" class="custom-select" style="width: 100%; padding: 8px 12px; background: #0f172a; font-family: var(--font-mono); font-weight: 700;" required />
+                <input type="number" id="finance-tx-amount" step="0.01" min="0.01" placeholder="150.00" class="custom-select" style="width: 100%; padding: 8px 12px;  font-family: var(--font-mono); font-weight: 700;" required />
               </div>
               <div>
                 <label style="font-size: 12px; color: var(--text-muted); font-weight: 600; display: block; margin-bottom: 6px;">Модель / Проект</label>
-                <select id="finance-tx-model" class="custom-select" style="width: 100%; padding: 8px 12px; background: #0f172a;">
+                <select id="finance-tx-model" class="custom-select" style="width: 100%; padding: 8px 12px; ">
                   <option value="Lolly (Lollysunnery)">Lolly (Lollysunnery)</option>
                   <option value="Lolly (1lollyhere)">Lolly (1lollyhere)</option>
                   <option value="Eva Blush">Eva Blush</option>
@@ -784,7 +742,7 @@
               <label style="font-size: 11px; color: var(--accent-rose); font-weight: 700; display: block; margin-bottom: 4px;">
                 💳 Комиссия вывода / обнала (Paxum, P2P, Bybit, крипта)
               </label>
-              <input type="number" id="finance-tx-fee" step="0.01" min="0" placeholder="Например: 250.00 (или 0 если нет)" class="custom-select" style="width: 100%; padding: 6px 10px; background: #0f172a; font-family: var(--font-mono);" />
+              <input type="number" id="finance-tx-fee" step="0.01" min="0" placeholder="Например: 250.00 (или 0 если нет)" class="custom-select" style="width: 100%; padding: 6px 10px;  font-family: var(--font-mono);" />
               <div style="font-size: 10px; color: var(--text-muted); margin-top: 4px;">
                 Система автоматически запишет эту комиссию в расход «Комиссии и вывод», и в кассу зачислится чистая сумма.
               </div>
@@ -792,7 +750,7 @@
 
             <div style="margin-bottom: 18px;">
               <label style="font-size: 12px; color: var(--text-muted); font-weight: 600; display: block; margin-bottom: 6px;">Комментарий / Примечание</label>
-              <input type="text" id="finance-tx-desc" placeholder="Например: Пакет Reddit аккаунтов, софт" class="custom-select" style="width: 100%; padding: 8px 12px; background: #0f172a;" />
+              <input type="text" id="finance-tx-desc" placeholder="Например: Пакет Reddit аккаунтов, софт" class="custom-select" style="width: 100%; padding: 8px 12px; " />
             </div>
 
             <button type="submit" class="btn-action btn-primary" style="width: 100%; justify-content: center;">
@@ -808,7 +766,7 @@
               <h3 style="font-size: 16px; font-weight: 700; font-family: var(--font-heading); margin: 0;">
                 📋 Реестр Финансовых Записей
               </h3>
-              <select id="fin-filter-cat" class="custom-select" style="font-size: 11px; padding: 4px 8px; background: #0f172a; border-radius: 6px; border: 1px solid var(--border-color); color: var(--text-main);">
+              <select id="fin-filter-cat" class="custom-select" style="font-size: 11px; padding: 4px 8px;  border-radius: 6px; border: 1px solid var(--border-color); color: var(--text-main);">
                 <option value="all">Все категории</option>
                 <option value="paypal">🅿️ Только PayPal</option>
                 <option value="Выплаты OnlyFans">💵 Выплаты OF</option>
