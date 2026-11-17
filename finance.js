@@ -1438,29 +1438,17 @@ export function initFinanceModule() {
       { id: 'lila', name: 'Lila (angelkiss)', shortName: 'Lila', matchKeys: ['lila', 'angelkiss', '49015'] }
     ];
 
-    // Получаем точные данные о доходах по анкетам из CRM и транзакций
-    const modelRec = manager.calculateModelEarningsReconciliation(selectedPeriod, txs);
-    const modelRecMap = {};
-    if (modelRec && modelRec.models) {
-      modelRec.models.forEach(m => {
-        modelRecMap[m.name] = m;
-      });
-    }
-
-    // Собираем прямые и общие статьи расходов
+    // Собираем прямые доходы и статьи расходов ИСКЛЮЧИТЕЛЬНО из реальных транзакций
     const stats = {};
     matrixModels.forEach(m => {
-      const rec = modelRecMap[m.name];
-      const earned = rec ? Number(rec.totalEarned) || 0 : 0;
       stats[m.name] = {
         meta: m,
-        earned: earned,
-        costsModel: earned * 0.25,
-        costsOperators: earned * 0.20,
+        earned: 0,
+        costsModel: 0,
+        costsOperators: 0,
         costsMarketing: 0,
         costsFees: 0,
         agencyCosts: 0,
-        adminCosts: 0,
         costsAll: 0,
         gmp: 0,
         gmpPct: 0
@@ -1468,17 +1456,14 @@ export function initFinanceModule() {
     });
 
     let totalAgencyOverhead = 0;
-    let totalAdminOverhead = 0;
 
     txs.forEach(t => {
       const amt = Number(t.amount) || 0;
       if (t.type === 'Доход') {
         const tModel = t.model || '';
         const target = matrixModels.find(m => m.name === tModel || m.matchKeys.some(k => tModel.toLowerCase().includes(k)));
-        if (target && stats[target.name].earned === 0) {
+        if (target) {
           stats[target.name].earned += amt;
-          stats[target.name].costsModel = stats[target.name].earned * 0.25;
-          stats[target.name].costsOperators = stats[target.name].earned * 0.20;
         }
       } else if (t.type === 'Расход') {
         const cat = (t.category || '').toLowerCase();
@@ -1500,8 +1485,6 @@ export function initFinanceModule() {
           }
         } else if (cat.includes('софт') || cat.includes('monster') || cat.includes('монстр') || cat.includes('прочие') || tModel.includes('Agency Core') || tModel.includes('Общие')) {
           totalAgencyOverhead += amt;
-        } else if (cat.includes('зарплаты команды') || cat.includes('админ') || desc.includes('роп') || desc.includes('админ')) {
-          totalAdminOverhead += amt;
         } else if (target) {
           stats[target.name].costsMarketing += amt;
         } else {
@@ -1510,7 +1493,15 @@ export function initFinanceModule() {
       }
     });
 
-    // Сплит общих расходов агентства (Agency costs USDT) поровну на 5 анкет (точно как на Скрине 3!)
+    // Начисление долей модели и операторов от заработанного (Fansly = 30%, OF = 25%, Чаттеры = 20%)
+    matrixModels.forEach(m => {
+      const s = stats[m.name];
+      const isFansly = m.id === 'fansly';
+      s.costsModel = s.earned * (isFansly ? 0.30 : 0.25);
+      s.costsOperators = s.earned * 0.20;
+    });
+
+    // Сплит общих расходов агентства (Agency costs USDT) поровну на все активные анкеты (принцип из таблицы)
     const modelCount = matrixModels.length;
     const agencyPerModel = modelCount > 0 ? totalAgencyOverhead / modelCount : 0;
 
@@ -1597,7 +1588,7 @@ export function initFinanceModule() {
           </thead>
           <tbody>
             ${renderRow('💵 Заработано на странице', totalAgency.earned, s => s.earned, { isBold: true, color: 'var(--accent-green)' })}
-            ${renderRow('👑 Costs model (Выплата 25%)', totalAgency.costsModel, s => s.costsModel, { color: '#ec4899' })}
+            ${renderRow('👑 Costs model (Выплата 25% / Fansly 30%)', totalAgency.costsModel, s => s.costsModel, { color: '#ec4899' })}
             ${renderRow('💬 Costs operators (Чаттеры 20%)', totalAgency.costsOperators, s => s.costsOperators, { color: '#a855f7' })}
             ${renderRow('🎯 Costs marketing (Трафик)', totalAgency.costsMarketing, s => s.costsMarketing, { color: 'var(--accent-rose)' })}
             ${renderRow('💳 Costs withdraw fee (Комиссия вывода)', totalAgency.costsFees, s => s.costsFees, { color: 'var(--accent-amber)' })}
