@@ -82,7 +82,10 @@ CONTRACTORS = [
     {"name": "@osckelly (Оскар) — OFTV", "amount": 350, "terms": "175$ в начале + 175$ в конце (Lollysunnery)", "cat": "Трафик: OFTV", "model": "Lolly (Lollysunnery)"},
     {"name": "@aneskagency (Анастасия) — FYP", "amount": 250, "terms": "125$ каждые 2 недели (Fansly)", "cat": "Трафик: TikTok", "model": "Eva Pinky (Fansly)"},
     {"name": "OnlyMonster CRM", "amount": 220, "terms": "220$ / 2-го числа (единственный софт)", "cat": "Софт: OnlyMonster", "model": "Agency Core (Общие)"},
-    {"name": "@KillerLe0n (Леон) — SFS", "amount": 580, "terms": "По сверке 1–5 числа (1lolly & Eva Blush)", "cat": "Трафик: Twitter", "model": "Eva Blush"}
+    {"name": "@KillerLe0n (Леон) — SFS", "amount": 580, "terms": "По сверке 1–5 числа (1lolly & Eva Blush)", "cat": "Трафик: Twitter", "model": "Eva Blush"},
+    {"name": "Алекс (РОП)", "amount": 1015, "terms": "Ставка / ЗП РОПа (Agency Core)", "cat": "Зарплаты: Чаттеры", "model": "Agency Core (Общие)"},
+    {"name": "Тарас (Рекрутинг)", "amount": 300, "terms": "Рекрутинг и наем чаттеров", "cat": "Зарплаты: Чаттеры", "model": "Agency Core (Общие)"},
+    {"name": "Влад (Маркетинг & Бот)", "amount": 280, "terms": "Маркетинг, бот и инфраструктура", "cat": "Прочие расходы", "model": "Agency Core (Общие)"}
 ]
 
 # Хранилище временного состояния пошагового ввода { user_id: { ... } }
@@ -312,8 +315,10 @@ def detect_category(desc: str, tx_type: str) -> str:
         return "Трафик: Reddit"
     if "леон" in d or "killerle0n" in d or "sfs" in d or "твиттер" in d or "twitter" in d:
         return "Трафик: Twitter"
-    if "чаттер" in d or "оператор" in d or "зп" in d or "смена" in d or "карина" in d or "тимур" in d:
+    if "чаттер" in d or "оператор" in d or "зп" in d or "смена" in d or "карина" in d or "тимур" in d or "алекс" in d or "роп" in d or "тарас" in d or "рекрут" in d:
         return "Зарплаты: Чаттеры"
+    if "влад" in d:
+        return "Прочие расходы"
     if "модел" in d or "выплата модел" in d or "доля" in d:
         return "Выплаты моделям"
     if "монстр" in d or "monster" in d or "onlymonster" in d or "софт" in d or "crm" in d:
@@ -836,7 +841,7 @@ def send_balance_report(chat_id):
         f"━━━━━━━━━━━━━━━━━━━━\n"
         f"💰 <b>Физическая касса (на руках):</b> <code>${balance:,.2f}</code>\n\n"
         f"🔒 <b>Зарплатный резерв (Эскроу):</b> <code>${total_escrow:,.2f}</code>\n"
-        f"   └ <i>К 15-му (период 16–31):</i> ${p2_remaining:,.2f} (заморозка на 31-е отключена)\n\n"
+        f"   └ <i>Обязательства по ЗП:</i> ${total_escrow:,.2f}\n\n"
         f"📅 <b>Подрядчики к доплате:</b> ${contractors_due:,.2f}\n"
         f"━━━━━━━━━━━━━━━━━━━━\n"
         f"{safe_icon} <b>СВОБОДНАЯ КАССА (Safe Cash):</b> <code>${safe_cash:,.2f}</code>\n"

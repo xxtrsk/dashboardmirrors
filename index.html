@@ -478,27 +478,27 @@
         </table>
       </div>
 
-      <!-- 3. Сверка Честности Начислений и Выплат: Модели (25%) & Чаттеры (20%) (Anti-Fraud Audit) -->
+      <!-- 3. Сверка Начислений и Выплат: Модели & Чаттеры -->
       <div class="glass-card" style="padding: 22px; margin-bottom: 24px; border-left: 4px solid #a855f7; background: rgba(168, 85, 247, 0.03);">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; flex-wrap: wrap; gap: 12px;">
           <div>
             <div style="display: flex; align-items: center; gap: 10px;">
               <h3 style="font-size: 18px; font-weight: 800; font-family: var(--font-heading); color: var(--text-main); margin: 0;">
-                🛡️ Аудит Честности Выплат (Контроль Переплат и Обмана)
+                ⚖️ Сверка выплат
               </h3>
               <span id="fin-audit-badge" style="font-size: 11px; background: rgba(52, 211, 153, 0.15); color: var(--accent-green); padding: 3px 10px; border-radius: 12px; font-weight: 700; border: 1px solid rgba(52, 211, 153, 0.3);">
-                🟢 Начисления строго по формуле (Переплат нет)
+                🟢 Выплаты сходятся
               </span>
             </div>
             <p style="font-size: 12px; color: var(--text-muted); margin: 4px 0 0 0;">
-              Аудит справедливости: сколько заработано анкетой vs сколько ДОЛЖНО быть выплачено модели (25%) и чаттерам (20%) vs ФАКТИЧЕСКИ выплачено из кассы
+              Сверка начислений: сколько заработано анкетой vs начислено модели и чаттерам vs фактически выплачено
             </p>
           </div>
 
           <!-- Quick Toggle: По Анкетам / Персонально по Чаттерам -->
           <div style="display: flex; gap: 6px; background: #283042; padding: 4px; border-radius: 10px; border: 1px solid #353e52;">
             <button id="fin-audit-tab-models" class="btn-action active" style="padding: 5px 12px; font-size: 11px; font-weight: 700; border-radius: 6px; background: rgba(168, 85, 247, 0.25); color: #c084fc; border: 1px solid #a855f7; cursor: pointer;">
-              👑 По Анкетам (25% / 20% / 55%)
+              👑 По Анкетам
             </button>
             <button id="fin-audit-tab-chatters" class="btn-action" style="padding: 5px 12px; font-size: 11px; font-weight: 700; border-radius: 6px; background: transparent; color: var(--text-muted); border: 1px solid transparent; cursor: pointer;">
               👥 Персонально по Чаттерам
@@ -506,7 +506,7 @@
           </div>
         </div>
 
-        <!-- 4 Summary Anti-Fraud KPI Cards -->
+        <!-- 4 Summary KPI Cards -->
         <div id="fin-audit-kpi-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; margin-bottom: 18px;">
           <!-- Rendered dynamically -->
         </div>
@@ -518,11 +518,11 @@
               <tr>
                 <th>Анкета / Источник</th>
                 <th>Заработано Net ($)</th>
-                <th style="color: #ec4899;">Модель: План 25% ($)</th>
+                <th style="color: #ec4899;">Модель: Доля ($)</th>
                 <th style="color: #ec4899;">Модель: Факт ($)</th>
                 <th style="color: #a855f7;">Чаттеры: Фонд 20% ($)</th>
                 <th style="color: #a855f7;">Чаттеры: Факт ($)</th>
-                <th style="color: var(--primary);">Агентство (55%)</th>
+                <th style="color: var(--primary);">Доля Агентства ($)</th>
                 <th>Дельта выплат</th>
                 <th>Контроль / Статус</th>
               </tr>

@@ -107,10 +107,221 @@ export const CONTRACTOR_SCHEDULE = [
     warning: '🟢 Оплата по сверке после первого понедельничного вывода OF (1lolly & Eva Blush).',
     urgencyColor: 'var(--accent-green)',
     urgencyBadge: 'По сверке (1–5 число)'
+  },
+  {
+    id: 'alex_rop',
+    name: 'Алекс (РОП)',
+    role: 'Руководитель отдела продаж (управление сменами, чаттерами и конверсиями)',
+    terms: '1,015 USDT / месяц. Фикс / ЗП РОПа (Agency Core)',
+    dueDateStr: '15 и 31 числа (двумя частями по 507.5$)',
+    defaultAmount: 1015,
+    installments: 2,
+    installmentAmount: 507.5,
+    keywords: ['алекс', 'роп', 'алекса'],
+    model: 'Agency Core (Общие)',
+    category: 'Зарплаты: Чаттеры',
+    warning: '👑 РОП агентства. Выплата синхронизирована с периодами смен чаттеров (15 и 31 числа).',
+    urgencyColor: 'var(--primary)',
+    urgencyBadge: '1,015$ (2 транша)'
+  },
+  {
+    id: 'taras_recruiter',
+    name: 'Тарас (Рекрутинг)',
+    role: 'Рекрутер агентства (поиск, собеседования, стажировка чаттеров)',
+    terms: '300 USDT / месяц. Оплата по результатам найма',
+    dueDateStr: '15-е число месяца',
+    defaultAmount: 300,
+    installments: 1,
+    installmentAmount: 300,
+    keywords: ['тарас', 'рекрут', 'тараса'],
+    model: 'Agency Core (Общие)',
+    category: 'Зарплаты: Чаттеры',
+    warning: '👥 Рекрутер агентства. Проверить количество выведенных в смену чаттеров.',
+    urgencyColor: 'var(--accent-amber)',
+    urgencyBadge: '300$ / 15-го числа'
+  },
+  {
+    id: 'vlad_marketing',
+    name: 'Влад (Маркетинг & Бот)',
+    role: 'Маркетинг, аналитика, поддержка Telegram-бота и инфраструктуры',
+    terms: '280 USDT / месяц. Поддержка и доработки',
+    dueDateStr: 'Конец месяца (31-е)',
+    defaultAmount: 280,
+    installments: 1,
+    installmentAmount: 280,
+    keywords: ['влад', 'влада', 'маркетинг', 'бот'],
+    model: 'Agency Core (Общие)',
+    category: 'Прочие расходы',
+    warning: '🤖 Маркетолог и разработчик бота/дашборда.',
+    urgencyColor: 'var(--accent-purple)',
+    urgencyBadge: '280$ / 31-го числа'
   }
 ];
 
-const SEED_TRANSACTIONS = [];
+const SEED_TRANSACTIONS = [
+  {
+    "id": 6,
+    "date": "2026-11-02",
+    "type": "Доход",
+    "category": "Выплаты OnlyFans",
+    "model": "Lolly (Lollysunnery)",
+    "amount": 1301,
+    "desc": "Вывод OnlyFans Lollysunnery (сплит вывода $2500)"
+  },
+  {
+    "id": 7,
+    "date": "2026-11-02",
+    "type": "Доход",
+    "category": "Выплаты OnlyFans",
+    "model": "Eva Blush",
+    "amount": 650,
+    "desc": "Вывод OnlyFans Eva Blush (сплит вывода $2500)"
+  },
+  {
+    "id": 8,
+    "date": "2026-11-02",
+    "type": "Доход",
+    "category": "Выплаты OnlyFans",
+    "model": "Lolly (1lollyhere)",
+    "amount": 549,
+    "desc": "Вывод OnlyFans 1lollyhere (сплит вывода $2500)"
+  },
+  {
+    "id": 12,
+    "date": "2026-11-02",
+    "type": "Расход",
+    "category": "Комиссии и вывод",
+    "model": "Lolly (Lollysunnery)",
+    "amount": 70.77,
+    "desc": "Комиссия вывода Paxum / Bybit (5.44% от $1,301)"
+  },
+  {
+    "id": 13,
+    "date": "2026-11-02",
+    "type": "Расход",
+    "category": "Комиссии и вывод",
+    "model": "Eva Blush",
+    "amount": 35.36,
+    "desc": "Комиссия вывода Paxum / Bybit (5.44% от $650)"
+  },
+  {
+    "id": 14,
+    "date": "2026-11-02",
+    "type": "Расход",
+    "category": "Комиссии и вывод",
+    "model": "Lolly (1lollyhere)",
+    "amount": 29.87,
+    "desc": "Комиссия вывода Paxum / Bybit (5.44% от $549)"
+  },
+  {
+    "id": 18,
+    "date": "2026-11-02",
+    "type": "Доход",
+    "category": "Выплаты OnlyFans",
+    "model": "Eva Pinky (Fansly)",
+    "amount": 638,
+    "desc": "fansly, до вычета комсы"
+  },
+  {
+    "id": 22,
+    "date": "2026-11-04",
+    "type": "Расход",
+    "category": "Прочие расходы",
+    "model": "Lolly (Lollysunnery)",
+    "amount": 31.5,
+    "desc": "opex oftv (покупка продуктов для видео)"
+  },
+  {
+    "id": 9,
+    "date": "2026-11-09",
+    "type": "Доход",
+    "category": "Выплаты OnlyFans",
+    "model": "Lolly (1lollyhere)",
+    "amount": 550,
+    "desc": "Вывод OnlyFans Lolly (1lollyhere) (сплит на $4,143.00)"
+  },
+  {
+    "id": 10,
+    "date": "2026-11-09",
+    "type": "Доход",
+    "category": "Выплаты OnlyFans",
+    "model": "Lolly (Lollysunnery)",
+    "amount": 2176,
+    "desc": "Вывод OnlyFans Lolly (Lollysunnery) (сплит на $4,143.00)"
+  },
+  {
+    "id": 11,
+    "date": "2026-11-09",
+    "type": "Доход",
+    "category": "Выплаты OnlyFans",
+    "model": "Eva Blush",
+    "amount": 1417,
+    "desc": "Вывод OnlyFans Eva Blush (сплит на $4,143.00)"
+  },
+  {
+    "id": 15,
+    "date": "2026-11-09",
+    "type": "Расход",
+    "category": "Комиссии и вывод",
+    "model": "Lolly (Lollysunnery)",
+    "amount": 113.13,
+    "desc": "Комиссия вывода Paxum / Bybit (5.20% от $2,176)"
+  },
+  {
+    "id": 16,
+    "date": "2026-11-09",
+    "type": "Расход",
+    "category": "Комиссии и вывод",
+    "model": "Eva Blush",
+    "amount": 73.67,
+    "desc": "Комиссия вывода Paxum / Bybit (5.20% от $1,417)"
+  },
+  {
+    "id": 17,
+    "date": "2026-11-09",
+    "type": "Расход",
+    "category": "Комиссии и вывод",
+    "model": "Lolly (1lollyhere)",
+    "amount": 28.59,
+    "desc": "Комиссия вывода Paxum / Bybit (5.20% от $550)"
+  },
+  {
+    "id": 19,
+    "date": "2026-11-11",
+    "type": "Доход",
+    "category": "Выплаты OnlyFans",
+    "model": "Eva Pinky (Fansly)",
+    "amount": 755,
+    "desc": "фансли, до вычета комисии"
+  },
+  {
+    "id": 20,
+    "date": "2026-11-12",
+    "type": "Расход",
+    "category": "Трафик: TikTok",
+    "model": "Eva Pinky (Fansly)",
+    "amount": 125,
+    "desc": "Выплата: @aneskagency (Анастасия) — FYP (Транш/Аванс Fansly)"
+  },
+  {
+    "id": 21,
+    "date": "2026-11-14",
+    "type": "Расход",
+    "category": "Софт: OnlyMonster",
+    "model": "Agency Core (Общие)",
+    "amount": 220,
+    "desc": "Выплата: OnlyMonster CRM (Полная оплата)"
+  },
+  {
+    "id": 23,
+    "date": "2026-11-14",
+    "type": "Расход",
+    "category": "Трафик: OFTV",
+    "model": "Lolly (Lollysunnery)",
+    "amount": 175,
+    "desc": "Выплата: @osckelly (Оскар) — OFTV (Транш/Аванс)"
+  }
+];
 
 class FinanceManager {
   constructor() {
@@ -161,7 +372,7 @@ class FinanceManager {
       const stored = localStorage.getItem(STORAGE_KEY_TX);
       if (stored) {
         const parsed = JSON.parse(stored);
-        if (Array.isArray(parsed)) {
+        if (Array.isArray(parsed) && parsed.length > 0) {
           return parsed.filter(t => !this.isBuggyTransaction(t));
         }
       }
@@ -514,17 +725,30 @@ class FinanceManager {
       }
     });
 
-    // Начисления Период 1 (1-15) к выплате 31-го
-    const p1ModelsDue = p1Income * 0.25;
+    // Расчет начислений: для Eva Pinky (Fansly) отдельный процент модели (30%), для остальных 25%
+    let p1ModelsDue = 0;
+    let p2ModelsDue = 0;
+    txList.forEach(t => {
+      if (t.type === 'Доход') {
+        const amt = Number(t.amount) || 0;
+        const day = parseInt((t.date || '').split('-')[2], 10) || 1;
+        const isFansly = (t.model || '').toLowerCase().includes('fansly') || (t.desc || '').toLowerCase().includes('fansly');
+        const modelPct = isFansly ? 0.30 : 0.25;
+        if (day <= 15) {
+          p1ModelsDue += amt * modelPct;
+        } else {
+          p2ModelsDue += amt * modelPct;
+        }
+      }
+    });
+
     const p1ChattersDue = p1Income * 0.20;
     const p1TotalDue = p1ModelsDue + p1ChattersDue;
 
-    // Начисления Период 2 (16-31) к выплате 15-го след. месяца
-    const p2ModelsDue = p2Income * 0.25;
     const p2ChattersDue = p2Income * 0.20;
     const p2TotalDue = p2ModelsDue + p2ChattersDue;
 
-    // Списание фактических выплат: сначала гасим Период 1, затем Период 2
+    // Списание выплат: сначала гасим обязательства Периода 1, затем Периода 2
     const p1ModelsPaidApplied = Math.min(p1ModelsDue, modelsPaid);
     const p2ModelsPaidApplied = Math.min(p2ModelsDue, Math.max(0, modelsPaid - p1ModelsDue));
 
@@ -533,14 +757,14 @@ class FinanceManager {
 
     const p1ModelsRemaining = Math.max(0, p1ModelsDue - p1ModelsPaidApplied);
     const p1ChattersRemaining = Math.max(0, p1ChattersDue - p1ChattersPaidApplied);
-    const p1Remaining = 0;
+    const p1Remaining = p1ModelsRemaining + p1ChattersRemaining;
 
     const p2ModelsRemaining = Math.max(0, p2ModelsDue - p2ModelsPaidApplied);
     const p2ChattersRemaining = Math.max(0, p2ChattersDue - p2ChattersPaidApplied);
     const p2Remaining = p2ModelsRemaining + p2ChattersRemaining;
 
-    // Резерв обязательств к ближайшей выплате
-    const totalEscrowRemaining = p2Remaining;
+    // Резерв обязательств к выплате
+    const totalEscrowRemaining = p1Remaining + p2Remaining;
 
     return {
       p1Income,
@@ -549,7 +773,6 @@ class FinanceManager {
       p1ChattersDue,
       p1TotalDue,
       p1Remaining,
-      p1RemainingCalculated,
       p2ModelsDue,
       p2ChattersDue,
       p2TotalDue,
@@ -841,7 +1064,7 @@ class FinanceManager {
     };
   }
 
-  // 4. Аудит честности начислений и выплат (Антифрод: Модели 25%, Чаттеры 20%, Агентство 55%)
+  // 4. Сверка выплат: План vs Факт (Модели, Чаттеры, Агентство)
   calculatePayrollAudit(selectedPeriod = this.selectedPeriod, txList = this.getFiltered()) {
     const modelRec = this.calculateModelEarningsReconciliation(selectedPeriod, txList);
 
@@ -855,9 +1078,14 @@ class FinanceManager {
 
     const modelAuditList = modelRec.models.map(m => {
       const earned = m.totalEarned;
-      const modelPlan = earned * 0.25;
-      const chatterPlan = earned * 0.20;
-      const agencyShare = earned * 0.55;
+      // Для Eva Pinky (Fansly) отдельный процент модели (30%), для OnlyFans - 25%
+      const isFansly = m.name.toLowerCase().includes('fansly') || m.name.toLowerCase().includes('eva pinky');
+      const modelPct = isFansly ? 0.30 : 0.25;
+      const chatterPct = 0.20;
+      const modelPlan = earned * modelPct;
+      const chatterPlan = earned * chatterPct;
+      // Доля агентства рассчитывается динамически: заработано минус доля модели и чаттеров
+      const agencyShare = Math.max(0, earned - modelPlan - chatterPlan);
 
       const modelPaidTxs = txList.filter(t => {
         if (t.type !== 'Расход') return false;
@@ -906,7 +1134,7 @@ class FinanceManager {
       } else if (totalTeamPaid > 0 && totalTeamPaid < totalTeamPlan - 5) {
         statusBadge = `<span style="font-size: 11px; padding: 3px 8px; border-radius: 8px; background: rgba(56, 189, 248, 0.15); color: var(--primary); font-weight: 700; border: 1px solid rgba(56, 189, 248, 0.3);">⚡ Аванс (Остаток: $${Math.round(totalTeamPlan - totalTeamPaid)})</span>`;
       } else {
-        statusBadge = `<span style="font-size: 11px; padding: 3px 8px; border-radius: 8px; background: rgba(52, 211, 153, 0.15); color: var(--accent-green); font-weight: 700; border: 1px solid rgba(52, 211, 153, 0.3);">🟢 Честно 100%</span>`;
+        statusBadge = `<span style="font-size: 11px; padding: 3px 8px; border-radius: 8px; background: rgba(52, 211, 153, 0.15); color: var(--accent-green); font-weight: 700; border: 1px solid rgba(52, 211, 153, 0.3);">🟢 Сходится</span>`;
       }
 
       return {
@@ -1266,7 +1494,11 @@ export function initFinanceModule() {
       elEscrow.style.color = escrowDue > 0 ? '#fbbf24' : 'var(--accent-green)';
     }
     if (elEscrowSub) {
-      elEscrowSub.textContent = `К 15-му числу: $${Math.round(p2Due).toLocaleString()}`;
+      if (escrowDue > 0) {
+        elEscrowSub.textContent = `Обязательства по ЗП: $${Math.round(escrowDue).toLocaleString()}`;
+      } else {
+        elEscrowSub.textContent = `Текущие выплаты закрыты`;
+      }
     }
 
     // 3. Свободная касса овнера (Safe Cash)
@@ -2336,7 +2568,7 @@ export function initFinanceModule() {
     }
   }
 
-  // 4. Аудит честности выплат (Антифрод: Модели 25%, Чаттеры 20%, Агентство 55%)
+  // 4. Сверка выплат: План vs Факт
   function renderPayrollAudit(auditData) {
     const badge = document.getElementById('fin-audit-badge');
     const kpiGrid = document.getElementById('fin-audit-kpi-grid');
@@ -2345,7 +2577,7 @@ export function initFinanceModule() {
 
     if (badge) {
       if (auditData.isClean) {
-        badge.textContent = '🟢 Начисления строго по формуле (Переплат нет)';
+        badge.textContent = '🟢 Выплаты сходятся (Переплат нет)';
         badge.style.background = 'rgba(52, 211, 153, 0.15)';
         badge.style.color = 'var(--accent-green)';
         badge.style.border = '1px solid rgba(52, 211, 153, 0.3)';
@@ -2385,25 +2617,25 @@ export function initFinanceModule() {
 
         <div style="background: rgba(56, 189, 248, 0.05); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: var(--radius-sm); padding: 14px 16px;">
           <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--primary); font-weight: 700; margin-bottom: 4px;">
-            💼 Маржа Агентства (55%)
+            💼 Доля Агентства ($)
           </div>
           <div style="font-size: 20px; font-weight: 800; font-family: var(--font-heading); color: var(--primary);">
             $${auditData.totalAgencyShareAll.toLocaleString('en-US', { minimumFractionDigits: 2 })}
           </div>
           <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">
-            Пул агентства на трафик, софт и прибыль
+            Доля агентства после доли модели и пула чаттеров
           </div>
         </div>
 
         <div style="background: ${auditData.isClean ? 'rgba(52, 211, 153, 0.05)' : 'rgba(239, 68, 68, 0.08)'}; border: 1px solid ${auditData.isClean ? 'rgba(52, 211, 153, 0.25)' : 'var(--accent-rose)'}; border-radius: var(--radius-sm); padding: 14px 16px;">
           <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: ${auditData.isClean ? 'var(--accent-green)' : 'var(--accent-rose)'}; font-weight: 700; margin-bottom: 4px;">
-            🛡️ Контроль Честности (Антифрод)
+            ⚖️ Сверка Выплат
           </div>
           <div style="font-size: 18px; font-weight: 800; font-family: var(--font-heading); color: ${auditData.isClean ? 'var(--accent-green)' : 'var(--accent-rose)'};">
             ${auditData.isClean ? '0 нарушений (Чисто)' : `⚠️ Переплата +$${auditData.totalOverpaidAmount.toFixed(2)}`}
           </div>
           <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">
-            ${auditData.isClean ? 'Ни один доллар не переплачен' : 'Обнаружено превышение бюджета!'}
+            ${auditData.isClean ? 'Все начисления строго соответствуют заработанному' : 'Обнаружено превышение бюджета!'}
           </div>
         </div>
       `;
@@ -2442,7 +2674,7 @@ export function initFinanceModule() {
           <td style="font-family: var(--font-mono); font-size: 12px; color: ${totalDeltaAll > 5 ? 'var(--accent-rose)' : 'var(--accent-green)'};">
             ${totalDeltaAll > 0 ? '+' : ''}$${totalDeltaAll.toFixed(2)}
           </td>
-          <td><span style="font-size: 11px; color: var(--accent-green); font-weight: 700;">🟢 Аудит формулы</span></td>
+          <td><span style="font-size: 11px; color: var(--accent-green); font-weight: 700;">🟢 Сверка: Ок</span></td>
         </tr>
       `;
 
@@ -2623,7 +2855,7 @@ export function initFinanceModule() {
     renderCashReconciliation(cashReconciliation);
     renderModelEarningsReconciliation(modelReconciliation, manager.selectedPeriod);
     
-    // Аудит честности выплат (Антифрод: Модели 25%, Чаттеры 20%, Агентство 55%)
+    // Сверка выплат: План vs Факт
     const payrollAudit = manager.calculatePayrollAudit(manager.selectedPeriod, txs);
     renderPayrollAudit(payrollAudit);
 
