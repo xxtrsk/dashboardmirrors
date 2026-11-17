@@ -2,10 +2,12 @@
 // Compatible with Vercel Static Hosting & Client-side XLSX export/import
 import { initialModelWeekly, initialChatterWeekly } from './data.js';
 
-const STORAGE_KEY_TX = 'mirrors_finance_transactions_v2';
-const STORAGE_KEY_BUDGET = 'mirrors_finance_budgets_v2';
+const STORAGE_KEY_TX = 'mirrors_finance_transactions_v4';
+const STORAGE_KEY_BUDGET = 'mirrors_finance_budgets_v4';
 const STORAGE_KEY_GSHEET_URL = 'mirrors_finance_gsheet_url_v1';
 const STORAGE_KEY_DELETED = 'mirrors_deleted_tx_signatures_v1';
+const STORAGE_KEY_ACTUAL_WALLET = 'mirrors_actual_usdt_wallet_v4';
+const STORAGE_KEY_IN_TRANSIT = 'mirrors_in_transit_amount_v4';
 
 export const DEFAULT_GSHEET_URL = 'https://script.google.com/macros/s/AKfycbxoYKuPxOrq_L4LsoUrQCStPnzv3XqQpgLCjf7ICmoa103pSThavtHVPBihTbiFo8FA6Q/exec';
 
@@ -110,170 +112,7 @@ export const CONTRACTOR_SCHEDULE = [
   },
 ];
 
-const SEED_TRANSACTIONS = [
-  {
-    "id": 6,
-    "date": "2026-11-02",
-    "type": "Доход",
-    "category": "Выплаты OnlyFans",
-    "model": "Lolly (Lollysunnery)",
-    "amount": 1301,
-    "desc": "Вывод OnlyFans Lollysunnery (сплит вывода $2500)"
-  },
-  {
-    "id": 7,
-    "date": "2026-11-02",
-    "type": "Доход",
-    "category": "Выплаты OnlyFans",
-    "model": "Eva Blush",
-    "amount": 650,
-    "desc": "Вывод OnlyFans Eva Blush (сплит вывода $2500)"
-  },
-  {
-    "id": 8,
-    "date": "2026-11-02",
-    "type": "Доход",
-    "category": "Выплаты OnlyFans",
-    "model": "Lolly (1lollyhere)",
-    "amount": 549,
-    "desc": "Вывод OnlyFans 1lollyhere (сплит вывода $2500)"
-  },
-  {
-    "id": 12,
-    "date": "2026-11-02",
-    "type": "Расход",
-    "category": "Комиссии и вывод",
-    "model": "Lolly (Lollysunnery)",
-    "amount": 70.77,
-    "desc": "Комиссия вывода Paxum / Bybit (5.44% от $1,301)"
-  },
-  {
-    "id": 13,
-    "date": "2026-11-02",
-    "type": "Расход",
-    "category": "Комиссии и вывод",
-    "model": "Eva Blush",
-    "amount": 35.36,
-    "desc": "Комиссия вывода Paxum / Bybit (5.44% от $650)"
-  },
-  {
-    "id": 14,
-    "date": "2026-11-02",
-    "type": "Расход",
-    "category": "Комиссии и вывод",
-    "model": "Lolly (1lollyhere)",
-    "amount": 29.87,
-    "desc": "Комиссия вывода Paxum / Bybit (5.44% от $549)"
-  },
-  {
-    "id": 18,
-    "date": "2026-11-02",
-    "type": "Доход",
-    "category": "Выплаты OnlyFans",
-    "model": "Eva Pinky (Fansly)",
-    "amount": 638,
-    "desc": "fansly, до вычета комсы"
-  },
-  {
-    "id": 22,
-    "date": "2026-11-04",
-    "type": "Расход",
-    "category": "Прочие расходы",
-    "model": "Lolly (Lollysunnery)",
-    "amount": 31.5,
-    "desc": "opex oftv (покупка продуктов для видео)"
-  },
-  {
-    "id": 9,
-    "date": "2026-11-09",
-    "type": "Доход",
-    "category": "Выплаты OnlyFans",
-    "model": "Lolly (1lollyhere)",
-    "amount": 550,
-    "desc": "Вывод OnlyFans Lolly (1lollyhere) (сплит на $4,143.00)"
-  },
-  {
-    "id": 10,
-    "date": "2026-11-09",
-    "type": "Доход",
-    "category": "Выплаты OnlyFans",
-    "model": "Lolly (Lollysunnery)",
-    "amount": 2176,
-    "desc": "Вывод OnlyFans Lolly (Lollysunnery) (сплит на $4,143.00)"
-  },
-  {
-    "id": 11,
-    "date": "2026-11-09",
-    "type": "Доход",
-    "category": "Выплаты OnlyFans",
-    "model": "Eva Blush",
-    "amount": 1417,
-    "desc": "Вывод OnlyFans Eva Blush (сплит на $4,143.00)"
-  },
-  {
-    "id": 15,
-    "date": "2026-11-09",
-    "type": "Расход",
-    "category": "Комиссии и вывод",
-    "model": "Lolly (Lollysunnery)",
-    "amount": 113.13,
-    "desc": "Комиссия вывода Paxum / Bybit (5.20% от $2,176)"
-  },
-  {
-    "id": 16,
-    "date": "2026-11-09",
-    "type": "Расход",
-    "category": "Комиссии и вывод",
-    "model": "Eva Blush",
-    "amount": 73.67,
-    "desc": "Комиссия вывода Paxum / Bybit (5.20% от $1,417)"
-  },
-  {
-    "id": 17,
-    "date": "2026-11-09",
-    "type": "Расход",
-    "category": "Комиссии и вывод",
-    "model": "Lolly (1lollyhere)",
-    "amount": 28.59,
-    "desc": "Комиссия вывода Paxum / Bybit (5.20% от $550)"
-  },
-  {
-    "id": 19,
-    "date": "2026-11-11",
-    "type": "Доход",
-    "category": "Выплаты OnlyFans",
-    "model": "Eva Pinky (Fansly)",
-    "amount": 755,
-    "desc": "фансли, до вычета комисии"
-  },
-  {
-    "id": 20,
-    "date": "2026-11-12",
-    "type": "Расход",
-    "category": "Трафик: TikTok",
-    "model": "Eva Pinky (Fansly)",
-    "amount": 125,
-    "desc": "Выплата: @aneskagency (Анастасия) — FYP (Транш/Аванс Fansly)"
-  },
-  {
-    "id": 21,
-    "date": "2026-11-14",
-    "type": "Расход",
-    "category": "Софт: OnlyMonster",
-    "model": "Agency Core (Общие)",
-    "amount": 220,
-    "desc": "Выплата: OnlyMonster CRM (Полная оплата)"
-  },
-  {
-    "id": 23,
-    "date": "2026-11-14",
-    "type": "Расход",
-    "category": "Трафик: OFTV",
-    "model": "Lolly (Lollysunnery)",
-    "amount": 175,
-    "desc": "Выплата: @osckelly (Оскар) — OFTV (Транш/Аванс)"
-  }
-];
+const SEED_TRANSACTIONS = [];
 
 class FinanceManager {
   constructor() {
@@ -322,9 +161,9 @@ class FinanceManager {
   loadTransactions() {
     try {
       const stored = localStorage.getItem(STORAGE_KEY_TX);
-      if (stored) {
+      if (stored !== null) {
         const parsed = JSON.parse(stored);
-        if (Array.isArray(parsed) && parsed.length > 0) {
+        if (Array.isArray(parsed)) {
           return parsed.filter(t => !this.isBuggyTransaction(t));
         }
       }
@@ -585,6 +424,9 @@ class FinanceManager {
     try {
       localStorage.removeItem(STORAGE_KEY_TX);
       localStorage.removeItem(STORAGE_KEY_BUDGET);
+      localStorage.removeItem(STORAGE_KEY_ACTUAL_WALLET);
+      localStorage.removeItem(STORAGE_KEY_IN_TRANSIT);
+      localStorage.setItem(STORAGE_KEY_TX, JSON.stringify([]));
     } catch (e) {
       console.warn('Reset failed:', e);
     }
@@ -923,8 +765,8 @@ class FinanceManager {
     });
 
     // Распределение денег в пути (In-Transit) и остатка на балансе страницы (к следующему выводу)
-    const savedInTransit = localStorage.getItem('mirrors_in_transit_amount');
-    const globalTransit = savedInTransit !== null ? parseFloat(savedInTransit) : 2450.00;
+    const savedInTransit = localStorage.getItem(STORAGE_KEY_IN_TRANSIT);
+    const globalTransit = savedInTransit !== null ? parseFloat(savedInTransit) : 0.00;
     const totalRemaining = modelsData.reduce((sum, m) => sum + Math.max(0, m.totalEarned - m.withdrawnToCash), 0);
     let totalTransitAll = 0;
 
@@ -1474,8 +1316,8 @@ export function initFinanceModule() {
 
     // 2. Деньги в пути (Транзит OnlyFans / Paxum -> Bybit)
     if (elTopTransit) {
-      const savedInTransit = localStorage.getItem('mirrors_in_transit_amount');
-      const transitVal = savedInTransit !== null ? parseFloat(savedInTransit) : 2450.00;
+      const savedInTransit = localStorage.getItem(STORAGE_KEY_IN_TRANSIT);
+      const transitVal = savedInTransit !== null ? parseFloat(savedInTransit) : 0.00;
       elTopTransit.textContent = `$${transitVal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
     }
 
@@ -1667,17 +1509,15 @@ export function initFinanceModule() {
       }
     });
 
-    // Сплит общих расходов агентства (Agency costs USDT) и админских поровну на 5 анкет (точно как на Скрине 3!)
+    // Сплит общих расходов агентства (Agency costs USDT) поровну на 5 анкет (точно как на Скрине 3!)
     const modelCount = matrixModels.length;
     const agencyPerModel = modelCount > 0 ? totalAgencyOverhead / modelCount : 0;
-    const adminPerModel = modelCount > 0 ? totalAdminOverhead / modelCount : 0;
 
     // Итоговые расчеты по каждой анкете
     matrixModels.forEach(m => {
       const s = stats[m.name];
       s.agencyCosts = agencyPerModel;
-      s.adminCosts = adminPerModel;
-      s.costsAll = s.costsModel + s.costsOperators + s.costsMarketing + s.costsFees + s.agencyCosts + s.adminCosts;
+      s.costsAll = s.costsModel + s.costsOperators + s.costsMarketing + s.costsFees + s.agencyCosts;
       s.gmp = s.earned - s.costsAll;
       s.costsAllPct = s.earned > 0 ? (s.costsAll / s.earned) * 100 : 0;
       s.gmpPct = s.earned > 0 ? (s.gmp / s.earned) * 100 : 0;
@@ -1691,7 +1531,6 @@ export function initFinanceModule() {
       costsMarketing: Object.values(stats).reduce((acc, s) => acc + s.costsMarketing, 0),
       costsFees: Object.values(stats).reduce((acc, s) => acc + s.costsFees, 0),
       agencyCosts: totalAgencyOverhead,
-      adminCosts: totalAdminOverhead,
       costsAll: Object.values(stats).reduce((acc, s) => acc + s.costsAll, 0),
       gmp: 0,
       costsAllPct: 0,
@@ -1762,7 +1601,6 @@ export function initFinanceModule() {
             ${renderRow('🎯 Costs marketing (Трафик)', totalAgency.costsMarketing, s => s.costsMarketing, { color: 'var(--accent-rose)' })}
             ${renderRow('💳 Costs withdraw fee (Комиссия вывода)', totalAgency.costsFees, s => s.costsFees, { color: 'var(--accent-amber)' })}
             ${renderRow('🏢 Agency costs USDT (Опекс/софт сплит)', totalAgency.agencyCosts, s => s.agencyCosts, { color: 'var(--text-muted)' })}
-            ${renderRow('👔 Admin (Административные расходы)', totalAgency.adminCosts, s => s.adminCosts, { color: '#38bdf8' })}
             ${renderRow('📉 Costs all $ (ИТОГО РАСХОДОВ)', totalAgency.costsAll, s => s.costsAll, { isBold: true, isHighlight: true, color: 'var(--text-main)' })}
             ${renderRow('📊 Costs all % (Доля расходов)', totalAgency.costsAllPct, s => s.costsAllPct, { isBold: true, isPct: true, color: 'var(--text-muted)' })}
             ${renderRow('🏆 GMP $ (Gross Margin Profit)', totalAgency.gmp, s => s.gmp, { isBold: true, isGmp: true })}
@@ -2120,14 +1958,14 @@ export function initFinanceModule() {
     const container = document.getElementById('fin-cash-reconciliation-container');
 
     // Баланс, сохраненный овнером/Владом для сверки
-    const savedActualVal = localStorage.getItem('mirrors_actual_usdt_wallet');
+    const savedActualVal = localStorage.getItem(STORAGE_KEY_ACTUAL_WALLET);
     const actualWalletVal = savedActualVal !== null ? parseFloat(savedActualVal) : rec.expectedCashBalance;
     const deltaUsdt = actualWalletVal - rec.expectedCashBalance;
     const isUsdtBalanced = Math.abs(deltaUsdt) < 0.01;
 
     // Деньги в пути (In-Transit: OnlyFans / Paxum / P2P транзит)
-    const savedTransitVal = localStorage.getItem('mirrors_in_transit_amount');
-    const transitVal = savedTransitVal !== null ? parseFloat(savedTransitVal) : 2450.00;
+    const savedTransitVal = localStorage.getItem(STORAGE_KEY_IN_TRANSIT);
+    const transitVal = savedTransitVal !== null ? parseFloat(savedTransitVal) : 0.00;
     const totalLiquidity = actualWalletVal + transitVal;
 
     if (badge) {
@@ -2324,7 +2162,7 @@ export function initFinanceModule() {
       if (btnSaveActual && inputActual) {
         btnSaveActual.onclick = () => {
           const val = parseFloat(inputActual.value) || 0;
-          localStorage.setItem('mirrors_actual_usdt_wallet', val.toString());
+          localStorage.setItem(STORAGE_KEY_ACTUAL_WALLET, val.toString());
           showToast(`💾 Фактический баланс кошелька Bybit сохранен: $${val.toLocaleString()}`);
           renderAll();
         };
@@ -2336,7 +2174,7 @@ export function initFinanceModule() {
       if (btnSaveTransit && inputTransit) {
         btnSaveTransit.onclick = () => {
           const val = parseFloat(inputTransit.value) || 0;
-          localStorage.setItem('mirrors_in_transit_amount', val.toString());
+          localStorage.setItem(STORAGE_KEY_IN_TRANSIT, val.toString());
           showToast(`🚀 Сумма «В пути» обновлена: $${val.toLocaleString()}`);
           renderAll();
         };
