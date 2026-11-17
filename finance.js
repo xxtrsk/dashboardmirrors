@@ -533,14 +533,13 @@ class FinanceManager {
 
     const p1ModelsRemaining = Math.max(0, p1ModelsDue - p1ModelsPaidApplied);
     const p1ChattersRemaining = Math.max(0, p1ChattersDue - p1ChattersPaidApplied);
-    const p1RemainingCalculated = p1ModelsRemaining + p1ChattersRemaining;
-    const p1Remaining = 0; // Заморозка на 31 число временно отключена по запросу овнера
+    const p1Remaining = 0;
 
     const p2ModelsRemaining = Math.max(0, p2ModelsDue - p2ModelsPaidApplied);
     const p2ChattersRemaining = Math.max(0, p2ChattersDue - p2ChattersPaidApplied);
     const p2Remaining = p2ModelsRemaining + p2ChattersRemaining;
 
-    // В резерве удерживаем только период к 15-му числу (заморозка на 31-е число отключена)
+    // Резерв обязательств к ближайшей выплате
     const totalEscrowRemaining = p2Remaining;
 
     return {
@@ -748,7 +747,7 @@ class FinanceManager {
       };
     });
 
-    // Распределение денег в пути (In-Transit) и остатка в хольде OnlyFans
+    // Распределение денег в пути (In-Transit) и остатка на балансе страницы (к следующему выводу)
     const savedInTransit = localStorage.getItem('mirrors_in_transit_amount');
     const globalTransit = savedInTransit !== null ? parseFloat(savedInTransit) : 2450.00;
     const totalRemaining = modelsData.reduce((sum, m) => sum + Math.max(0, m.totalEarned - m.withdrawnToCash), 0);
@@ -1258,7 +1257,7 @@ export function initFinanceModule() {
       elCash.style.color = cashBalance >= 0 ? '#34d399' : 'var(--accent-rose)';
     }
 
-    // 2. Зарплатный резерв (Эскроу к 15-му числу, заморозка на 31-е отключена)
+    // 2. Зарплатный резерв (Обязательства к 15-му числу)
     const escrowDue = escrowData ? escrowData.totalEscrowRemaining : 0;
     const p2Due = escrowData ? escrowData.p2Remaining : 0;
 
@@ -1267,7 +1266,7 @@ export function initFinanceModule() {
       elEscrow.style.color = escrowDue > 0 ? '#fbbf24' : 'var(--accent-green)';
     }
     if (elEscrowSub) {
-      elEscrowSub.textContent = `К 15-му: $${Math.round(p2Due).toLocaleString()} (заморозка на 31-е отключена)`;
+      elEscrowSub.textContent = `К 15-му числу: $${Math.round(p2Due).toLocaleString()}`;
     }
 
     // 3. Свободная касса овнера (Safe Cash)
@@ -1917,8 +1916,8 @@ export function initFinanceModule() {
 
         <!-- Cash Flow Bar -->
         <div style="background: rgba(0, 0, 0, 0.25); border-radius: 6px; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: var(--text-muted); flex-wrap: wrap; gap: 8px;">
-          <span>📈 <strong>Cash Flow:</strong> Заморозка на 31-е число отключена | Резерв удерживается только к 15-му числу</span>
-          <span>📅 Выплаты: 15-го числа</span>
+          <span>📈 <strong>Cash Flow:</strong> График выплат команде (15 и 31 числа)</span>
+          <span>📅 Ближайшая выплата: 15-го числа</span>
         </div>
       </div>
     `;
@@ -2190,7 +2189,7 @@ export function initFinanceModule() {
         } else if (m.inTransit > 0 && m.withdrawnToCash === 0) {
           statusBadge = '<span style="font-size: 11px; padding: 3px 8px; border-radius: 8px; background: rgba(56, 189, 248, 0.15); color: #38bdf8; font-weight: 700;">🚀 В пути на кошелек</span>';
         } else if (m.inHold > 0 && m.withdrawnToCash === 0) {
-          statusBadge = '<span style="font-size: 11px; padding: 3px 8px; border-radius: 8px; background: rgba(245, 158, 11, 0.15); color: var(--accent-amber); font-weight: 700;">🟡 В хольде OF</span>';
+          statusBadge = '<span style="font-size: 11px; padding: 3px 8px; border-radius: 8px; background: rgba(245, 158, 11, 0.15); color: var(--accent-amber); font-weight: 700;">🟡 На балансе анкеты</span>';
         } else {
           statusBadge = '<span style="font-size: 11px; color: var(--text-dim);">—</span>';
         }
