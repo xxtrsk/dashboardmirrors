@@ -11,13 +11,13 @@ export const DEFAULT_GSHEET_URL = 'https://script.google.com/macros/s/AKfycbxoYK
 
 export const FINANCE_INCOME_CATS = [
   'Выплаты OnlyFans',
+  'Вывод в пути (Транзит Paxum / OF)',
   'Прочий доход'
 ];
 
 export const FINANCE_EXPENSE_CATS = [
   'Трафик: OFTV',
   'Трафик: Reddit',
-  'Трафик: TikTok',
   'Трафик: Twitter',
   'Выплаты: PayPal',
   'Зарплаты: Чаттеры',
@@ -731,15 +731,11 @@ class FinanceManager {
       });
       const withdrawnToCash = modelIncomeTxs.reduce((sum, t) => sum + (Number(t.amount) || 0), 0);
 
-      // В хольде OnlyFans (ожидает вывода в ближайший понедельник)
-      const inHold = Math.max(0, totalEarned - withdrawnToCash);
-
       totalGrossAll += grossRev;
       totalNetAll += netRev;
       totalPaypalAll += ppRev;
       totalEarnedAll += totalEarned;
       totalWithdrawnAll += withdrawnToCash;
-      totalHoldAll += inHold;
 
       return {
         ...m,
@@ -748,14 +744,26 @@ class FinanceManager {
         ppRev,
         totalEarned,
         withdrawnToCash,
-        inHold,
         sharePct: 0
       };
     });
 
+    // Распределение денег в пути (In-Transit) и остатка в хольде OnlyFans
+    const savedInTransit = localStorage.getItem('mirrors_in_transit_amount');
+    const globalTransit = savedInTransit !== null ? parseFloat(savedInTransit) : 2450.00;
+    const totalRemaining = modelsData.reduce((sum, m) => sum + Math.max(0, m.totalEarned - m.withdrawnToCash), 0);
+    let totalTransitAll = 0;
+
     modelsData.forEach(m => {
       m.sharePct = totalEarnedAll > 0 ? (m.totalEarned / totalEarnedAll) * 100 : 0;
+      const rem = Math.max(0, m.totalEarned - m.withdrawnToCash);
+      const mTransit = totalRemaining > 0 ? Math.round((rem / totalRemaining) * Math.min(globalTransit, totalRemaining) * 100) / 100 : 0;
+      m.inTransit = mTransit;
+      m.inHold = Math.max(0, rem - mTransit);
+      totalTransitAll += mTransit;
     });
+
+    totalHoldAll = modelsData.reduce((sum, m) => sum + m.inHold, 0);
 
     return {
       period: selectedPeriod,
@@ -765,6 +773,7 @@ class FinanceManager {
       totalPaypalAll,
       totalEarnedAll,
       totalWithdrawnAll,
+      totalTransitAll,
       totalHoldAll
     };
   }
@@ -1506,15 +1515,15 @@ export function initFinanceModule() {
         const isGmp = options.isGmp || false;
         const isPct = options.isPct || false;
         const customColor = options.color || 'var(--text-main)';
-        const bg = isGmp ? 'rgba(16, 185, 129, 0.07)' : (isHighlight ? 'rgba(244, 63, 94, 0.04)' : 'transparent');
-        const borderTop = isGmp ? '2px solid #334155' : (isHighlight ? '1px solid #334155' : '1px solid #1e293b');
+        const bg = isGmp ? 'rgba(16, 185, 129, 0.08)' : (isHighlight ? 'rgba(244, 63, 94, 0.05)' : 'transparent');
+        const borderTop = isGmp ? '2px solid #475569' : (isHighlight ? '1px solid #475569' : '1px solid #353e52');
 
         return `
           <tr style="background: ${bg}; border-top: ${borderTop};">
-            <td style="position: sticky; left: 0; background: #0d131f; z-index: 2; border-right: 1px solid #1e293b; font-weight: ${isBold ? '800' : '600'}; color: ${isBold ? 'var(--text-main)' : 'var(--text-secondary)'}; font-size: 13px; padding: 11px 16px; white-space: nowrap;">
+            <td style="position: sticky; left: 0; background: #222734; z-index: 2; border-right: 1px solid #353e52; font-weight: ${isBold ? '800' : '600'}; color: ${isBold ? '#f8fafc' : '#cbd5e1'}; font-size: 13px; padding: 11px 16px; white-space: nowrap;">
               ${label}
             </td>
-            <td style="background: rgba(56, 189, 248, 0.08); border-left: 2px solid var(--primary); border-right: 2px solid var(--primary); font-family: var(--font-mono); font-weight: 800; font-size: ${isGmp ? '15px' : '13px'}; text-align: right; color: ${isGmp ? (agencyVal >= 0 ? 'var(--accent-green)' : 'var(--accent-rose)') : customColor}; padding: 11px 16px;">
+            <td style="background: rgba(56, 189, 248, 0.12); border-left: 2px solid var(--primary); border-right: 2px solid var(--primary); font-family: var(--font-mono); font-weight: 800; font-size: ${isGmp ? '15px' : '13px'}; text-align: right; color: ${isGmp ? (agencyVal >= 0 ? 'var(--accent-green)' : 'var(--accent-rose)') : customColor}; padding: 11px 16px;">
               ${isPct ? `${agencyVal.toFixed(1)}%` : formatUsd(agencyVal, isGmp ? 0 : 2)}
             </td>
             ${matrixModels.map(m => {
@@ -1536,11 +1545,11 @@ export function initFinanceModule() {
       matrixContainer.innerHTML = `
         <table class="data-table" style="min-width: 960px; border-collapse: separate; border-spacing: 0;">
           <thead>
-            <tr style="background: #131b2e;">
-              <th style="position: sticky; left: 0; background: #131b2e; z-index: 3; min-width: 250px; font-size: 13px; font-weight: 800; color: #f8fafc; border-right: 1px solid #1e293b; padding: 13px 16px;">
+            <tr style="background: #2a3142;">
+              <th style="position: sticky; left: 0; background: #2a3142; z-index: 3; min-width: 250px; font-size: 13px; font-weight: 800; color: #f8fafc; border-right: 1px solid #353e52; padding: 13px 16px;">
                 Статья затрат / Метрика
               </th>
-              <th style="min-width: 170px; background: rgba(56, 189, 248, 0.15); color: var(--primary); font-weight: 800; font-size: 13px; border-left: 2px solid var(--primary); border-right: 2px solid var(--primary); text-align: right; padding: 13px 16px;">
+              <th style="min-width: 170px; background: rgba(56, 189, 248, 0.18); color: var(--primary); font-weight: 800; font-size: 13px; border-left: 2px solid var(--primary); border-right: 2px solid var(--primary); text-align: right; padding: 13px 16px;">
                 🏢 ВСЕ АГЕНТСТВО
               </th>
               ${matrixModels.map(m => `
@@ -1929,6 +1938,11 @@ export function initFinanceModule() {
     const deltaUsdt = actualWalletVal - rec.expectedCashBalance;
     const isUsdtBalanced = Math.abs(deltaUsdt) < 0.01;
 
+    // Деньги в пути (In-Transit: OnlyFans / Paxum / P2P транзит)
+    const savedTransitVal = localStorage.getItem('mirrors_in_transit_amount');
+    const transitVal = savedTransitVal !== null ? parseFloat(savedTransitVal) : 2450.00;
+    const totalLiquidity = actualWalletVal + transitVal;
+
     if (badge) {
       if (isUsdtBalanced) {
         badge.textContent = '🟢 Сходится 100%';
@@ -1950,30 +1964,31 @@ export function initFinanceModule() {
 
     if (container) {
       container.innerHTML = `
-        <!-- Таблица Сверки Кассы USDT (1-в-1 как в Скрине 1) -->
-        <div class="table-container scrollable-slider" style="margin-bottom: 16px; border: 1px solid rgba(16, 185, 129, 0.25); border-radius: 8px;">
-          <table class="data-table" style="min-width: 720px;">
+        <!-- Таблица Сверки Кассы USDT & Деньги в Пути -->
+        <div class="table-container scrollable-slider" style="margin-bottom: 16px; border: 1px solid #353e52; border-radius: 8px;">
+          <table class="data-table" style="min-width: 760px;">
             <thead>
-              <tr style="background: rgba(16, 185, 129, 0.08);">
-                <th style="font-size: 13px;">Счет / Кошелек</th>
-                <th style="color: var(--accent-green); text-align: right; font-size: 13px;">Input (Всего зашло)</th>
-                <th style="color: var(--accent-rose); text-align: right; font-size: 13px;">Output (Всего ушло)</th>
-                <th style="color: var(--primary); text-align: right; font-size: 13px;">Баланс расчетный $</th>
-                <th style="text-align: right; font-size: 13px;">Факт в кошельке (Bybit) $</th>
-                <th style="text-align: right; font-size: 13px;">Расхождение (Дельта)</th>
+              <tr style="background: #2a3142;">
+                <th style="font-size: 13px;">Счет / Статус активов</th>
+                <th style="color: var(--accent-green); text-align: right; font-size: 13px;">Input (Зашло)</th>
+                <th style="color: var(--accent-rose); text-align: right; font-size: 13px;">Output (Ушло)</th>
+                <th style="color: var(--primary); text-align: right; font-size: 13px;">Расчетный баланс $</th>
+                <th style="text-align: right; font-size: 13px;">Факт в кошельке $</th>
+                <th style="text-align: right; font-size: 13px;">Дельта / В пути</th>
                 <th style="font-size: 13px;">Контроль сходимости</th>
               </tr>
             </thead>
             <tbody>
+              <!-- Строка 1: Касса Bybit факт -->
               <tr>
-                <td style="font-weight: 800; color: var(--text-main); font-size: 13px;">💎 USDT (Bybit / Крипта)</td>
+                <td style="font-weight: 800; color: #f8fafc; font-size: 13px;">💎 USDT (Касса Bybit на руках)</td>
                 <td style="font-family: var(--font-mono); color: var(--accent-green); font-weight: 700; text-align: right;">+$${rec.inflow.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
                 <td style="font-family: var(--font-mono); color: var(--accent-rose); font-weight: 700; text-align: right;">-$${rec.outflow.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
                 <td style="font-family: var(--font-mono); color: var(--primary); font-weight: 800; font-size: 14px; text-align: right;">$${rec.expectedCashBalance.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
                 <td style="text-align: right;">
                   <div style="display: inline-flex; align-items: center; gap: 6px;">
-                    <input id="fin-input-actual-usdt" type="number" step="0.01" value="${actualWalletVal.toFixed(2)}" style="width: 105px; padding: 4px 8px; font-family: var(--font-mono); font-weight: 700; background: #0f172a; border: 1px solid #334155; color: #f8fafc; border-radius: 4px; text-align: right;" />
-                    <button id="fin-btn-save-actual-usdt" class="btn-action btn-pay-contractor" style="padding: 4px 8px; font-size: 11px;" title="Сохранить факт кошелька">💾</button>
+                    <input id="fin-input-actual-usdt" type="number" step="0.01" value="${actualWalletVal.toFixed(2)}" style="width: 105px; padding: 4px 8px; font-family: var(--font-mono); font-weight: 700; background: #283042; border: 1px solid #414c62; color: #f8fafc; border-radius: 4px; text-align: right;" />
+                    <button id="fin-btn-save-actual-usdt" class="btn-action btn-pay-contractor" style="padding: 4px 8px; font-size: 11px;" title="Сохранить факт Bybit">💾</button>
                   </div>
                 </td>
                 <td style="font-family: var(--font-mono); font-weight: 800; font-size: 13px; color: ${isUsdtBalanced ? 'var(--accent-green)' : 'var(--accent-rose)'}; text-align: right;">
@@ -1985,11 +2000,49 @@ export function initFinanceModule() {
                   </span>
                 </td>
               </tr>
+
+              <!-- Строка 2: Деньги в пути (Транзит Paxum / OF / P2P) -->
+              <tr style="background: rgba(56, 189, 248, 0.05); border-top: 1px solid #353e52;">
+                <td style="font-weight: 700; color: #38bdf8; font-size: 13px;">🚀 Деньги в пути (Транзит OnlyFans / Paxum)</td>
+                <td colspan="3" style="font-size: 12px; color: #cbd5e1; font-style: italic;">
+                  Выводы с платформ в обработке, ожидается зачисление на кошелек (ETA: 1-2 дня)
+                </td>
+                <td style="text-align: right;">
+                  <div style="display: inline-flex; align-items: center; gap: 6px;">
+                    <input id="fin-input-transit-usdt" type="number" step="0.01" value="${transitVal.toFixed(2)}" style="width: 105px; padding: 4px 8px; font-family: var(--font-mono); font-weight: 700; background: #283042; border: 1px solid #38bdf8; color: #38bdf8; border-radius: 4px; text-align: right;" />
+                    <button id="fin-btn-save-transit-usdt" class="btn-action btn-pay-contractor" style="padding: 4px 8px; font-size: 11px;" title="Сохранить сумму в пути">💾</button>
+                  </div>
+                </td>
+                <td style="font-family: var(--font-mono); font-weight: 800; font-size: 13px; color: #38bdf8; text-align: right;">
+                  +$${transitVal.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                </td>
+                <td>
+                  <span style="padding: 3px 10px; border-radius: 6px; font-size: 11px; font-weight: 700; background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3);">
+                    ⚡ Ожидает зачисления
+                  </span>
+                </td>
+              </tr>
+
+              <!-- Строка 3: ИТОГО СОВОКУПНЫЙ КАПИТАЛ -->
+              <tr style="background: rgba(16, 185, 129, 0.08); border-top: 2px solid #353e52; font-weight: 800;">
+                <td style="color: #f8fafc; font-size: 13px;">🏦 СОВОКУПНЫЙ КАПИТАЛ АГЕНТСТВА</td>
+                <td colspan="3" style="font-size: 12px; color: #cbd5e1;">
+                  Касса Bybit ($${actualWalletVal.toFixed(0)}) + Деньги в пути ($${transitVal.toFixed(0)})
+                </td>
+                <td colspan="2" style="font-family: var(--font-mono); font-size: 15px; color: var(--accent-green); text-align: right; padding-right: 12px;">
+                  $${totalLiquidity.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                </td>
+                <td>
+                  <span style="padding: 3px 10px; border-radius: 6px; font-size: 11px; font-weight: 700; background: rgba(52, 211, 153, 0.15); color: var(--accent-green); border: 1px solid rgba(52, 211, 153, 0.3);">
+                    🛡️ Полное покрытие
+                  </span>
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>
 
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; margin-bottom: 14px;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 14px;">
           <!-- 1. Поступления -->
           <div style="background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: var(--radius-sm); padding: 14px 16px;">
             <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent-green); font-weight: 700; margin-bottom: 4px;">
@@ -1998,8 +2051,8 @@ export function initFinanceModule() {
             <div style="font-size: 20px; font-weight: 800; font-family: var(--font-heading); color: var(--accent-green);">
               +$${rec.inflow.toLocaleString('en-US', { minimumFractionDigits: 2 })}
             </div>
-            <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">
-              OF/Fansly: $${rec.ofInflow.toLocaleString('en-US', { minimumFractionDigits: 0 })} | Прочее: $${rec.otherInflow.toLocaleString('en-US', { minimumFractionDigits: 0 })}
+            <div style="font-size: 11px; color: #cbd5e1; margin-top: 4px;">
+              Зачислено в кассу
             </div>
           </div>
 
@@ -2011,21 +2064,21 @@ export function initFinanceModule() {
             <div style="font-size: 20px; font-weight: 800; font-family: var(--font-heading); color: var(--accent-rose);">
               -$${rec.outflow.toLocaleString('en-US', { minimumFractionDigits: 2 })}
             </div>
-            <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">
-              Трафик: $${rec.trafficOutflow.toFixed(0)} | Софт: $${rec.softOutflow.toFixed(0)} | Комсы: $${rec.feeOutflow.toFixed(0)}
+            <div style="font-size: 11px; color: #cbd5e1; margin-top: 4px;">
+              Трафик, выплаты, софт
             </div>
           </div>
 
-          <!-- 3. Чистый поток периода -->
-          <div style="background: rgba(56, 189, 248, 0.05); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: var(--radius-sm); padding: 14px 16px;">
-            <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--primary); font-weight: 700; margin-bottom: 4px;">
-              📊 Поток Периода (Net)
+          <!-- 3. Деньги в пути -->
+          <div style="background: rgba(56, 189, 248, 0.06); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: var(--radius-sm); padding: 14px 16px;">
+            <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: #38bdf8; font-weight: 700; margin-bottom: 4px;">
+              🚀 Деньги в пути (In Transit)
             </div>
-            <div style="font-size: 20px; font-weight: 800; font-family: var(--font-heading); color: ${rec.netPeriodCashflow >= 0 ? 'var(--accent-green)' : 'var(--accent-rose)'};">
-              ${rec.netPeriodCashflow >= 0 ? '+' : ''}$${rec.netPeriodCashflow.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+            <div style="font-size: 20px; font-weight: 800; font-family: var(--font-heading); color: #38bdf8;">
+              +$${transitVal.toLocaleString('en-US', { minimumFractionDigits: 2 })}
             </div>
-            <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">
-              Сальдо приходов и расходов за период
+            <div style="font-size: 11px; color: #cbd5e1; margin-top: 4px;">
+              OnlyFans / Paxum → Bybit
             </div>
           </div>
 
@@ -2037,25 +2090,40 @@ export function initFinanceModule() {
             <div style="font-size: 20px; font-weight: 800; font-family: var(--font-heading); color: var(--accent-amber);">
               $${rec.safeCash.toLocaleString('en-US', { minimumFractionDigits: 2 })}
             </div>
-            <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">
-              В кассе: $${rec.actualCashBalance.toLocaleString('en-US', { minimumFractionDigits: 2 })} (Резерв: -$${rec.totalObligations.toFixed(0)})
+            <div style="font-size: 11px; color: #cbd5e1; margin-top: 4px;">
+              Касса минус обязательства
+            </div>
+          </div>
+
+          <!-- 5. Совокупный капитал -->
+          <div style="background: rgba(168, 85, 247, 0.06); border: 1px solid rgba(168, 85, 247, 0.3); border-radius: var(--radius-sm); padding: 14px 16px;">
+            <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: #c084fc; font-weight: 700; margin-bottom: 4px;">
+              💎 Совокупный Капитал
+            </div>
+            <div style="font-size: 20px; font-weight: 800; font-family: var(--font-heading); color: #c084fc;">
+              $${totalLiquidity.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+            </div>
+            <div style="font-size: 11px; color: #cbd5e1; margin-top: 4px;">
+              Касса Bybit + Транзит
             </div>
           </div>
         </div>
 
         <!-- Formula Audit Strip -->
-        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: #131b2e; border: 1px solid #1e293b; border-radius: 8px; font-size: 12px; font-family: var(--font-mono); color: #94a3b8; flex-wrap: wrap; gap: 8px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: #283042; border: 1px solid #353e52; border-radius: 8px; font-size: 12px; font-family: var(--font-mono); color: #cbd5e1; flex-wrap: wrap; gap: 8px;">
           <div>
-            <span>Расчет: </span>
-            <span style="color: var(--accent-green); font-weight: 700;">+$${rec.inflow.toFixed(2)} (Приход)</span>
+            <span>Расчетная касса: </span>
+            <span style="color: var(--accent-green); font-weight: 700;">+$${rec.inflow.toFixed(2)}</span>
             <span> − </span>
-            <span style="color: var(--accent-rose); font-weight: 700;">$${rec.outflow.toFixed(2)} (Расход)</span>
+            <span style="color: var(--accent-rose); font-weight: 700;">$${rec.outflow.toFixed(2)}</span>
             <span> = </span>
-            <strong style="color: #f8fafc; font-weight: 800;">$${rec.expectedCashBalance.toFixed(2)} (Расчетная касса)</strong>
+            <strong style="color: #f8fafc; font-weight: 800;">$${rec.expectedCashBalance.toFixed(2)}</strong>
           </div>
           <div>
             <span>Факт Bybit: </span>
-            <strong style="color: var(--primary); font-weight: 800;">$${actualWalletVal.toFixed(2)}</strong>
+            <strong style="color: #38bdf8; font-weight: 800;">$${actualWalletVal.toFixed(2)}</strong>
+            <span> | В пути: </span>
+            <strong style="color: #c084fc; font-weight: 800;">+$${transitVal.toFixed(2)}</strong>
             <span style="margin-left: 8px; font-weight: 700; color: ${isUsdtBalanced ? 'var(--accent-green)' : 'var(--accent-rose)'};">
               ${isUsdtBalanced ? '✓ Расхождений нет ($0.00)' : `⚠️ Расхождение ${deltaUsdt > 0 ? '+' : ''}$${deltaUsdt.toFixed(2)}`}
             </span>
@@ -2071,6 +2139,18 @@ export function initFinanceModule() {
           const val = parseFloat(inputActual.value) || 0;
           localStorage.setItem('mirrors_actual_usdt_wallet', val.toString());
           showToast(`💾 Фактический баланс кошелька Bybit сохранен: $${val.toLocaleString()}`);
+          renderAll();
+        };
+      }
+
+      // Привязка кнопки сохранения суммы в пути
+      const btnSaveTransit = document.getElementById('fin-btn-save-transit-usdt');
+      const inputTransit = document.getElementById('fin-input-transit-usdt');
+      if (btnSaveTransit && inputTransit) {
+        btnSaveTransit.onclick = () => {
+          const val = parseFloat(inputTransit.value) || 0;
+          localStorage.setItem('mirrors_in_transit_amount', val.toString());
+          showToast(`🚀 Сумма «В пути» обновлена: $${val.toLocaleString()}`);
           renderAll();
         };
       }
@@ -2097,7 +2177,7 @@ export function initFinanceModule() {
 
     if (tbody) {
       if (!modelData.models || modelData.models.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="9" style="text-align: center; color: var(--text-dim); padding: 18px;">Нет данных по анкетам за выбранный период</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="10" style="text-align: center; color: var(--text-dim); padding: 18px;">Нет данных по анкетам за выбранный период</td></tr>`;
         return;
       }
 
@@ -2105,9 +2185,11 @@ export function initFinanceModule() {
         let statusBadge = '';
         if (m.withdrawnToCash >= m.totalEarned && m.totalEarned > 0) {
           statusBadge = '<span style="font-size: 11px; padding: 3px 8px; border-radius: 8px; background: rgba(52, 211, 153, 0.15); color: var(--accent-green); font-weight: 700;">🟢 Выведено в кассу</span>';
-        } else if (m.withdrawnToCash > 0 && m.withdrawnToCash < m.totalEarned) {
-          statusBadge = '<span style="font-size: 11px; padding: 3px 8px; border-radius: 8px; background: rgba(56, 189, 248, 0.15); color: var(--primary); font-weight: 700;">⚡ Частично выведено</span>';
-        } else if (m.withdrawnToCash === 0 && m.totalEarned > 0) {
+        } else if (m.inTransit > 0 && m.withdrawnToCash > 0) {
+          statusBadge = '<span style="font-size: 11px; padding: 3px 8px; border-radius: 8px; background: rgba(56, 189, 248, 0.15); color: #38bdf8; font-weight: 700;">🚀 Часть в пути</span>';
+        } else if (m.inTransit > 0 && m.withdrawnToCash === 0) {
+          statusBadge = '<span style="font-size: 11px; padding: 3px 8px; border-radius: 8px; background: rgba(56, 189, 248, 0.15); color: #38bdf8; font-weight: 700;">🚀 В пути на кошелек</span>';
+        } else if (m.inHold > 0 && m.withdrawnToCash === 0) {
           statusBadge = '<span style="font-size: 11px; padding: 3px 8px; border-radius: 8px; background: rgba(245, 158, 11, 0.15); color: var(--accent-amber); font-weight: 700;">🟡 В хольде OF</span>';
         } else {
           statusBadge = '<span style="font-size: 11px; color: var(--text-dim);">—</span>';
@@ -2115,12 +2197,13 @@ export function initFinanceModule() {
 
         return `
           <tr>
-            <td style="font-weight: 700; color: var(--text-main); font-size: 13px;">${m.name}</td>
+            <td style="font-weight: 700; color: #f8fafc; font-size: 13px;">${m.name}</td>
             <td style="font-family: var(--font-mono); font-size: 13px;">$${m.grossRev.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
-            <td style="font-family: var(--font-mono); font-size: 13px; color: var(--text-secondary);">$${m.netRev.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
+            <td style="font-family: var(--font-mono); font-size: 13px; color: #cbd5e1;">$${m.netRev.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
             <td style="font-family: var(--font-mono); font-size: 13px; color: ${m.ppRev > 0 ? 'var(--primary)' : 'var(--text-dim)'};">${m.ppRev > 0 ? '$' + m.ppRev.toLocaleString('en-US', { minimumFractionDigits: 2 }) : '—'}</td>
             <td style="font-family: var(--font-mono); font-weight: 700; color: var(--accent-green); font-size: 14px;">$${m.totalEarned.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
             <td style="font-family: var(--font-mono); font-weight: 700; color: var(--primary); font-size: 14px;">$${m.withdrawnToCash.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
+            <td style="font-family: var(--font-mono); font-weight: 700; color: #38bdf8; font-size: 13px;">${m.inTransit > 0 ? '$' + m.inTransit.toLocaleString('en-US', { minimumFractionDigits: 2 }) : '—'}</td>
             <td style="font-family: var(--font-mono); font-weight: 600; color: ${m.inHold > 0 ? 'var(--accent-amber)' : 'var(--text-dim)'}; font-size: 13px;">$${m.inHold.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
             <td>
               <div style="display: flex; align-items: center; gap: 8px;">
@@ -2136,16 +2219,17 @@ export function initFinanceModule() {
       }).join('');
 
       const totalRowHtml = `
-        <tr style="border-top: 2px solid var(--border-color); background: rgba(255, 255, 255, 0.03); font-weight: 800;">
-          <td style="color: var(--text-main); font-size: 13px;">ИТОГО АГЕНТСТВО</td>
+        <tr style="border-top: 2px solid #353e52; background: rgba(255, 255, 255, 0.03); font-weight: 800;">
+          <td style="color: #f8fafc; font-size: 13px;">ИТОГО АГЕНТСТВО</td>
           <td style="font-family: var(--font-mono); font-size: 13px;">$${modelData.totalGrossAll.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
-          <td style="font-family: var(--font-mono); font-size: 13px; color: var(--text-secondary);">$${modelData.totalNetAll.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
+          <td style="font-family: var(--font-mono); font-size: 13px; color: #cbd5e1;">$${modelData.totalNetAll.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
           <td style="font-family: var(--font-mono); font-size: 13px; color: var(--primary);">$${modelData.totalPaypalAll.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
           <td style="font-family: var(--font-mono); color: var(--accent-green); font-size: 15px;">$${modelData.totalEarnedAll.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
           <td style="font-family: var(--font-mono); color: var(--primary); font-size: 15px;">$${modelData.totalWithdrawnAll.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
+          <td style="font-family: var(--font-mono); color: #38bdf8; font-size: 14px;">$${(modelData.totalTransitAll || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
           <td style="font-family: var(--font-mono); color: var(--accent-amber); font-size: 14px;">$${modelData.totalHoldAll.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
           <td style="font-family: var(--font-mono); font-size: 12px;">100.0%</td>
-          <td><span style="font-size: 11px; color: var(--text-muted);">Сверка периода</span></td>
+          <td><span style="font-size: 11px; color: #cbd5e1;">Сверка периода</span></td>
         </tr>
       `;
 

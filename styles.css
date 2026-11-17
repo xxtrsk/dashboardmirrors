@@ -550,19 +550,26 @@ header {
 }
 
 /* ==========================================================================
-   SCOPED STYLING: TAB FINANCE (Deep Slate Professional Fintech UI)
+   SCOPED STYLING: TAB FINANCE (Refined Executive Slate Gray Fintech UI)
+   Neither pitch dark nor blinding white — optimal contrast, elegant gray
    ========================================================================== */
 #tab-finance {
-  --fin-card-bg: #0d131f;
-  --fin-card-alt: #131b2e;
-  --fin-border: #1e293b;
+  --fin-bg: #191d26;
+  --fin-card-bg: #222734;
+  --fin-card-alt: #2a3142;
+  --fin-border: #353e52;
   --fin-border-subtle: rgba(255, 255, 255, 0.08);
+  --fin-input-bg: #283042;
+  background-color: var(--fin-bg);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
 }
 
 #tab-finance .glass-card {
   background: var(--fin-card-bg) !important;
   border: 1px solid var(--fin-border) !important;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.22) !important;
 }
 
 #tab-finance .table-container {
@@ -572,14 +579,14 @@ header {
 
 #tab-finance .data-table th {
   background: var(--fin-card-alt) !important;
-  color: #94a3b8 !important;
-  border-bottom: 2px solid #334155 !important;
+  color: #e2e8f0 !important;
+  border-bottom: 2px solid var(--fin-border) !important;
   font-weight: 700 !important;
 }
 
 #tab-finance .data-table td {
-  background: var(--fin-card-bg);
-  color: #f8fafc !important;
+  background: var(--fin-card-bg) !important;
+  color: #f1f5f9 !important;
   border-bottom: 1px solid var(--fin-border) !important;
 }
 
@@ -588,19 +595,20 @@ header {
 }
 
 #tab-finance .custom-select {
-  background: #0f172a !important;
+  background: var(--fin-input-bg) !important;
   color: #f8fafc !important;
-  border: 1px solid #334155 !important;
+  border: 1px solid var(--fin-border) !important;
 }
 
 #tab-finance .custom-select:focus {
   border-color: #38bdf8 !important;
+  outline: none;
 }
 
-/* Сдержанные кнопки в платежном календаре (не ядовито-зеленые) */
+/* Сдержанные кнопки в платежном календаре и действиях */
 #tab-finance .btn-pay-contractor {
-  background: #1e293b !important;
-  color: #cbd5e1 !important;
+  background: #2d3547 !important;
+  color: #e2e8f0 !important;
   border: 1px solid #475569 !important;
   box-shadow: none !important;
   font-weight: 600 !important;
@@ -608,7 +616,7 @@ header {
 }
 
 #tab-finance .btn-pay-contractor:hover {
-  background: #334155 !important;
+  background: #3a455c !important;
   border-color: #38bdf8 !important;
   color: #ffffff !important;
   transform: translateY(-1px) !important;
