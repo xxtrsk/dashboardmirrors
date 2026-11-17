@@ -82,10 +82,7 @@ CONTRACTORS = [
     {"name": "@osckelly (Оскар) — OFTV", "amount": 350, "terms": "175$ в начале + 175$ в конце (Lollysunnery)", "cat": "Трафик: OFTV", "model": "Lolly (Lollysunnery)"},
     {"name": "@aneskagency (Анастасия) — FYP", "amount": 250, "terms": "125$ каждые 2 недели (Fansly)", "cat": "Трафик: TikTok", "model": "Eva Pinky (Fansly)"},
     {"name": "OnlyMonster CRM", "amount": 220, "terms": "220$ / 2-го числа (единственный софт)", "cat": "Софт: OnlyMonster", "model": "Agency Core (Общие)"},
-    {"name": "@KillerLe0n (Леон) — SFS", "amount": 580, "terms": "По сверке 1–5 числа (1lolly & Eva Blush)", "cat": "Трафик: Twitter", "model": "Eva Blush"},
-    {"name": "Алекс (РОП)", "amount": 1015, "terms": "Ставка / ЗП РОПа (Agency Core)", "cat": "Зарплаты: Чаттеры", "model": "Agency Core (Общие)"},
-    {"name": "Тарас (Рекрутинг)", "amount": 300, "terms": "Рекрутинг и наем чаттеров", "cat": "Зарплаты: Чаттеры", "model": "Agency Core (Общие)"},
-    {"name": "Влад (Маркетинг & Бот)", "amount": 280, "terms": "Маркетинг, бот и инфраструктура", "cat": "Прочие расходы", "model": "Agency Core (Общие)"}
+    {"name": "@KillerLe0n (Леон) — SFS", "amount": 580, "terms": "По сверке 1–5 числа (1lolly & Eva Blush)", "cat": "Трафик: Twitter", "model": "Eva Blush"}
 ]
 
 # Хранилище временного состояния пошагового ввода { user_id: { ... } }
@@ -750,8 +747,7 @@ def send_balance_report(chat_id):
             "🏦 <b>АКТУАЛЬНОЕ СОСТОЯНИЕ КАССЫ</b>\n"
             "━━━━━━━━━━━━━━━━━━━━\n"
             "💰 <b>Физическая касса (на руках):</b> <code>$0.00</code>\n"
-            "🟢 <b>Свободная касса (Safe Cash):</b> <code>$0.00</code>\n"
-            "🔒 <b>Зарплатный резерв (Эскроу):</b> <code>$0.00</code>\n\n"
+            "🟢 <b>Свободная касса (Safe Cash):</b> <code>$0.00</code>\n\n"
             "💵 <b>Выручка Net OF:</b> $0.00\n"
             "💸 <b>Расходы OPEX:</b> $0.00\n"
             "💳 <b>Комиссии вывода:</b> $0.00\n"
@@ -827,8 +823,8 @@ def send_balance_report(chat_id):
         rem_c = max(0.0, float(c["amount"]) - paid_c)
         contractors_due += rem_c
 
-    # Свободная касса овнера
-    safe_cash = balance - total_escrow - contractors_due
+    # Свободная касса овнера (Касса минус Подрядчики)
+    safe_cash = balance - contractors_due
     safe_icon = "🟢" if safe_cash >= 0 else "🚨"
     safe_note = (
         "<i>🟢 Доступно к выводу овнером без риска разрыва кассы</i>" 
@@ -837,11 +833,9 @@ def send_balance_report(chat_id):
     )
 
     text = (
-        f"🏦 <b>СОСТОЯНИЕ КАССЫ & РЕЗЕРВОВ MIRRORS</b>\n"
+        f"🏦 <b>СОСТОЯНИЕ КАССЫ & РАСХОДОВ MIRRORS</b>\n"
         f"━━━━━━━━━━━━━━━━━━━━\n"
-        f"💰 <b>Физическая касса (на руках):</b> <code>${balance:,.2f}</code>\n\n"
-        f"🔒 <b>Зарплатный резерв (Эскроу):</b> <code>${total_escrow:,.2f}</code>\n"
-        f"   └ <i>Обязательства по ЗП:</i> ${total_escrow:,.2f}\n\n"
+        f"💰 <b>Физическая касса (на руках):</b> <code>${balance:,.2f}</code>\n"
         f"📅 <b>Подрядчики к доплате:</b> ${contractors_due:,.2f}\n"
         f"━━━━━━━━━━━━━━━━━━━━\n"
         f"{safe_icon} <b>СВОБОДНАЯ КАССА (Safe Cash):</b> <code>${safe_cash:,.2f}</code>\n"

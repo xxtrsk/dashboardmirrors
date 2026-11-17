@@ -108,54 +108,6 @@ export const CONTRACTOR_SCHEDULE = [
     urgencyColor: 'var(--accent-green)',
     urgencyBadge: 'По сверке (1–5 число)'
   },
-  {
-    id: 'alex_rop',
-    name: 'Алекс (РОП)',
-    role: 'Руководитель отдела продаж (управление сменами, чаттерами и конверсиями)',
-    terms: '1,015 USDT / месяц. Фикс / ЗП РОПа (Agency Core)',
-    dueDateStr: '15 и 31 числа (двумя частями по 507.5$)',
-    defaultAmount: 1015,
-    installments: 2,
-    installmentAmount: 507.5,
-    keywords: ['алекс', 'роп', 'алекса'],
-    model: 'Agency Core (Общие)',
-    category: 'Зарплаты: Чаттеры',
-    warning: '👑 РОП агентства. Выплата синхронизирована с периодами смен чаттеров (15 и 31 числа).',
-    urgencyColor: 'var(--primary)',
-    urgencyBadge: '1,015$ (2 транша)'
-  },
-  {
-    id: 'taras_recruiter',
-    name: 'Тарас (Рекрутинг)',
-    role: 'Рекрутер агентства (поиск, собеседования, стажировка чаттеров)',
-    terms: '300 USDT / месяц. Оплата по результатам найма',
-    dueDateStr: '15-е число месяца',
-    defaultAmount: 300,
-    installments: 1,
-    installmentAmount: 300,
-    keywords: ['тарас', 'рекрут', 'тараса'],
-    model: 'Agency Core (Общие)',
-    category: 'Зарплаты: Чаттеры',
-    warning: '👥 Рекрутер агентства. Проверить количество выведенных в смену чаттеров.',
-    urgencyColor: 'var(--accent-amber)',
-    urgencyBadge: '300$ / 15-го числа'
-  },
-  {
-    id: 'vlad_marketing',
-    name: 'Влад (Маркетинг & Бот)',
-    role: 'Маркетинг, аналитика, поддержка Telegram-бота и инфраструктуры',
-    terms: '280 USDT / месяц. Поддержка и доработки',
-    dueDateStr: 'Конец месяца (31-е)',
-    defaultAmount: 280,
-    installments: 1,
-    installmentAmount: 280,
-    keywords: ['влад', 'влада', 'маркетинг', 'бот'],
-    model: 'Agency Core (Общие)',
-    category: 'Прочие расходы',
-    warning: '🤖 Маркетолог и разработчик бота/дашборда.',
-    urgencyColor: 'var(--accent-purple)',
-    urgencyBadge: '280$ / 31-го числа'
-  }
 ];
 
 const SEED_TRANSACTIONS = [
@@ -858,7 +810,7 @@ class FinanceManager {
     const delta = actualCashBalance - expectedCashBalance;
     const isBalanced = Math.abs(delta) < 0.05;
 
-    const totalObligations = (Number(contractorsRemaining) || 0) + (Number(escrowRemaining) || 0);
+    const totalObligations = Number(contractorsRemaining) || 0;
     const safeCash = Math.max(0, actualCashBalance - totalObligations);
 
     return {
@@ -1501,7 +1453,7 @@ export function initFinanceModule() {
       }
     }
 
-    // 3. Свободная касса овнера (Safe Cash)
+    // 3. Свободная касса овнера (Safe Cash: Касса минус Подрядчики)
     const contractorsDue = totalContractorsRemaining || 0;
     let safeCash = 0;
     let isDeficit = false;
@@ -1510,7 +1462,7 @@ export function initFinanceModule() {
       safeCash = 0;
       isDeficit = false;
     } else {
-      safeCash = cashBalance - escrowDue - contractorsDue;
+      safeCash = cashBalance - contractorsDue;
       isDeficit = safeCash < 0;
     }
 
@@ -2088,12 +2040,7 @@ export function initFinanceModule() {
 
     // Реальный остаток к выплате подрядчикам с учетом уже внесенных авансов/траншей
     const contractorsDue = totalContractorsRemaining !== undefined ? totalContractorsRemaining : 0;
-    const p1Due = escrowData ? (escrowData.p1Remaining !== undefined ? escrowData.p1Remaining : 0) : 0;
-    const p2Due = escrowData ? (escrowData.p2Remaining !== undefined ? escrowData.p2Remaining : 0) : 0;
-    const totalEscrow = escrowData 
-      ? (escrowData.totalEscrowRemaining !== undefined ? escrowData.totalEscrowRemaining : 0) 
-      : 0;
-    const totalObligations = contractorsDue + totalEscrow;
+    const totalObligations = contractorsDue;
 
     // Спокойное нейтральное состояние при нулевой кассе
     if (cashBalance <= 0) {
@@ -2131,8 +2078,7 @@ export function initFinanceModule() {
               </div>
               <div style="font-size: 12px; color: var(--text-muted); margin-top: 3px;">
                 В кассе на Bybit: <strong style="color: var(--text-main); font-family: var(--font-mono);">$${cashBalance.toLocaleString('en-US', { minimumFractionDigits: 2 })}</strong> | 
-                Резерв к 15-му: <strong style="color: #fbbf24; font-family: var(--font-mono);">$${Math.round(p2Due).toLocaleString()}</strong> | 
-                Подрядчики: <strong style="color: var(--primary); font-family: var(--font-mono);">$${contractorsDue.toLocaleString()}</strong>
+                Подрядчики к доплате: <strong style="color: var(--primary); font-family: var(--font-mono);">$${contractorsDue.toLocaleString()}</strong>
               </div>
             </div>
           </div>
