@@ -28,7 +28,7 @@ CONFIG_FILE = "bot_config.json"
 
 def load_config():
     default_cfg = {
-        "bot_token": os.getenv("TELEGRAM_BOT_TOKEN", "9068998139:AAGV1moTeBpncUXTwgMJbYh5K0pKYlUrhm8"),
+        "bot_token": os.getenv("TELEGRAM_BOT_TOKEN", "9174778455:AAHvFxHuAlWDX4EIzvdgVviEeUDFL1Vnlek"),
         "gsheet_url": os.getenv("GSHEET_WEBAPP_URL", "")
     }
     if os.path.exists(CONFIG_FILE):
@@ -896,7 +896,7 @@ def handle_any_other(msg):
 if __name__ == "__main__":
     print("=" * 60)
     print("🚀 MIRRORS FINANCE BOT УСПЕШНО ЗАПУЩЕН!")
-    print(f"🤖 Bot: @mirrorsfinancebot (Token: {CONFIG['bot_token'][:15]}...)")
+    print(f"🤖 Bot: @mrrsfinbot (Token: {CONFIG['bot_token'][:15]}...)")
     print(f"📊 WebApp URL: {CONFIG.get('gsheet_url') or 'не задан (используйте /url)'}")
     print("=" * 60)
     try:
