@@ -53,12 +53,12 @@ export const modelPlansByMonth = {
 export const kpiSettingsByMonth = {
   '2026-11': [
     // Lolly (1lollyhere) - Plan $3,750 (50% Командный $37.5 + 50% Индивидуальный KPI $37.5)
-    // Влада (hinata hyuga): факт $1,446.87 / план $2,000
-    { chatter: 'hinata hyuga', model: 'Lolly (1lollyhere)', targetOpenRate: 40, targetAvgPrice: 26, targetTRT: 180, targetPlan: 2000 },
-    // Карина (karina @sanesskio): факт $975.15 / план $1,150
-    { chatter: 'karina @sanesskio', model: 'Lolly (1lollyhere)', targetOpenRate: 35, targetAvgPrice: 28, targetTRT: 110, targetPlan: 1150 },
-    // Игорь (Igor (Игорь)): факт $451.21 / план $600
-    { chatter: 'Igor (Игорь)', model: 'Lolly (1lollyhere)', targetOpenRate: 38, targetAvgPrice: 23, targetTRT: 230, targetPlan: 600 }
+    // Влада (hinata hyuga): факт $1,446.87 / план $1,600 (добить $153.13)
+    { chatter: 'hinata hyuga', model: 'Lolly (1lollyhere)', targetOpenRate: 40, targetAvgPrice: 26, targetTRT: 180, targetPlan: 1600 },
+    // Карина (karina @sanesskio): факт $975.15 / план $1,400 (добить $424.85)
+    { chatter: 'karina @sanesskio', model: 'Lolly (1lollyhere)', targetOpenRate: 35, targetAvgPrice: 28, targetTRT: 110, targetPlan: 1400 },
+    // Игорь (Igor (Игорь)): факт $451.21 / план $750 (добить $298.79)
+    { chatter: 'Igor (Игорь)', model: 'Lolly (1lollyhere)', targetOpenRate: 38, targetAvgPrice: 23, targetTRT: 230, targetPlan: 750 }
   ],
   '2026-10': [
     // Lolly (Lollysunnery) - Plan $9,000 (посадка: karina, timur, artem)
