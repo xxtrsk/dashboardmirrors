@@ -12,20 +12,20 @@ export const availableMonths = [
 ];
 
 export const initialConfig = [
-  { id: '39856', modelName: 'Lolly (Lollysunnery)', page: 'lollysunnery', chatters: ['karina @sanesskio', 'Timur (Тимур)', 'paul walkeeer'] },
+  { id: '39856', modelName: 'Lolly (Lollysunnery)', page: 'lollysunnery', chatters: ['karina @sanesskio', 'hinata hyuga', 'Igor (Игорь)'] },
   { id: '47892', modelName: 'Lolly (1lollyhere)', page: '1lollyhere', chatters: ['hinata hyuga', 'karina @sanesskio', 'Igor (Игорь)'] },
-  { id: '30201', modelName: 'Eva Blush', page: 'evablush', chatters: ['karina @sanesskio', 'paul walkeeer', 'Timur (Тимур)'] },
+  { id: '30201', modelName: 'Eva Blush', page: 'evablush', chatters: ['karina @sanesskio', 'hinata hyuga', 'Igor (Игорь)'] },
   { id: '4967', modelName: 'Lila (angelkiss)', page: 'angelkiss', chatters: ['hinata hyuga', 'Igor (Игорь)'] },
-  { id: '77304', modelName: 'Eva Pinky (Fansly)', page: 'evapinky', chatters: ['karina @sanesskio', 'paul walkeeer', 'Timur (Тимур)'] }
+  { id: '77304', modelName: 'Eva Pinky (Fansly)', page: 'evapinky', chatters: ['karina @sanesskio'] }
 ];
 
 export const modelPlansByMonth = {
   '2026-11': [
-    { id: '39856', name: 'Lolly (Lollysunnery)', plan: 6000, totalBonusPool: 120, teamBonusPool: 60, kpiBonusPool: 60, teamPct: '50%', accountId: '39856' },
+    { id: '39856', name: 'Lolly (Lollysunnery)', plan: 6000, totalBonusPool: 120, teamBonusPool: 120, kpiBonusPool: 0, teamPct: '100%', accountId: '39856' },
     { id: '47892', name: 'Lolly (1lollyhere)', plan: 3750, totalBonusPool: 75, teamBonusPool: 37.5, kpiBonusPool: 37.5, teamPct: '50%', accountId: '47892' },
-    { id: '30201', name: 'Eva Blush', plan: 3200, totalBonusPool: 64, teamBonusPool: 32, kpiBonusPool: 32, teamPct: '50%', accountId: '30201' },
+    { id: '30201', name: 'Eva Blush', plan: 3200, totalBonusPool: 64, teamBonusPool: 64, kpiBonusPool: 0, teamPct: '100%', accountId: '30201' },
     { id: '4967', name: 'Lila (angelkiss)', plan: 1650, totalBonusPool: 33, teamBonusPool: 33, kpiBonusPool: 0, teamPct: '100%', accountId: '4967' },
-    { id: '77304', name: 'Eva Pinky (Fansly)', plan: 2200, totalBonusPool: 44, teamBonusPool: 44, kpiBonusPool: 0, teamPct: '100%', accountId: '77304' }
+    { id: '77304', name: 'Eva Pinky (Fansly)', plan: 2200, totalBonusPool: 40, teamBonusPool: 40, kpiBonusPool: 0, teamPct: '100%', accountId: '77304' }
   ],
   '2026-10': [
     { id: '39856', name: 'Lolly (Lollysunnery)', plan: 9000, totalBonusPool: 180, teamBonusPool: 90, kpiBonusPool: 90, teamPct: '50%', accountId: '39856' },
@@ -52,29 +52,13 @@ export const modelPlansByMonth = {
 
 export const kpiSettingsByMonth = {
   '2026-11': [
-    // Lolly (Lollysunnery) - Plan $7,000 (посадка: karina, timur, artem)
-    { chatter: 'karina @sanesskio', model: 'Lolly (Lollysunnery)', targetOpenRate: 45, targetAvgPrice: 40, targetTRT: 110, targetPlan: 2600 },
-    { chatter: 'Timur (Тимур)', model: 'Lolly (Lollysunnery)', targetOpenRate: 55, targetAvgPrice: 55, targetTRT: 160, targetPlan: 1700 },
-    { chatter: 'paul walkeeer', model: 'Lolly (Lollysunnery)', targetOpenRate: 55, targetAvgPrice: 42, targetTRT: 180, targetPlan: 2700 },
-
-    // Lolly (1lollyhere) - Plan $3,000 (посадка: karina, vlada, igor)
-    { chatter: 'karina @sanesskio', model: 'Lolly (1lollyhere)', targetOpenRate: 35, targetAvgPrice: 28, targetTRT: 110, targetPlan: 1000 },
-    { chatter: 'hinata hyuga', model: 'Lolly (1lollyhere)', targetOpenRate: 35, targetAvgPrice: 26, targetTRT: 210, targetPlan: 1200 },
-    { chatter: 'Igor (Игорь)', model: 'Lolly (1lollyhere)', targetOpenRate: 38, targetAvgPrice: 23, targetTRT: 230, targetPlan: 800 },
-
-    // Eva Blush - Plan $3,200 (посадка: artem, karina, timur)
-    { chatter: 'paul walkeeer', model: 'Eva Blush', targetOpenRate: 45, targetAvgPrice: 35, targetTRT: 180, targetPlan: 1600 },
-    { chatter: 'karina @sanesskio', model: 'Eva Blush', targetOpenRate: 40, targetAvgPrice: 35, targetTRT: 110, targetPlan: 700 },
-    { chatter: 'Timur (Тимур)', model: 'Eva Blush', targetOpenRate: 55, targetAvgPrice: 50, targetTRT: 170, targetPlan: 900 },
-
-    // Lila (angelkiss) - Plan $1,500 (посадка: vlada, igor)
-    { chatter: 'hinata hyuga', model: 'Lila (angelkiss)', targetOpenRate: 38, targetAvgPrice: 20, targetTRT: 240, targetPlan: 950 },
-    { chatter: 'Igor (Игорь)', model: 'Lila (angelkiss)', targetOpenRate: 35, targetAvgPrice: 18, targetTRT: 240, targetPlan: 550 },
-
-    // Eva Pinky (Fansly) - Plan $2,200 (посадка: timur, karina, artem)
-    { chatter: 'Timur (Тимур)', model: 'Eva Pinky (Fansly)', targetOpenRate: 40, targetAvgPrice: 30, targetTRT: 170, targetPlan: 850 },
-    { chatter: 'karina @sanesskio', model: 'Eva Pinky (Fansly)', targetOpenRate: 35, targetAvgPrice: 22, targetTRT: 120, targetPlan: 750 },
-    { chatter: 'paul walkeeer', model: 'Eva Pinky (Fansly)', targetOpenRate: 40, targetAvgPrice: 25, targetTRT: 180, targetPlan: 600 }
+    // Lolly (1lollyhere) - Plan $3,750 (50% Командный $37.5 + 50% Индивидуальный KPI $37.5)
+    // Влада (hinata hyuga): факт $1,446.87 / план $2,000
+    { chatter: 'hinata hyuga', model: 'Lolly (1lollyhere)', targetOpenRate: 40, targetAvgPrice: 26, targetTRT: 180, targetPlan: 2000 },
+    // Карина (karina @sanesskio): факт $975.15 / план $1,150
+    { chatter: 'karina @sanesskio', model: 'Lolly (1lollyhere)', targetOpenRate: 35, targetAvgPrice: 28, targetTRT: 110, targetPlan: 1150 },
+    // Игорь (Igor (Игорь)): факт $451.21 / план $600
+    { chatter: 'Igor (Игорь)', model: 'Lolly (1lollyhere)', targetOpenRate: 38, targetAvgPrice: 23, targetTRT: 230, targetPlan: 600 }
   ],
   '2026-10': [
     // Lolly (Lollysunnery) - Plan $9,000 (посадка: karina, timur, artem)
@@ -127,21 +111,24 @@ export const initialModels = modelPlansByMonth['2026-11'];
 export const initialKPISettings = kpiSettingsByMonth['2026-11'];
 
 export const initialChatterWeekly = [
-  // NOVEMBER 1–5 CHATTER STARTER RECORDS
-  { monthKey: '2026-11', week: '1–5 Ноя', chatter: 'karina @sanesskio', accountId: '39856', totalSales: 0, ppvSales: 0, tips: 0, messages: 0, freeMedia: 0, ppvSent: 0, ppvSold: 0, chats: 0, words: 0, trt: 0, avgPPV: 0, openRate: 0, avgPriceSent: 0, avgPriceSold: 0 },
-  { monthKey: '2026-11', week: '1–5 Ноя', chatter: 'Timur (Тимур)', accountId: '39856', totalSales: 0, ppvSales: 0, tips: 0, messages: 0, freeMedia: 0, ppvSent: 0, ppvSold: 0, chats: 0, words: 0, trt: 0, avgPPV: 0, openRate: 0, avgPriceSent: 0, avgPriceSold: 0 },
-  { monthKey: '2026-11', week: '1–5 Ноя', chatter: 'paul walkeeer', accountId: '39856', totalSales: 0, ppvSales: 0, tips: 0, messages: 0, freeMedia: 0, ppvSent: 0, ppvSold: 0, chats: 0, words: 0, trt: 0, avgPPV: 0, openRate: 0, avgPriceSent: 0, avgPriceSold: 0 },
-  { monthKey: '2026-11', week: '1–5 Ноя', chatter: 'karina @sanesskio', accountId: '47892', totalSales: 0, ppvSales: 0, tips: 0, messages: 0, freeMedia: 0, ppvSent: 0, ppvSold: 0, chats: 0, words: 0, trt: 0, avgPPV: 0, openRate: 0, avgPriceSent: 0, avgPriceSold: 0 },
-  { monthKey: '2026-11', week: '1–5 Ноя', chatter: 'hinata hyuga', accountId: '47892', totalSales: 0, ppvSales: 0, tips: 0, messages: 0, freeMedia: 0, ppvSent: 0, ppvSold: 0, chats: 0, words: 0, trt: 0, avgPPV: 0, openRate: 0, avgPriceSent: 0, avgPriceSold: 0 },
-  { monthKey: '2026-11', week: '1–5 Ноя', chatter: 'Igor (Игорь)', accountId: '47892', totalSales: 0, ppvSales: 0, tips: 0, messages: 0, freeMedia: 0, ppvSent: 0, ppvSold: 0, chats: 0, words: 0, trt: 0, avgPPV: 0, openRate: 0, avgPriceSent: 0, avgPriceSold: 0 },
-  { monthKey: '2026-11', week: '1–5 Ноя', chatter: 'paul walkeeer', accountId: '30201', totalSales: 0, ppvSales: 0, tips: 0, messages: 0, freeMedia: 0, ppvSent: 0, ppvSold: 0, chats: 0, words: 0, trt: 0, avgPPV: 0, openRate: 0, avgPriceSent: 0, avgPriceSold: 0 },
-  { monthKey: '2026-11', week: '1–5 Ноя', chatter: 'karina @sanesskio', accountId: '30201', totalSales: 0, ppvSales: 0, tips: 0, messages: 0, freeMedia: 0, ppvSent: 0, ppvSold: 0, chats: 0, words: 0, trt: 0, avgPPV: 0, openRate: 0, avgPriceSent: 0, avgPriceSold: 0 },
-  { monthKey: '2026-11', week: '1–5 Ноя', chatter: 'Timur (Тимур)', accountId: '30201', totalSales: 0, ppvSales: 0, tips: 0, messages: 0, freeMedia: 0, ppvSent: 0, ppvSold: 0, chats: 0, words: 0, trt: 0, avgPPV: 0, openRate: 0, avgPriceSent: 0, avgPriceSold: 0 },
-  { monthKey: '2026-11', week: '1–5 Ноя', chatter: 'hinata hyuga', accountId: '4967', totalSales: 0, ppvSales: 0, tips: 0, messages: 0, freeMedia: 0, ppvSent: 0, ppvSold: 0, chats: 0, words: 0, trt: 0, avgPPV: 0, openRate: 0, avgPriceSent: 0, avgPriceSold: 0 },
-  { monthKey: '2026-11', week: '1–5 Ноя', chatter: 'Igor (Игорь)', accountId: '4967', totalSales: 0, ppvSales: 0, tips: 0, messages: 0, freeMedia: 0, ppvSent: 0, ppvSold: 0, chats: 0, words: 0, trt: 0, avgPPV: 0, openRate: 0, avgPriceSent: 0, avgPriceSold: 0 },
-  { monthKey: '2026-11', week: '1–5 Ноя', chatter: 'Timur (Тимур)', accountId: '77304', totalSales: 0, ppvSales: 0, tips: 0, messages: 0, freeMedia: 0, ppvSent: 0, ppvSold: 0, chats: 0, words: 0, trt: 0, avgPPV: 0, openRate: 0, avgPriceSent: 0, avgPriceSold: 0 },
-  { monthKey: '2026-11', week: '1–5 Ноя', chatter: 'karina @sanesskio', accountId: '77304', totalSales: 0, ppvSales: 0, tips: 0, messages: 0, freeMedia: 0, ppvSent: 0, ppvSold: 0, chats: 0, words: 0, trt: 0, avgPPV: 0, openRate: 0, avgPriceSent: 0, avgPriceSold: 0 },
-  { monthKey: '2026-11', week: '1–5 Ноя', chatter: 'paul walkeeer', accountId: '77304', totalSales: 0, ppvSales: 0, tips: 0, messages: 0, freeMedia: 0, ppvSent: 0, ppvSold: 0, chats: 0, words: 0, trt: 0, avgPPV: 0, openRate: 0, avgPriceSent: 0, avgPriceSold: 0 },
+  // NOVEMBER 1–21 CHATTER ACTUALS (СВОДКА 1–21 НОЯ)
+  // Карина (@sanesskio)
+  { monthKey: '2026-11', week: '1–21 Ноя', chatter: 'karina @sanesskio', accountId: '39856', totalSales: 1375.44, ppvSales: 1165.44, tips: 210.00, messages: 3200, freeMedia: 110, ppvSent: 85, ppvSold: 42, chats: 240, words: 38000, trt: 105, avgPPV: 27.75, openRate: 49.4, avgPriceSent: 28.0, avgPriceSold: 27.75 },
+  { monthKey: '2026-11', week: '1–21 Ноя', chatter: 'karina @sanesskio', accountId: '30201', totalSales: 743.40, ppvSales: 743.40, tips: 0.00, messages: 1800, freeMedia: 65, ppvSent: 50, ppvSold: 24, chats: 130, words: 21000, trt: 110, avgPPV: 31.00, openRate: 48.0, avgPriceSent: 30.0, avgPriceSold: 31.00 },
+  { monthKey: '2026-11', week: '1–21 Ноя', chatter: 'karina @sanesskio', accountId: '47892', totalSales: 975.15, ppvSales: 875.15, tips: 100.00, messages: 2400, freeMedia: 80, ppvSent: 60, ppvSold: 31, chats: 170, words: 29000, trt: 108, avgPPV: 28.23, openRate: 51.7, avgPriceSent: 27.5, avgPriceSold: 28.23 },
+  { monthKey: '2026-11', week: '1–21 Ноя', chatter: 'karina @sanesskio', accountId: '77304', totalSales: 425.51, ppvSales: 425.51, tips: 0.00, messages: 1200, freeMedia: 45, ppvSent: 35, ppvSold: 18, chats: 90, words: 15000, trt: 115, avgPPV: 23.64, openRate: 51.4, avgPriceSent: 22.0, avgPriceSold: 23.64 },
+
+  // Влада (hinata hyuga)
+  { monthKey: '2026-11', week: '1–21 Ноя', chatter: 'hinata hyuga', accountId: '47892', totalSales: 1446.87, ppvSales: 1446.87, tips: 0.00, messages: 3600, freeMedia: 130, ppvSent: 95, ppvSold: 52, chats: 260, words: 42000, trt: 175, avgPPV: 27.82, openRate: 54.7, avgPriceSent: 26.5, avgPriceSold: 27.82 },
+  { monthKey: '2026-11', week: '1–21 Ноя', chatter: 'hinata hyuga', accountId: '4967', totalSales: 854.20, ppvSales: 854.20, tips: 0.00, messages: 2100, freeMedia: 75, ppvSent: 55, ppvSold: 38, chats: 150, words: 25000, trt: 185, avgPPV: 22.48, openRate: 69.1, avgPriceSent: 21.0, avgPriceSold: 22.48 },
+  { monthKey: '2026-11', week: '1–21 Ноя', chatter: 'hinata hyuga', accountId: '39856', totalSales: 40.79, ppvSales: 40.79, tips: 0.00, messages: 250, freeMedia: 10, ppvSent: 8, ppvSold: 2, chats: 30, words: 3500, trt: 190, avgPPV: 20.40, openRate: 25.0, avgPriceSent: 20.0, avgPriceSold: 20.40 },
+  { monthKey: '2026-11', week: '1–21 Ноя', chatter: 'hinata hyuga', accountId: '30201', totalSales: 41.69, ppvSales: 41.69, tips: 0.00, messages: 270, freeMedia: 12, ppvSent: 9, ppvSold: 2, chats: 35, words: 3800, trt: 180, avgPPV: 20.85, openRate: 22.2, avgPriceSent: 20.0, avgPriceSold: 20.85 },
+
+  // Игорь (Igor (Игорь))
+  { monthKey: '2026-11', week: '1–21 Ноя', chatter: 'Igor (Игорь)', accountId: '47892', totalSales: 451.21, ppvSales: 451.21, tips: 0.00, messages: 1500, freeMedia: 50, ppvSent: 40, ppvSold: 20, chats: 110, words: 18000, trt: 225, avgPPV: 22.56, openRate: 50.0, avgPriceSent: 22.0, avgPriceSold: 22.56 },
+  { monthKey: '2026-11', week: '1–21 Ноя', chatter: 'Igor (Игорь)', accountId: '4967', totalSales: 32.86, ppvSales: 32.86, tips: 0.00, messages: 200, freeMedia: 8, ppvSent: 6, ppvSold: 2, chats: 25, words: 2800, trt: 235, avgPPV: 16.43, openRate: 33.3, avgPriceSent: 16.0, avgPriceSold: 16.43 },
+  { monthKey: '2026-11', week: '1–21 Ноя', chatter: 'Igor (Игорь)', accountId: '39856', totalSales: 78.32, ppvSales: 78.32, tips: 0.00, messages: 350, freeMedia: 15, ppvSent: 12, ppvSold: 4, chats: 40, words: 4500, trt: 220, avgPPV: 19.58, openRate: 33.3, avgPriceSent: 19.0, avgPriceSold: 19.58 },
+  { monthKey: '2026-11', week: '1–21 Ноя', chatter: 'Igor (Игорь)', accountId: '30201', totalSales: 203.21, ppvSales: 203.21, tips: 0.00, messages: 800, freeMedia: 30, ppvSent: 25, ppvSold: 10, chats: 70, words: 9800, trt: 228, avgPPV: 20.32, openRate: 40.0, avgPriceSent: 20.0, avgPriceSold: 20.32 },
   // OCTOBER 2026 RECORDS (1–31 Окт - ИТОГ МЕСЯЦА С УЧЕТОМ PAYPAL)
   { 
     monthKey: '2026-10', 

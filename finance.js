@@ -1,7 +1,6 @@
 // MIRRORS Financial P&L Engine & Budgeting System (Plan vs Fact)
 // Compatible with Vercel Static Hosting & Client-side XLSX export/import
-const initialModelWeekly = [];
-const initialChatterWeekly = [];
+import { initialModelWeekly, initialChatterWeekly } from './data.js';
 
 const STORAGE_KEY_TX = 'mirrors_finance_transactions_v4';
 const STORAGE_KEY_BUDGET = 'mirrors_finance_budgets_v4';
