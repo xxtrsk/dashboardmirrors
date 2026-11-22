@@ -4,7 +4,7 @@
 // Timur (exy sdof): $48.44 Total | PPV $0.00 | Tips $24.00 | OpenRate 0.00% | AvgPriceSold $0.00 | TRT 187.03s | Chats 125
 
 export const availableMonths = [
-  { key: '2026-11', label: 'Ноябрь 2026 (1–21 Ноя | План $16.6k)', isCurrent: true, totalDays: 30, daysPassed: 21 },
+  { key: '2026-11', label: 'Ноябрь 2026 (1–21 Ноя | План $16.8k)', isCurrent: true, totalDays: 30, daysPassed: 21 },
   { key: '2026-10', label: 'Октябрь 2026 (Завершен Итог $18.35k с PP)', isCurrent: false, totalDays: 31, daysPassed: 31 },
   { key: '2026-09', label: 'Сентябрь 2026 (Завершен Итог $17.6k с PP)', isCurrent: false, totalDays: 30, daysPassed: 30 },
   { key: '2026-08', label: 'Август 2026 (Завершен Итог $19.5k)', isCurrent: false, totalDays: 31, daysPassed: 31 },
@@ -25,7 +25,7 @@ export const modelPlansByMonth = {
     { id: '47892', name: 'Lolly (1lollyhere)', plan: 3750, totalBonusPool: 75, teamBonusPool: 37.5, kpiBonusPool: 37.5, teamPct: '50%', accountId: '47892' },
     { id: '30201', name: 'Eva Blush', plan: 3200, totalBonusPool: 64, teamBonusPool: 32, kpiBonusPool: 32, teamPct: '50%', accountId: '30201' },
     { id: '4967', name: 'Lila (angelkiss)', plan: 1650, totalBonusPool: 33, teamBonusPool: 33, kpiBonusPool: 0, teamPct: '100%', accountId: '4967' },
-    { id: '77304', name: 'Eva Pinky (Fansly)', plan: 2000, totalBonusPool: 40, teamBonusPool: 40, kpiBonusPool: 0, teamPct: '100%', accountId: '77304' }
+    { id: '77304', name: 'Eva Pinky (Fansly)', plan: 2200, totalBonusPool: 44, teamBonusPool: 44, kpiBonusPool: 0, teamPct: '100%', accountId: '77304' }
   ],
   '2026-10': [
     { id: '39856', name: 'Lolly (Lollysunnery)', plan: 9000, totalBonusPool: 180, teamBonusPool: 90, kpiBonusPool: 90, teamPct: '50%', accountId: '39856' },
@@ -71,10 +71,10 @@ export const kpiSettingsByMonth = {
     { chatter: 'hinata hyuga', model: 'Lila (angelkiss)', targetOpenRate: 38, targetAvgPrice: 20, targetTRT: 240, targetPlan: 950 },
     { chatter: 'Igor (Игорь)', model: 'Lila (angelkiss)', targetOpenRate: 35, targetAvgPrice: 18, targetTRT: 240, targetPlan: 550 },
 
-    // Eva Pinky (Fansly) - Plan $1,800 (посадка: timur, karina, artem)
-    { chatter: 'Timur (Тимур)', model: 'Eva Pinky (Fansly)', targetOpenRate: 40, targetAvgPrice: 30, targetTRT: 170, targetPlan: 700 },
-    { chatter: 'karina @sanesskio', model: 'Eva Pinky (Fansly)', targetOpenRate: 35, targetAvgPrice: 22, targetTRT: 120, targetPlan: 600 },
-    { chatter: 'paul walkeeer', model: 'Eva Pinky (Fansly)', targetOpenRate: 40, targetAvgPrice: 25, targetTRT: 180, targetPlan: 500 }
+    // Eva Pinky (Fansly) - Plan $2,200 (посадка: timur, karina, artem)
+    { chatter: 'Timur (Тимур)', model: 'Eva Pinky (Fansly)', targetOpenRate: 40, targetAvgPrice: 30, targetTRT: 170, targetPlan: 850 },
+    { chatter: 'karina @sanesskio', model: 'Eva Pinky (Fansly)', targetOpenRate: 35, targetAvgPrice: 22, targetTRT: 120, targetPlan: 750 },
+    { chatter: 'paul walkeeer', model: 'Eva Pinky (Fansly)', targetOpenRate: 40, targetAvgPrice: 25, targetTRT: 180, targetPlan: 600 }
   ],
   '2026-10': [
     // Lolly (Lollysunnery) - Plan $9,000 (посадка: karina, timur, artem)
@@ -697,9 +697,9 @@ export const initialModelWeekly = [
     accountId: '77304', 
     modelName: 'Eva Pinky (Fansly)', 
     totalRevenue: 1823.82, 
-    plan: 2000.00, 
-    goalProgressPct: 91.19, 
-    goalStatusPct: 21.19, // ahead of schedule (+21.2%)!
+    plan: 2200.00, 
+    goalProgressPct: 82.90, 
+    goalStatusPct: 12.90, // ahead of schedule (+12.9%)!
     runRate: 2605.46, 
     newFans: 843, 
     spenders: 44, 
