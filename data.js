@@ -4,7 +4,7 @@
 // Timur (exy sdof): $48.44 Total | PPV $0.00 | Tips $24.00 | OpenRate 0.00% | AvgPriceSold $0.00 | TRT 187.03s | Chats 125
 
 export const availableMonths = [
-  { key: '2026-11', label: 'Ноябрь 2026 (1–15 Ноя | План $16.5k)', isCurrent: true, totalDays: 30, daysPassed: 15 },
+  { key: '2026-11', label: 'Ноябрь 2026 (1–21 Ноя | План $16.6k)', isCurrent: true, totalDays: 30, daysPassed: 21 },
   { key: '2026-10', label: 'Октябрь 2026 (Завершен Итог $18.35k с PP)', isCurrent: false, totalDays: 31, daysPassed: 31 },
   { key: '2026-09', label: 'Сентябрь 2026 (Завершен Итог $17.6k с PP)', isCurrent: false, totalDays: 30, daysPassed: 30 },
   { key: '2026-08', label: 'Август 2026 (Завершен Итог $19.5k)', isCurrent: false, totalDays: 31, daysPassed: 31 },
@@ -21,11 +21,11 @@ export const initialConfig = [
 
 export const modelPlansByMonth = {
   '2026-11': [
-    { id: '39856', name: 'Lolly (Lollysunnery)', plan: 7000, totalBonusPool: 140, teamBonusPool: 70, kpiBonusPool: 70, teamPct: '50%', accountId: '39856' },
-    { id: '47892', name: 'Lolly (1lollyhere)', plan: 3000, totalBonusPool: 60, teamBonusPool: 30, kpiBonusPool: 30, teamPct: '50%', accountId: '47892' },
+    { id: '39856', name: 'Lolly (Lollysunnery)', plan: 6000, totalBonusPool: 120, teamBonusPool: 60, kpiBonusPool: 60, teamPct: '50%', accountId: '39856' },
+    { id: '47892', name: 'Lolly (1lollyhere)', plan: 3750, totalBonusPool: 75, teamBonusPool: 37.5, kpiBonusPool: 37.5, teamPct: '50%', accountId: '47892' },
     { id: '30201', name: 'Eva Blush', plan: 3200, totalBonusPool: 64, teamBonusPool: 32, kpiBonusPool: 32, teamPct: '50%', accountId: '30201' },
-    { id: '4967', name: 'Lila (angelkiss)', plan: 1500, totalBonusPool: 30, teamBonusPool: 30, kpiBonusPool: 0, teamPct: '100%', accountId: '4967' },
-    { id: '77304', name: 'Eva Pinky (Fansly)', plan: 1800, totalBonusPool: 36, teamBonusPool: 36, kpiBonusPool: 0, teamPct: '100%', accountId: '77304' }
+    { id: '4967', name: 'Lila (angelkiss)', plan: 1650, totalBonusPool: 33, teamBonusPool: 33, kpiBonusPool: 0, teamPct: '100%', accountId: '4967' },
+    { id: '77304', name: 'Eva Pinky (Fansly)', plan: 2000, totalBonusPool: 40, teamBonusPool: 40, kpiBonusPool: 0, teamPct: '100%', accountId: '77304' }
   ],
   '2026-10': [
     { id: '39856', name: 'Lolly (Lollysunnery)', plan: 9000, totalBonusPool: 180, teamBonusPool: 90, kpiBonusPool: 90, teamPct: '50%', accountId: '39856' },
@@ -627,111 +627,111 @@ export const initialChatterWeekly = [
 ];
 
 export const initialModelWeekly = [
-  // NOVEMBER 1–15 LIVE REVENUE TRACKING (EXACT CRM REPORT 1-15 NOV)
+  // NOVEMBER 1–21 LIVE REVENUE TRACKING (EXACT CRM REPORT 1-21 NOV)
   { 
     monthKey: '2026-11', 
-    week: '1–15 Ноя', 
+    week: '1–21 Ноя', 
     accountId: '39856', 
     modelName: 'Lolly (Lollysunnery)', 
-    totalRevenue: 2081.39, 
-    plan: 7000.00, 
-    goalProgressPct: 29.73, 
-    goalStatusPct: -20.27, // pace norm for 15 of 30 days is 50.00%
-    runRate: 4162.78, 
-    newFans: 319, 
-    spenders: 47, 
-    newSpenders: 9,
-    conversion: 2.82,
-    ppvRev: 1764.59, 
-    tipsRev: 316.80, 
-    transactions: 78, 
-    apc: 1.66, 
-    apv: 26.68, 
-    arppu: 44.28 
+    totalRevenue: 2823.90, 
+    plan: 6000.00, 
+    goalProgressPct: 47.07, 
+    goalStatusPct: -22.93, // pace norm for 21 of 30 days is 70.00%
+    runRate: 3883.49, 
+    newFans: 444, 
+    spenders: 61, 
+    newSpenders: 14,
+    conversion: 3.15,
+    ppvRev: 2395.10, 
+    tipsRev: 428.80, 
+    transactions: 111, 
+    apc: 1.82, 
+    apv: 25.44, 
+    arppu: 46.29 
   },
   { 
     monthKey: '2026-11', 
-    week: '1–15 Ноя', 
+    week: '1–21 Ноя', 
     accountId: '47892', 
     modelName: 'Lolly (1lollyhere)', 
-    totalRevenue: 1869.03, 
-    plan: 3000.00, 
-    goalProgressPct: 62.30, 
-    goalStatusPct: 12.30, // ahead of schedule (+12.3%)!
-    runRate: 3738.06, 
-    newFans: 295, 
-    spenders: 43, 
-    newSpenders: 12,
-    conversion: 4.07,
-    ppvRev: 1157.55, 
-    tipsRev: 668.00, 
-    transactions: 91, 
-    apc: 2.12, 
-    apv: 20.54, 
-    arppu: 43.47 
+    totalRevenue: 2604.83, 
+    plan: 3750.00, 
+    goalProgressPct: 69.46, 
+    goalStatusPct: -0.54, // practically on pace (-0.5%)
+    runRate: 3755.62, 
+    newFans: 442, 
+    spenders: 57, 
+    newSpenders: 17,
+    conversion: 3.85,
+    ppvRev: 1711.47, 
+    tipsRev: 808.00, 
+    transactions: 131, 
+    apc: 2.30, 
+    apv: 19.88, 
+    arppu: 45.70 
   },
   { 
     monthKey: '2026-11', 
-    week: '1–15 Ноя', 
+    week: '1–21 Ноя', 
     accountId: '30201', 
     modelName: 'Eva Blush', 
-    totalRevenue: 1506.69, 
+    totalRevenue: 2171.14, 
     plan: 3200.00, 
-    goalProgressPct: 47.08, 
-    goalStatusPct: -2.92, // almost exactly on pace (-2.9%)
-    runRate: 3013.38, 
-    newFans: 415, 
-    spenders: 42, 
-    newSpenders: 14,
-    conversion: 3.37,
-    ppvRev: 1079.67, 
-    tipsRev: 256.00, 
-    transactions: 89, 
-    apc: 2.12, 
-    apv: 16.93, 
-    arppu: 35.87 
+    goalProgressPct: 67.85, 
+    goalStatusPct: -2.15, // practically on pace (-2.1%)
+    runRate: 3102.46, 
+    newFans: 572, 
+    spenders: 56, 
+    newSpenders: 24,
+    conversion: 4.20,
+    ppvRev: 1522.58, 
+    tipsRev: 420.00, 
+    transactions: 123, 
+    apc: 2.20, 
+    apv: 17.65, 
+    arppu: 38.77 
   },
   { 
     monthKey: '2026-11', 
-    week: '1–15 Ноя', 
+    week: '1–21 Ноя', 
     accountId: '77304', 
     modelName: 'Eva Pinky (Fansly)', 
-    totalRevenue: 1074.93, 
-    plan: 1800.00, 
-    goalProgressPct: 59.72, 
-    goalStatusPct: 9.72, // ahead of schedule (+9.7%)!
-    runRate: 2149.86, 
-    newFans: 635, 
-    spenders: 31, 
-    newSpenders: 5,
-    conversion: 1.90,
-    ppvRev: 717.06, // Media 169.02 + Media sets 548.04
-    tipsRev: 213.18, 
-    transactions: 59, 
-    apc: 1.90, 
-    apv: 18.22, 
-    arppu: 34.68 
+    totalRevenue: 1823.82, 
+    plan: 2000.00, 
+    goalProgressPct: 91.19, 
+    goalStatusPct: 21.19, // ahead of schedule (+21.2%)!
+    runRate: 2605.46, 
+    newFans: 843, 
+    spenders: 44, 
+    newSpenders: 8,
+    conversion: 1.75,
+    ppvRev: 944.40, // Media 265.20 + Media sets 679.20
+    tipsRev: 661.18, 
+    transactions: 77, 
+    apc: 1.75, 
+    apv: 23.69, 
+    arppu: 41.45 
   },
   { 
     monthKey: '2026-11', 
-    week: '1–15 Ноя', 
+    week: '1–21 Ноя', 
     accountId: '4967', 
     modelName: 'Lila (angelkiss)', 
-    totalRevenue: 649.39, 
-    plan: 1500.00, 
-    goalProgressPct: 43.29, 
-    goalStatusPct: -6.71, 
-    runRate: 1298.78, 
-    newFans: 287, 
-    spenders: 41, 
-    newSpenders: 13,
-    conversion: 4.53,
-    ppvRev: 620.04, 
-    tipsRev: 17.60, 
-    transactions: 62, 
-    apc: 1.51, 
-    apv: 10.47, 
-    arppu: 15.84 
+    totalRevenue: 883.49, 
+    plan: 1650.00, 
+    goalProgressPct: 53.54, 
+    goalStatusPct: -16.46, 
+    runRate: 1210.81, 
+    newFans: 392, 
+    spenders: 53, 
+    newSpenders: 15,
+    conversion: 3.83,
+    ppvRev: 850.14, 
+    tipsRev: 21.60, 
+    transactions: 83, 
+    apc: 1.57, 
+    apv: 10.64, 
+    arppu: 16.67 
   },
   // OCTOBER 1–31 LIVE REVENUE TRACKING (EXACT CRM REPORT + PAYPAL)
   { 
